@@ -189,7 +189,7 @@ module.exports = {
         'keyword-spacing': 'error',
 
         // enforce consistent linebreak style
-        'linebreak-style': 'error',
+        //'linebreak-style': 'error',
 
         // require or disallow newlines around directives
         'lines-around-directive': 'error',
@@ -239,7 +239,7 @@ module.exports = {
         'no-console': 'off',
 
         // enforce consistent spacing before function definition opening parenthesis
-        'space-before-function-paren': ['error', 'never'],
+        //'space-before-function-paren': ['error', 'never'],
 
         // enforce consistent spacing inside parentheses
         'space-in-parens': 'error',
@@ -262,10 +262,10 @@ module.exports = {
          */
 
         // require braces around arrow function bodies
-        'arrow-body-style': 'error',
+        //'arrow-body-style': 'error',
 
         // require parentheses around arrow function arguments
-        'arrow-parens': ['error', 'as-needed'],
+        //'arrow-parens': ['error', 'as-needed'],
 
         // enforce consistent spacing before and after the arrow in arrow functions
         'arrow-spacing': 'error',
@@ -301,7 +301,7 @@ module.exports = {
         'prefer-numeric-literals': 'error',
 
         // require rest parameters instead of arguments
-        'prefer-rest-params': 'error',
+        //'prefer-rest-params': 'error',
 
         // require spread operators instead of .apply()
         'prefer-spread': 'error',

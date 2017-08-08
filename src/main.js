@@ -42,16 +42,21 @@ function hasPermission(roles, permissionRoles) {
 
 // register global progress.
 const whiteList = ['/login', '/authredirect', '/reset', '/sendpwd'];// 不重定向白名单
+/*
+* 登录更新路由
+* */
+let generate_routes = 1
+
 router.beforeEach((to, from, next) => {
   NProgress.start(); // 开启Progress
   if (getToken()) { // 判断是否有token
     if (to.path === '/login') {
       next({ path: '/' });
     } else {
-      if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
-        store.dispatch('GetInfo').then(res => { // 拉取user_info
-          const roles = res.data.role;
-          store.dispatch('GenerateRoutes', { roles }).then(() => { // 生成可访问的路由表
+      if (generate_routes) { // 更新路由
+        store.dispatch('GetInfo').then(() => {
+          store.dispatch('GenerateRoutes', { roles: store.getters.roles }).then(() => { // 生成可访问的路由表
+            generate_routes = 0
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next({ ...to }); // hack方法 确保addRoutes已完成
           })

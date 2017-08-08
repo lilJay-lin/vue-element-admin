@@ -19,7 +19,7 @@
     },
     computed: {
       ...mapGetters([
-        'name',
+        'userName',
         'avatar',
         'email',
         'introduction',

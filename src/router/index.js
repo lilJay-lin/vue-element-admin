@@ -8,6 +8,9 @@ Vue.use(Router);
 /* layout */
 import Layout from '../views/layout/Layout';
 
+/* view */
+import Login from '../views/login'
+import Role from '../views/role'
 /**
 * icon : the icon show in the sidebar
 * hidden : if `hidden:true` will not show in the sidebar
@@ -16,7 +19,7 @@ import Layout from '../views/layout/Layout';
 * meta : { role: ['admin'] }  will control the page role
 **/
 export const constantRouterMap = [
-    { path: '/login', component: _import('login/index'), hidden: true },
+    { path: '/login', component: Login, hidden: true },
     { path: '/authredirect', component: _import('login/authredirect'), hidden: true },
     { path: '/404', component: _import('error/404'), hidden: true },
     { path: '/401', component: _import('error/401'), hidden: true },
@@ -46,14 +49,15 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
-    path: '/permission',
+    path: '/crp',
     component: Layout,
-    redirect: '/permission/index',
-    name: '权限测试',
+    redirect: 'noredirect',
+    name: '权限管理',
     icon: 'quanxian',
-    meta: { role: ['admin'] },
-    noDropdown: true,
-    children: [{ path: 'index', component: _import('permission/index'), name: '权限测试页', meta: { role: ['admin'] } }]
+    // meta: { role: ['admin'] },
+    children: [
+      { path: 'roles', component: Role, name: '角色管理' }
+    ]
   },
   {
     path: '/components',
@@ -76,7 +80,7 @@ export const asyncRouterMap = [
       { path: 'backtotop', component: _import('components/backToTop'), name: '返回顶部' }
     ]
   },
-  {
+  /* {
     path: '/charts',
     component: Layout,
     redirect: '/charts/index',
@@ -89,7 +93,7 @@ export const asyncRouterMap = [
       { path: 'line', component: _import('charts/line'), name: '折线图' },
       { path: 'mixchart', component: _import('charts/mixChart'), name: '混合图表' }
     ]
-  },
+  },*/
   {
     path: '/example',
     component: Layout,

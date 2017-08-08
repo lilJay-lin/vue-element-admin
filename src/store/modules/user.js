@@ -1,13 +1,15 @@
-import { loginByEmail, logout, getInfo } from 'api/login';
+import { loginByName, logout, getInfo } from 'api/login';
 import { getToken, setToken, removeToken } from 'utils/auth';
+import * as TYPES from '../types'
+import { each, has } from '../../utils'
 
 const user = {
   state: {
-    user: '',
+    userName: '',
+    loginName: '',
+    email: '',
     status: '',
-    code: '',
     token: getToken(),
-    name: '',
     avatar: '',
     introduction: '',
     roles: [],
@@ -16,48 +18,59 @@ const user = {
     }
   },
 
+
   mutations: {
-    SET_CODE: (state, code) => {
+    [TYPES.SET_USER]: (state, user) => {
+      each(user, (val, key) => {
+        if (has(state, key)) {
+          state[key] = val
+        }
+      })
+    },
+    [TYPES.SET_CODE]: (state, code) => {
       state.code = code;
     },
-    SET_TOKEN: (state, token) => {
+    [TYPES.SET_TOKEN]: (state, token) => {
       state.token = token;
     },
-    SET_INTRODUCTION: (state, introduction) => {
+    [TYPES.SET_INTRODUCTION]: (state, introduction) => {
       state.introduction = introduction;
     },
-    SET_SETTING: (state, setting) => {
+    [TYPES.SET_SETTING]: (state, setting) => {
       state.setting = setting;
     },
-    SET_STATUS: (state, status) => {
+    [TYPES.SET_STATUS]: (state, status) => {
       state.status = status;
     },
-    SET_NAME: (state, name) => {
-      state.name = name;
+    [TYPES.SET_LOGIN_NAME]: (state, name) => {
+      state.loginName = name;
     },
-    SET_AVATAR: (state, avatar) => {
+    [TYPES.SET_USER_NAME]: (state, name) => {
+      state.userName = name;
+    },
+    [TYPES.SET_AVATAR]: (state, avatar) => {
       state.avatar = avatar;
     },
-    SET_ROLES: (state, roles) => {
+    [TYPES.SET_CURRENT_ROLES]: (state, roles) => {
       state.roles = roles;
     },
-    LOGIN_SUCCESS: () => {
+    [TYPES.LOGIN_SUCCESS]: () => {
       console.log('login success')
     },
-    LOGOUT_USER: state => {
+    [TYPES.LOGOUT_USER]: state => {
       state.user = '';
     }
   },
 
   actions: {
     // 邮箱登录
-    LoginByEmail({ commit }, userInfo) {
-      const email = userInfo.email.trim();
+    LoginByName({ commit }, userInfo) {
+      const loginName = userInfo.loginName.trim();
       return new Promise((resolve, reject) => {
-        loginByEmail(email, userInfo.password).then(response => {
+        loginByName(loginName, userInfo.password).then(response => {
           const data = response.data;
-          setToken(response.data.token);
-          commit('SET_TOKEN', data.token);
+          setToken(data.token);
+          commit(TYPES.SET_TOKEN, data.token);
           resolve();
         }).catch(error => {
           reject(error);
@@ -69,11 +82,7 @@ const user = {
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
-          const data = response.data;
-          commit('SET_ROLES', data.role);
-          commit('SET_NAME', data.name);
-          commit('SET_AVATAR', data.avatar);
-          commit('SET_INTRODUCTION', data.introduction);
+          commit(TYPES.SET_USER, response.data.user)
           resolve(response);
         }).catch(error => {
           reject(error);
@@ -84,9 +93,9 @@ const user = {
     // 第三方验证登录
     LoginByThirdparty({ commit, state }, code) {
       return new Promise((resolve, reject) => {
-        commit('SET_CODE', code);
+        commit(TYPES.SET_CODE, code);
         loginByThirdparty(state.status, state.email, state.code).then(response => {
-          commit('SET_TOKEN', response.data.token);
+          commit(TYPES.SET_TOKEN, response.data.token);
           setToken(response.data.token);
           resolve();
         }).catch(error => {
@@ -99,8 +108,8 @@ const user = {
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
-          commit('SET_TOKEN', '');
-          commit('SET_ROLES', []);
+          commit(TYPES.SET_TOKEN, '');
+          commit(TYPES.SET_CURRENT_ROLES, []);
           removeToken();
           resolve();
         }).catch(error => {
@@ -112,7 +121,7 @@ const user = {
     // 前端 登出
     FedLogOut({ commit }) {
       return new Promise(resolve => {
-        commit('SET_TOKEN', '');
+        commit(TYPES.SET_TOKEN, '');
         removeToken();
         resolve();
       });
@@ -121,8 +130,8 @@ const user = {
     // 动态修改权限
     ChangeRole({ commit }, role) {
       return new Promise(resolve => {
-        commit('SET_ROLES', [role]);
-        commit('SET_TOKEN', role);
+        commit(TYPES.SET_CURRENT_ROLES, [role]);
+        commit(TYPES.SET_TOKEN, role);
         setToken(role);
         resolve();
       })
