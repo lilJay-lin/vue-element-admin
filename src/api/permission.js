@@ -9,7 +9,7 @@ import { cleanArray } from '../utils'
 * */
 export const getAll = (query) => {
   return fetch({
-    url: '/roles',
+    url: '/permissions',
     method: 'get',
     params: query
   })
@@ -20,7 +20,7 @@ export const getAll = (query) => {
 * */
 export const getDetail = (id) => {
   return fetch({
-    url: '/roles/' + id,
+    url: '/permissions/' + id,
     method: 'get'
   })
 }
@@ -33,21 +33,21 @@ export const updateDetail = (data = { _id: '' }) => {
     return Promise.reject('id不能为空')
   }
   return fetch({
-    url: 'roles/' + data._id,
+    url: 'permissions/' + data._id,
     method: 'put',
     data
   })
 }
 
 /*
-* 批量操作数据
+* 删除数据
 * */
 export const batch = (ids = [], data = null) => {
   ids = cleanArray(ids)
   if (ids.length === 0) {
     return Promise.reject('ids不能为空')
   }
-  const url = 'roles/batch/' + ids.join(',')
+  const url = 'permissions/batch/' + ids.join(',')
   return fetch({
     url,
     method: 'put',
@@ -55,11 +55,12 @@ export const batch = (ids = [], data = null) => {
   })
 }
 
+
 /*
-* 新增
-* */
+ * 新增
+ * */
 export const create = (data) => {
-  const url = 'roles/'
+  const url = 'permissions/'
   return fetch({
     url,
     method: 'post',

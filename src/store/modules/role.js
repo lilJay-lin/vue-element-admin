@@ -3,7 +3,7 @@
  */
 import { each, has } from '../../utils'
 import * as TYPES from '../types'
-import { getAll, getDetail, updateDetail, del } from '../../api/role'
+import { getAll, getDetail, updateDetail, batch, create } from '../../api/role'
 
 const role = {
   state: {
@@ -12,13 +12,6 @@ const role = {
       currentPage: 1,
       totalRow: 0,
       totalPage: 0
-    },
-    current: {
-      _id: '',
-      name: '',
-      description: '',
-      status: '',
-      permissions: []
     }
   },
   mutations: {
@@ -44,38 +37,46 @@ const role = {
     GetAllRoles ({ commit }, query) {
       return new Promise((resolve, reject) => {
         getAll(query).then(({ data }) => {
-          commit(TYPES.SET_ROLES_LIST, data);
-          resolve();
+          commit(TYPES.SET_ROLES_LIST, data)
+          resolve()
         }).catch(error => {
-          reject(error);
-        });
-      });
+          reject(error)
+        })
+      })
     },
     GetRoleDetail ({ commit }, id) {
       return new Promise((resolve, reject) => {
         getDetail(id).then(({ data: { role } }) => {
-          commit(TYPES.SET_ROLES_SELECTED, role);
-          resolve();
+          resolve(role)
         }).catch(error => {
-          reject(error);
-        });
-      });
+          reject(error)
+        })
+      })
     },
-    UpdateRoleDetail ({ commit, state }, id, detail) {
+    UpdateRoleDetail ({ commit, state }, detail) {
       return new Promise((resolve, reject) => {
         updateDetail(detail).then(() => resolve()).catch(error => {
-          reject(error);
-        });
-      });
+          reject(error)
+        })
+      })
     },
-    DelRoles ({ dispatch }, ids) {
+    DelRoles ({ dispatch }, {ids, data}) {
       return new Promise((resolve, reject) => {
-        del(ids).then(() => {
-          dispatch('GetAllRoles').then(resolve, reject)
+        batch(ids, data).then(() => {
+          resolve()
         }).catch(error => {
-          reject(error);
-        });
-      });
+          reject(error)
+        })
+      })
+    },
+    CreateRole (store, detail) {
+      return new Promise((resolve, reject) => {
+        create(detail).then(() => {
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
     }
   }
 }

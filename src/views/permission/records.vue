@@ -1,26 +1,31 @@
 <template>
-  <div class="app-container">
+  <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="角色名称" v-model="listQuery.name"></el-input>
-      <el-select @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.status" placeholder="状态">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="权限名称" v-model="listQuery.name"></el-input>
+      <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.status" placeholder="状态">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+      <el-button v-if="isMain" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
     </div>
-
-    <el-table :key='tableKey' :data="crpRoles.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
-
-      <el-table-column align="center" label="序号">
+    <el-table :key='tableKey' :data="crpPermissions.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+  
+      <el-table-column v-if="isMain" align="center" label="序号">
         <template scope="scope">
           <span>{{scope.row._id}}</span>
         </template>
       </el-table-column>
-
-      <el-table-column width="110" align="center" label="角色名称">
+      
+      <el-table-column width="110" align="center" label="权限名称">
         <template scope="scope">
-          <span v-if="scope.row.status === '1'" class="link-type" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
+          <span v-if="scope.row.status === '1'" class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
           <span v-if="scope.row.status === '0'" >{{scope.row.name}}</span>
+        </template>
+      </el-table-column>
+      
+      <el-table-column width="110" align="center" label="权限编码">
+        <template scope="scope">
+          <span >{{scope.row.code}}</span>
         </template>
       </el-table-column>
 
@@ -35,14 +40,14 @@
           <span >{{scope.row.createdAt}}</span>
         </template>
       </el-table-column>
-
-      <el-table-column class-name="status-col" label="状态" width="90">
+      
+      <el-table-column  v-if="isMain" class-name="status-col" label="状态" width="90">
         <template scope="scope">
           <el-tag :type="scope.row.status ? 'primary' : 'danger'">{{scope.row.status | statusFilter}}</el-tag>
         </template>
       </el-table-column>
-
-      <el-table-column align="center" label="操作" width="150">
+      
+      <el-table-column   v-if="isMain" align="center" label="操作" width="150" >
         <template scope="scope">
           <el-button  v-if="scope.row.status === '1'" size="small" type="danger" @click="handleModifyStatus(scope.row,'0')">删除</el-button>
           <el-button  v-if="scope.row.status === '0'" size="small" type="success" @click="handleModifyStatus(scope.row,'1')">恢复</el-button>
@@ -51,30 +56,40 @@
     </el-table>
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.currentPage"
-                     :page-sizes="[1, 10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="crpRoles.pageInfo.totalRow">
+                     :page-sizes="[1, 10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="crpPermissions.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <Role-Detail @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Role-Detail>
+    <Permission-Detail @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Permission-Detail>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import RoleDetail from './detail.vue'
+  import PermissionDetail from './detail.vue'
   const temp = {
     _id: '',
     name: '',
+    code: '',
     description: '',
     status: '1',
     createdAt: '',
-    updatedAt: '',
-    permissions: []
+    updatedAt: ''
   }
   export default {
     components: {
-      RoleDetail
+      PermissionDetail
     },
-    name: 'crp_role',
+    props: {
+      containerClass: {
+        type: String,
+        default: ''
+      },
+      isMain: {
+        type: Boolean,
+        default: true
+      }
+    },
+    name: 'crp_permission',
     data() {
       return {
         listLoading: true,
@@ -93,7 +108,7 @@
       }
     },
     computed: {
-      ...mapGetters(['crpRoles'])
+      ...mapGetters(['crpPermissions'])
     },
     created() {
       this.getList()
@@ -106,7 +121,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.$store.dispatch('GetAllRoles', this.listQuery).then(() => {
+        this.$store.dispatch('GetAllPermissions', this.listQuery).then(() => {
           this.listLoading = false
         })
       },
@@ -124,10 +139,10 @@
       handleModifyStatus(row, status) {
         let promise = Promise.resolve()
         if (status === '0') {
-          promise = this.$confirm('确认删除角色：' + row.name + '？')
+          promise = this.$confirm('确认删除权限：' + row.name + '？')
         }
         promise.then(() => {
-          this.$store.dispatch('DelRoles', { ids: [row._id], data: { status } }).then(() => {
+          this.$store.dispatch('DelPermissions', { ids: [row._id], data: { status } }).then(() => {
             this.$message({
               message: '操作成功',
               type: 'success'
@@ -148,7 +163,7 @@
       },
       handleUpdate(row) {
         this.detailLoading = true
-        this.$store.dispatch('GetRoleDetail', row._id).then((detail) => {
+        this.$store.dispatch('GetPermissionDetail', row._id).then((detail) => {
           this.detailLoading = false
           this.temp = Object.assign({}, detail)
         })
@@ -158,6 +173,7 @@
       submit () {
         this.dialogFormVisible = false
         this.getList()
+        this.temp = Object.assign({}, temp)
       },
       cancel () {
         this.dialogFormVisible = false

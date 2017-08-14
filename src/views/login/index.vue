@@ -54,8 +54,8 @@
       };
       return {
         loginForm: {
-          loginName: 'liljay7',
-          password: '8293526'
+          loginName: 'liljay',
+          password: '8293526@'
         },
         loginRules: {
           loginName: [

@@ -1,16 +1,18 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-const _import = require('./_import_' + process.env.NODE_ENV);
+import Vue from 'vue'
+import Router from 'vue-router'
+const _import = require('./_import_' + process.env.NODE_ENV)
 // in development env not use Lazy Loading,because Lazy Loading large page will cause webpack hot update too slow.so only in production use Lazy Loading
 
-Vue.use(Router);
+Vue.use(Router)
 
 /* layout */
-import Layout from '../views/layout/Layout';
+import Layout from '../views/layout/Layout'
 
 /* view */
 import Login from '../views/login'
 import Role from '../views/role'
+import Permission from '../views/permission'
+
 /**
 * icon : the icon show in the sidebar
 * hidden : if `hidden:true` will not show in the sidebar
@@ -45,7 +47,7 @@ export default new Router({
   // mode: 'history', //后端支持可开
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
-});
+})
 
 export const asyncRouterMap = [
   {
@@ -56,7 +58,8 @@ export const asyncRouterMap = [
     icon: 'quanxian',
     // meta: { role: ['admin'] },
     children: [
-      { path: 'roles', component: Role, name: '角色管理' }
+      { path: 'roles', component: Role, name: '角色管理' },
+      { path: 'permissions', component: Permission, name: '权限管理' }
     ]
   },
   {
@@ -162,4 +165,4 @@ export const asyncRouterMap = [
   },
 
   { path: '*', redirect: '/404', hidden: true }
-];
+]

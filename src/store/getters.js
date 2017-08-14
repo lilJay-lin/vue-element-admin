@@ -10,6 +10,7 @@ const getters = {
   setting: state => state.user.setting,
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters,
-  crpRoles: state => state.role
+  crpRoles: state => state.role,
+  crpPermissions: state => state.permission
 };
 export default getters
