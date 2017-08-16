@@ -104,8 +104,8 @@ export default {
             duration: 2000
           })
           this.$emit('submit')
-        }, () => {})
-      })
+        })
+      }, () => {})
     },
     update() {
       const me = this
@@ -118,8 +118,8 @@ export default {
             duration: 2000
           })
           this.$emit('submit')
-        }, () => {})
-      })
+        })
+      }, () => {})
     },
     cancel () {
       this.$emit('cancel')

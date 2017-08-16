@@ -39,7 +39,6 @@ service.interceptors.response.use(
             location.reload();// 为了重新实例化vue-router对象 避免bug
           });
         })
-        return Promise.reject(res)
       } else {
         let message = res.message
         if (res.status === 3) {

@@ -56,16 +56,6 @@ const permission = {
           state[key] = val
         }
       })
-    },
-    [TYPES.SET_PERMISSIONS_SELECTED] (state, item) {
-      each(item, (val, key) => {
-        if (state.current.has(key)) {
-          state.current[key] = val
-        }
-      })
-    },
-    [TYPES.SET_PERMISSIONS_PERMISSIONS] (state, permissions) {
-      state.current.permissions = permissions
     }
   },
   actions: {

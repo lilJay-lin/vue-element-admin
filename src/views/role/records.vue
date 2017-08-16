@@ -8,7 +8,7 @@
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <el-button v-if="isMain" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
     </div>
-    <el-table :key='tableKey' :data="crpPermissions.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+    <el-table :key='tableKey' :data="crpRoles.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
   
 <!--      <el-table-column v-if="isMain" align="center" label="序号">
         <template scope="scope">
@@ -22,14 +22,8 @@
           <span v-if="scope.row.status === '0'" >{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      
-      <el-table-column width="110" align="center" label="权限编码">
-        <template scope="scope">
-          <span >{{scope.row.code}}</span>
-        </template>
-      </el-table-column>
 
-      <el-table-column min-width="250px" align="center" label="描述">
+      <el-table-column min-width="220px" align="center" label="描述">
         <template scope="scope">
           <span >{{scope.row.description}}</span>
         </template>
@@ -38,6 +32,12 @@
       <el-table-column width="110" align="center" label="创建时间">
         <template scope="scope">
           <span >{{scope.row.createdAt}}</span>
+        </template>
+      </el-table-column>
+      
+      <el-table-column width="110" align="center" label="更新时间">
+        <template scope="scope">
+          <span >{{scope.row.updatedAt}}</span>
         </template>
       </el-table-column>
       
@@ -67,35 +67,35 @@
     </el-table>
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.currentPage"
-                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="crpPermissions.pageInfo.totalRow">
+                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="crpRoles.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <Permission-Detail @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Permission-Detail>
+    <Role-Detail @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Role-Detail>
   
     <!--可自定义按钮的样式、show/hide临界点、返回的位置  -->
     <!--如需文字提示，可在外部添加element的<el-tooltip></el-tooltip>元素  -->
     <el-tooltip placement="top" content="返回顶部">
-      <back-to-top transitionName="fade" :visibilityHeight="300" :backPosition="50"></back-to-top>
+      <back-to-top transitionName="fade"></back-to-top>
     </el-tooltip>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import PermissionDetail from './detail.vue'
   import BackToTop from 'components/BackToTop'
+  import RoleDetail from './detail.vue'
   const temp = {
     _id: '',
     name: '',
-    code: '',
     description: '',
     status: '1',
     createdAt: '',
-    updatedAt: ''
+    updatedAt: '',
+    permissions: []
   }
   export default {
     components: {
-      PermissionDetail,
+      RoleDetail,
       BackToTop
     },
     props: {
@@ -107,14 +107,14 @@
         type: Boolean,
         default: true
       },
-      permissions: {
+      roles: {
         type: Array,
         default () {
           return []
         }
       }
     },
-    name: 'crp_permission',
+    name: 'crp_role',
     data() {
       return {
         listLoading: true,
@@ -133,7 +133,7 @@
       }
     },
     computed: {
-      ...mapGetters(['crpPermissions'])
+      ...mapGetters(['crpRoles'])
     },
     created() {
       this.getList()
@@ -146,7 +146,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.$store.dispatch('GetAllPermissions', this.listQuery).then(() => {
+        this.$store.dispatch('GetAllRoles', this.listQuery).then(() => {
           this.listLoading = false
         })
       },
@@ -167,7 +167,7 @@
           promise = this.$confirm('确认删除权限：' + row.name + '？')
         }
         promise.then(() => {
-          this.$store.dispatch('DelPermissions', { ids: [row._id], data: { status } }).then(() => {
+          this.$store.dispatch('DelRoles', { ids: [row._id], data: { status } }).then(() => {
             this.$message({
               message: '操作成功',
               type: 'success'
@@ -180,15 +180,15 @@
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
       },
-      handleDelRelation (permission) {
+      handleDelRelation (role) {
         const me = this
-        me.$store.dispatch('DelPermissions').then(() => {
-          me.temp.permissions.splice(me.temp.permissions.indexOf(permission), 1)
+        me.$store.dispatch('DelRoles').then(() => {
+          me.temp.roles.splice(me.temp.roles.indexOf(role), 1)
         })
       },
       handleUpdate(row) {
         this.detailLoading = true
-        this.$store.dispatch('GetPermissionDetail', row._id).then((detail) => {
+        this.$store.dispatch('GetRoleDetail', row._id).then((detail) => {
           this.detailLoading = false
           this.temp = Object.assign({}, detail)
         })
@@ -214,8 +214,8 @@
        *  判断权限是否已经在传入的权限列表里面了
        * */
       has (id) {
-        return this.permissions.some((permission) => {
-          return permission._id === id
+        return this.roles.some((role) => {
+          return role._id === id
         })
       }
     }

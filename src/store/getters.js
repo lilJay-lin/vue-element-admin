@@ -11,6 +11,11 @@ const getters = {
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters,
   crpRoles: state => state.role,
-  crpPermissions: state => state.permission
+  crpPermissions: (state) => {
+    return { records: state.permission.records, pageInfo: state.permission.pageInfo }
+  },
+  crpUsers: (state) => {
+    return { records: state.user.records, pageInfo: state.user.pageInfo }
+  }
 };
 export default getters

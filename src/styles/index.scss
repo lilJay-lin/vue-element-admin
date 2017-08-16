@@ -269,3 +269,11 @@ code {
     animation: octocat-wave 560ms ease-in-out
   }
 }
+
+.el-tag+.el-tag {
+  margin-left: 10px;
+}
+
+.el-loading-mask{
+  z-index: 1000
+}

@@ -10,8 +10,6 @@ import Layout from '../views/layout/Layout'
 
 /* view */
 import Login from '../views/login'
-import Role from '../views/role'
-import Permission from '../views/permission'
 
 /**
 * icon : the icon show in the sidebar
@@ -54,12 +52,13 @@ export const asyncRouterMap = [
     path: '/crp',
     component: Layout,
     redirect: 'noredirect',
-    name: '权限管理',
+    name: '权限配置',
     icon: 'quanxian',
     // meta: { role: ['admin'] },
     children: [
-      { path: 'roles', component: Role, name: '角色管理' },
-      { path: 'permissions', component: Permission, name: '权限管理' }
+      { path: 'users', component: _import('user/index'), name: '用户管理' },
+      { path: 'roles', component: _import('role/index'), name: '角色管理' },
+      { path: 'permissions', component: _import('permission/index'), name: '权限管理' }
     ]
   },
   {

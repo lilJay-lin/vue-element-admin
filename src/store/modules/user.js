@@ -1,8 +1,12 @@
 import { loginByName, logout, getInfo } from 'api/login';
 import { getToken, setToken, removeToken } from 'utils/auth';
-import * as TYPES from '../types'
 import { each, has } from '../../utils'
+import * as TYPES from '../types'
+import { getAll, getDetail, updateDetail, batch, create } from '../../api/user'
 
+/*
+* 登录用户和用户列表state
+* */
 const user = {
   state: {
     userName: '',
@@ -15,6 +19,12 @@ const user = {
     roles: [],
     setting: {
       articlePlatform: []
+    },
+    records: [],
+    pageInfo: {
+      currentPage: 1,
+      totalRow: 0,
+      totalPage: 0
     }
   },
 
@@ -27,38 +37,18 @@ const user = {
         }
       })
     },
-    [TYPES.SET_CODE]: (state, code) => {
-      state.code = code;
-    },
     [TYPES.SET_TOKEN]: (state, token) => {
       state.token = token;
-    },
-    [TYPES.SET_INTRODUCTION]: (state, introduction) => {
-      state.introduction = introduction;
     },
     [TYPES.SET_SETTING]: (state, setting) => {
       state.setting = setting;
     },
-    [TYPES.SET_STATUS]: (state, status) => {
-      state.status = status;
-    },
-    [TYPES.SET_LOGIN_NAME]: (state, name) => {
-      state.loginName = name;
-    },
-    [TYPES.SET_USER_NAME]: (state, name) => {
-      state.userName = name;
-    },
-    [TYPES.SET_AVATAR]: (state, avatar) => {
-      state.avatar = avatar;
-    },
-    [TYPES.SET_CURRENT_ROLES]: (state, roles) => {
-      state.roles = roles;
-    },
-    [TYPES.LOGIN_SUCCESS]: () => {
-      console.log('login success')
-    },
-    [TYPES.LOGOUT_USER]: state => {
-      state.user = '';
+    [TYPES.SET_USERS_LIST] (state, data) {
+      each(data, (val, key) => {
+        if (has(state, key)) {
+          state[key] = val
+        }
+      })
     }
   },
 
@@ -90,7 +80,7 @@ const user = {
       });
     },
 
-    // 第三方验证登录
+/*    // 第三方验证登录
     LoginByThirdparty({ commit, state }, code) {
       return new Promise((resolve, reject) => {
         commit(TYPES.SET_CODE, code);
@@ -102,14 +92,14 @@ const user = {
           reject(error);
         });
       });
-    },
+    },*/
 
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit(TYPES.SET_TOKEN, '');
-          commit(TYPES.SET_CURRENT_ROLES, []);
+          commit(TYPES.SET_USER, { roles: [] });
           removeToken();
           resolve();
         }).catch(error => {
@@ -128,12 +118,56 @@ const user = {
     },
 
     // 动态修改权限
-    ChangeRole({ commit }, role) {
+    ChangeRole({ commit }, roles) {
       return new Promise(resolve => {
-        commit(TYPES.SET_CURRENT_ROLES, [role]);
-        commit(TYPES.SET_TOKEN, role);
-        setToken(role);
+        commit(TYPES.SET_USER, { roles });
+        commit(TYPES.SET_TOKEN, user);
+        setToken(user);
         resolve();
+      })
+    },
+    GetAllUsers ({ commit }, query) {
+      return new Promise((resolve, reject) => {
+        getAll(query).then(({ data }) => {
+          commit(TYPES.SET_USERS_LIST, data)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    GetUserDetail ({ commit }, id) {
+      return new Promise((resolve, reject) => {
+        getDetail(id).then(({ data: { user } }) => {
+          resolve(user)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    UpdateUserDetail ({ commit, state }, detail) {
+      return new Promise((resolve, reject) => {
+        updateDetail(detail).then(() => resolve()).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    DelUsers ({ dispatch }, { ids, data }) {
+      return new Promise((resolve, reject) => {
+        batch(ids, data).then(() => {
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    CreateUser(store, detail) {
+      return new Promise((resolve, reject) => {
+        create(detail).then(() => {
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
       })
     }
   }

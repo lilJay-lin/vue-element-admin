@@ -15,13 +15,15 @@
         </el-input>
       </el-form-item>
       <el-form-item label="关联权限">
-        <el-tag v-for="permission in detail.permissions" :key="permission._id" type="success" :closable="true"
-                :close-transition="false" @close="handleDelRelation(permission)">
-          {{permission.name}}
-        </el-tag>
+        <el-tooltip  v-for="permission in detail.permissions" :key="permission._id" :content="permission.description" placement="top">
+          <el-tag type="success" :closable="true"
+                  :close-transition="false" @close="handleDelRelation(permission)">
+            {{permission.name}}
+          </el-tag>
+        </el-tooltip>
       </el-form-item>
       <el-form-item label="选择关联权限">
-        <Permissions :is-main = "isMain"></Permissions>
+        <Permissions :is-main = "isMain" :permissions="detail.permissions" @check="handleAddRelation" @cancel-check="handleDelRelation"></Permissions>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -105,8 +107,8 @@ export default {
             duration: 2000
           })
           this.$emit('submit')
-        }, () => {})
-      })
+        })
+      }, () => {})
     },
     update() {
       const me = this
@@ -119,11 +121,19 @@ export default {
             duration: 2000
           })
           this.$emit('submit')
-        }, () => {})
+        })
       })
     },
     cancel () {
       this.$emit('cancel')
+    },
+    handleDelRelation ({ _id }) {
+      this.detail.permissions = this.detail.permissions.filter((permission) => {
+        return permission._id !== _id
+      })
+    },
+    handleAddRelation (permission) {
+      this.detail.permissions.push(permission)
     }
   },
   watch: {

@@ -17,7 +17,7 @@
     props: {
       visibilityHeight: {
         type: Number,
-        default: 400
+        default: 300
       },
       backPosition: {
         type: Number,
@@ -25,14 +25,16 @@
       },
       customStyle: {
         type: Object,
-        default: {
-          right: '50px',
-          bottom: '50px',
-          width: '40px',
-          height: '40px',
-          'border-radius': '4px',
-          'line-height': '45px',
-          background: '#e7eaf1'
+        default () {
+          return {
+            right: '50px',
+            bottom: '50px',
+            width: '40px',
+            height: '40px',
+            'border-radius': '4px',
+            'line-height': '45px',
+            background: '#e7eaf1'
+          }
         }
       },
       transitionName: {
@@ -57,6 +59,7 @@
     },
     methods: {
       handleScroll() {
+        console.log(22)
         this.visible = window.pageYOffset > this.visibilityHeight;
       },
       backToTop() {

@@ -21,16 +21,6 @@ const role = {
           state[key] = val
         }
       })
-    },
-    [TYPES.SET_ROLES_SELECTED] (state, item) {
-      each(item, (val, key) => {
-        if (state.current.has(key)) {
-          state.current[key] = val
-        }
-      })
-    },
-    [TYPES.SET_ROLES_PERMISSIONS] (state, permissions) {
-      state.current.permissions = permissions
     }
   },
   actions: {
@@ -60,7 +50,7 @@ const role = {
         })
       })
     },
-    DelRoles ({ dispatch }, {ids, data}) {
+    DelRoles ({ dispatch }, { ids, data }) {
       return new Promise((resolve, reject) => {
         batch(ids, data).then(() => {
           resolve()
