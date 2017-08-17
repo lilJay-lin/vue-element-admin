@@ -101,6 +101,8 @@
     userName: '',
     loginName: '',
     email: '',
+    password: '',
+    second_password: '',
     status: '1',
     avatar: '',
     introduction: '',
@@ -205,7 +207,7 @@
         this.detailLoading = true
         this.$store.dispatch('GetUserDetail', row._id).then((detail) => {
           this.detailLoading = false
-          this.temp = Object.assign({}, detail)
+          this.temp = Object.assign({ password: '', second_password: '' }, detail)
         })
         this.dialogStatus = 'update'
         this.dialogFormVisible = true

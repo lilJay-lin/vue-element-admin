@@ -35,7 +35,7 @@ Object.keys(filters).forEach(key => {
 
 // permissiom judge
 function hasPermission(roles, permissionRoles) {
-  if (roles.indexOf('admin') >= 0) return true; // admin权限 直接通过
+  if (roles.indexOf('super') >= 0) return true; // admin权限 直接通过
   if (!permissionRoles) return true;
   return roles.some(role => permissionRoles.indexOf(role) >= 0)
 }
@@ -55,7 +55,7 @@ router.beforeEach((to, from, next) => {
     } else {
       if (generate_routes) { // 更新路由
         store.dispatch('GetInfo').then(() => {
-          store.dispatch('GenerateRoutes', { roles: store.getters.roles }).then(() => { // 生成可访问的路由表
+          store.dispatch('GenerateRoutes', { roles: store.getters.ownerPermissions }).then(() => { // 生成可访问的路由表
             generate_routes = 0
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next({ ...to }); // hack方法 确保addRoutes已完成
@@ -67,7 +67,7 @@ router.beforeEach((to, from, next) => {
         })
       } else {
         // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
-        if (hasPermission(store.getters.roles, to.meta.role)) {
+        if (hasPermission(store.getters.ownerPermissions, to.meta.role)) {
           next();//
         } else {
           next({ path: '/401', query: { noGoBack: true } });

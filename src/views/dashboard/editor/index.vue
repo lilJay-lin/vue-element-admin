@@ -36,10 +36,10 @@
 				<el-card class="box-card">
 					<div slot="header" class="box-card-header">
 						<pan-thumb class="panThumb" :image="avatar"> 你的权限:
-							<span class="pan-info-roles" :key='item' v-for="item in roles">{{item}}</span>
+							<span class="pan-info-roles" :key='item' v-for="item in ownerPermissions">{{item}}</span>
 						</pan-thumb>
 					</div>
-					<span class="display_name">{{name}}</span>
+					<span class="display_name">{{userName}}</span>
 					<div class="info-item">
 						<countTo class="info-item-num" :startVal='0' :endVal='statisticsData.article_count' :duration='3400'></countTo>
 						<span class="info-item-text">文章</span>
@@ -98,9 +98,9 @@
   },
 	  computed: {
 	    ...mapGetters([
-	      'name',
+	      'userName',
 	      'avatar',
-	      'roles'
+	      'ownerPermissions'
     ])
   }
 	}

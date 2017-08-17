@@ -17,6 +17,7 @@ const user = {
     avatar: '',
     introduction: '',
     roles: [],
+    permissions: [],
     setting: {
       articlePlatform: []
     },

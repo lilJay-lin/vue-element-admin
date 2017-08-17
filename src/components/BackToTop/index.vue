@@ -59,7 +59,6 @@
     },
     methods: {
       handleScroll() {
-        console.log(22)
         this.visible = window.pageYOffset > this.visibilityHeight;
       },
       backToTop() {

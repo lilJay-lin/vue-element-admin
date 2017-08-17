@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import * as Constant from '../constant'
 const _import = require('./_import_' + process.env.NODE_ENV)
 // in development env not use Lazy Loading,because Lazy Loading large page will cause webpack hot update too slow.so only in production use Lazy Loading
 
@@ -54,11 +55,11 @@ export const asyncRouterMap = [
     redirect: 'noredirect',
     name: '权限配置',
     icon: 'quanxian',
-    // meta: { role: ['admin'] },
+    meta: { role: [Constant.managePermission, Constant.manageRole, Constant.manageUser] },
     children: [
-      { path: 'users', component: _import('user/index'), name: '用户管理' },
-      { path: 'roles', component: _import('role/index'), name: '角色管理' },
-      { path: 'permissions', component: _import('permission/index'), name: '权限管理' }
+      { path: 'users', component: _import('user/index'), name: '用户管理', meta: { role: [Constant.manageUser] } },
+      { path: 'roles', component: _import('role/index'), name: '角色管理', meta: { role: [] } },
+      { path: 'permissions', component: _import('permission/index'), name: '权限管理', meta: { role: [Constant.managePermission] } }
     ]
   },
   {

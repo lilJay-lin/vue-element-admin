@@ -14,6 +14,14 @@
       <el-form-item label="昵称" prop="userName">
         <el-input v-model="detail.userName"></el-input>
       </el-form-item>
+      <template v-if="dialogStatus === 'create'">
+        <el-form-item label="密码" prop="password">
+          <el-input type="password" v-model="detail.password"></el-input>
+        </el-form-item>
+        <el-form-item label="再次输入密码" prop="second_password">
+          <el-input type="password" v-model="detail.second_password"></el-input>
+        </el-form-item>
+      </template>
       <el-form-item label="状态">
         <el-select class="filter-item" v-model="detail.status" placeholder="状态">
           <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
@@ -85,6 +93,8 @@
             _id: '',
             userName: '',
             loginName: '',
+            password: '',
+            second_password: '',
             email: '',
             status: '1',
             avatar: '',

@@ -23,11 +23,11 @@
         'avatar',
         'email',
         'introduction',
-        'roles'
+        'ownerPermissions'
       ])
     },
     created() {
-      if (this.roles.indexOf('admin') >= 0) {
+      if (this.ownerPermissions.indexOf('super') >= 0) {
         return;
       }
       this.currentRole = 'DefaultDashboard';
