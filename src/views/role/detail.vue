@@ -107,7 +107,7 @@ export default {
             duration: 2000
           })
           this.$emit('submit')
-        })
+        }, () => {})
       }, () => {})
     },
     update() {
@@ -121,8 +121,8 @@ export default {
             duration: 2000
           })
           this.$emit('submit')
-        })
-      })
+        }, () => {})
+      }, () => {})
     },
     cancel () {
       this.$emit('cancel')

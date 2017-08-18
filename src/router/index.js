@@ -58,7 +58,7 @@ export const asyncRouterMap = [
     meta: { role: [Constant.managePermission, Constant.manageRole, Constant.manageUser] },
     children: [
       { path: 'users', component: _import('user/index'), name: '用户管理', meta: { role: [Constant.manageUser] } },
-      { path: 'roles', component: _import('role/index'), name: '角色管理', meta: { role: [] } },
+      { path: 'roles', component: _import('role/index'), name: '角色管理', meta: { role: [Constant.manageRole] } },
       { path: 'permissions', component: _import('permission/index'), name: '权限管理', meta: { role: [Constant.managePermission] } }
     ]
   },

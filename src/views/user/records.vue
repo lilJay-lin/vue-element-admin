@@ -165,7 +165,7 @@
         this.listLoading = true
         this.$store.dispatch('GetAllUsers', this.listQuery).then(() => {
           this.listLoading = false
-        })
+        }, () => {})
       },
       handleFilter() {
         this.getList()

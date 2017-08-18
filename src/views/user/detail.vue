@@ -2,9 +2,9 @@
   <el-dialog :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="full">
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left"
              label-width="100px" style='width: 900px;margin-left:50px'>
-      <el-form-item label="头像" prop="loginName">
+      <el-form-item label="头像">
         <pan-thumb :image='detail.avatar'></pan-thumb>
-        <el-button type="primary" icon="upload" style="position: absolute;bottom: 15px;margin-left: 40px;"
+        <el-button type="primary" icon="upload" style="position: absolute;bottom: 15px;margin-left: 40px"
                    @click="toggleShow">修改头像
         </el-button>
       </el-form-item>
@@ -18,7 +18,7 @@
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="detail.password"></el-input>
         </el-form-item>
-        <el-form-item label="再次输入密码" prop="second_password">
+        <el-form-item label="确认密码" prop="second_password">
           <el-input type="password" v-model="detail.second_password"></el-input>
         </el-form-item>
       </template>
@@ -117,18 +117,34 @@
       const NAME_MESSAGE = '登录名只能为数字、字母和下划线组成，长度6到20位'
       const validateLoginName = (rule, value, callback) => {
         if (!/^[0-9_a-zA-Z]{6,20}$/.test(value)) {
-          callback(new Error(NAME_MESSAGE));
+          callback(new Error(NAME_MESSAGE))
         } else {
-          callback();
+          callback()
         }
       }
-      /*    const validatePass = (rule, value, callback) => {
-       if (value.length < 6) {
-       callback(new Error('密码不能小于6位'));
-       } else {
-       callback();
-       }
-       };*/
+      const validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'))
+        } else if (value.length < 6) {
+          callback(new Error('密码不能小于6位'))
+        } else {
+          if (this.detail.second_password !== '') {
+            this.$refs.detailForm.validateField('second_password');
+          }
+          callback()
+        }
+      }
+      const validateSecondPass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'))
+        } else if (value !== this.detail.password) {
+          callback(new Error('两次输入密码不一致'))
+        } else if (value.length < 6) {
+          callback(new Error('密码不能小于6位'))
+        } else {
+          callback()
+        }
+      }
       return {
         isMain: false,
         textMap: {
@@ -137,15 +153,21 @@
         },
         detailRules: {
           loginName: [
-            {required: true, message: '用户名不能为空', trigger: 'blur'},
-            {validator: validateLoginName, trigger: 'blur'}
+            { required: true, message: '用户名不能为空', trigger: 'blur' },
+            { validator: validateLoginName, trigger: 'blur' }
           ],
           userName: [
-            {required: true, message: '昵称不能为空', trigger: 'blur'},
-            {min: 2, max: 10, message: '昵称长度2到10位', trigger: 'blur'}
+            { required: true, message: '昵称不能为空', trigger: 'blur' },
+            { min: 2, max: 10, message: '昵称长度2到10位', trigger: 'blur' }
           ],
           email: [
-            {type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change'}
+            { required: false, type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }
+          ],
+          password: [
+            { required: true, validator: validatePass, trigger: 'blur' }
+          ],
+          second_password: [
+            { required: true, validator: validateSecondPass, trigger: 'blur' }
           ]
         },
         showUpload: false
@@ -166,7 +188,10 @@
       create() {
         const me = this
         me.validate().then(() => {
-          me.$store.dispatch('CreateUser', me.detail).then(() => {
+          const temp = Object.assign({}, me.detail)
+          delete temp._id
+          delete temp.second_password
+          me.$store.dispatch('CreateUser', temp).then(() => {
             this.$notify({
               title: '成功',
               message: '创建成功',
@@ -174,6 +199,7 @@
               duration: 2000
             })
             this.$emit('submit')
+          }, () => {
           })
         }, () => {
         })
@@ -189,6 +215,7 @@
               duration: 2000
             })
             this.$emit('submit')
+          }, () => {
           })
         }, () => {
         })
@@ -211,7 +238,7 @@
         this.showUpload = !this.showUpload
       },
       cropSuccess(imgDataUrl) {
-        this.detail.avatar = imgDataUrl;
+        this.detail.avatar = imgDataUrl
       },
       cropUploadSuccess(jsonData) {
         /* TODO 删除api*/
@@ -225,8 +252,8 @@
             type: 'warning'
           }).then(() => {
             this.$store.dispatch('FedLogOut').then(() => {
-              location.reload();// 为了重新实例化vue-router对象 避免bug
-            });
+              location.reload()// 为了重新实例化vue-router对象 避免bug
+            })
           })
         }
       }

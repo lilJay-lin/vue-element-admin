@@ -15,7 +15,7 @@
 				</svg>
 			</a>
 			<div class="info-container">
-				<span class="display_name">{{name}}</span>
+				<span class="display_name">{{userName}}</span>
 				<span style='font-size:20px;padding-top:20px;display:inline-block;'>普通编辑dashboard</span>
 			</div>
 		</div>
@@ -39,7 +39,7 @@
     },
     computed: {
       ...mapGetters([
-        'name',
+        'userName',
         'avatar',
         'ownerPermissions'
       ])

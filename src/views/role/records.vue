@@ -148,7 +148,7 @@
         this.listLoading = true
         this.$store.dispatch('GetAllRoles', this.listQuery).then(() => {
           this.listLoading = false
-        })
+        }, () => {})
       },
       handleFilter() {
         this.getList()
