@@ -63,6 +63,13 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/info',
+    component: Layout,
+    redirect: '/info/index',
+    hidden: true,
+    children: [{ path: 'index', component: _import('userCenter/index'), name: '个人中心' }]
+  },
+  {
     path: '/components',
     component: Layout,
     redirect: '/components/index',

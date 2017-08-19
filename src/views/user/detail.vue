@@ -1,7 +1,7 @@
 <template>
-  <el-dialog :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="full">
+  <div>
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left"
-             label-width="100px" style='width: 900px;margin-left:50px'>
+             label-width="100px" style='margin-left:50px' :style="{width: width + 'px'}">
       <el-form-item label="头像">
         <pan-thumb :image='detail.avatar'></pan-thumb>
         <el-button type="primary" icon="upload" style="position: absolute;bottom: 15px;margin-left: 40px"
@@ -49,8 +49,8 @@
                      @cancel-check="handleDelRelation"></Permissions>
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="cancel">取 消</el-button>
+    <div class="dialog-footer" style="text-align: right;">
+      <el-button @click="cancel" v-if="cancelVisible">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
       <el-button v-else type="primary" @click="update">确 定</el-button>
     </div>
@@ -59,7 +59,7 @@
             @crop-success="cropSuccess"
             @crop-upload-success="cropUploadSuccess"
             @crop-upload-fail="cropUploadFail"></Upload>
-  </el-dialog>
+  </div>
 </template>
 <script type="text/ecmascript-6">
   import Permissions from '../role/records.vue'
@@ -72,6 +72,14 @@
       Upload
     },
     props: {
+      width: {
+        type: String,
+        default: '900'
+      },
+      cancelVisible: {
+        type: Boolean,
+        default: true
+      },
       dialogStatus: {
         type: String,
         default: 'create'
@@ -147,10 +155,6 @@
       }
       return {
         isMain: false,
-        textMap: {
-          update: '编辑',
-          create: '创建'
-        },
         detailRules: {
           loginName: [
             { required: true, message: '用户名不能为空', trigger: 'blur' },

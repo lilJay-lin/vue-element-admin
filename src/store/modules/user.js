@@ -9,6 +9,7 @@ import { getAll, getDetail, updateDetail, batch, create } from '../../api/user'
 * */
 const user = {
   state: {
+    _id: '',
     userName: '',
     loginName: '',
     email: '',

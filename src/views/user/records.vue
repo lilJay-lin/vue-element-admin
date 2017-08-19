@@ -82,8 +82,9 @@
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="crpUsers.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <User-Detail @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></User-Detail>
-  
+    <el-dialog :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="full">
+      <User-Detail @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></User-Detail>
+    </el-dialog>
     <!--可自定义按钮的样式、show/hide临界点、返回的位置  -->
     <!--如需文字提示，可在外部添加element的<el-tooltip></el-tooltip>元素  -->
     <el-tooltip placement="top" content="返回顶部">
@@ -136,6 +137,10 @@
       return {
         listLoading: true,
         detailLoading: true,
+        textMap: {
+          update: '编辑',
+          create: '创建'
+        },
         listQuery: {
           page: 1,
           pageSize: 20,
