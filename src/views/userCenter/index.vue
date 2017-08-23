@@ -1,6 +1,6 @@
 <template>
   <div v-loading="detailLoading"  style="min-height:400px;padding: 30px 20px 30px 0">
-    <detail v-if="!detailLoading" :cancel-visible="false" width="820" :detail="temp" dialog-status="update" :status-options="statusOptions"></detail>
+    <detail v-if="!detailLoading" :cancel-visible="false" width="820" :detail="temp" dialog-status="info" :status-options="statusOptions"></detail>
   </div>
 </template>
 <script type="text/ecmascript-6">

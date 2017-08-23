@@ -22,7 +22,7 @@
           <el-input type="password" v-model="detail.second_password"></el-input>
         </el-form-item>
       </template>
-      <template v-if="dialogStatus === 'update'">
+      <template v-if="dialogStatus === 'info'">
         <el-form-item label="密码">
           <el-button type="primary" size="small" @click="showPass">修改密码</el-button>
         </el-form-item>
