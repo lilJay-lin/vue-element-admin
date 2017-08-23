@@ -2,7 +2,7 @@ import { loginByName, logout, getInfo } from 'api/login';
 import { getToken, setToken, removeToken } from 'utils/auth';
 import { each, has } from '../../utils'
 import * as TYPES from '../types'
-import { getAll, getDetail, updateDetail, batch, create } from '../../api/user'
+import { getAll, getDetail, updateDetail, batch, create, updatePass } from '../../api/user'
 
 /*
 * 登录用户和用户列表state
@@ -166,6 +166,15 @@ const user = {
     CreateUser(store, detail) {
       return new Promise((resolve, reject) => {
         create(detail).then(() => {
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    UpdatePass(store, data) {
+      return new Promise((resolve, reject) => {
+        updatePass(data).then(() => {
           resolve()
         }).catch(error => {
           reject(error)

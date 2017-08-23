@@ -72,17 +72,11 @@
     </div>
     <Role-Detail @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Role-Detail>
   
-    <!--可自定义按钮的样式、show/hide临界点、返回的位置  -->
-    <!--如需文字提示，可在外部添加element的<el-tooltip></el-tooltip>元素  -->
-    <el-tooltip placement="top" content="返回顶部">
-      <back-to-top transitionName="fade"></back-to-top>
-    </el-tooltip>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import BackToTop from 'components/BackToTop'
   import RoleDetail from './detail.vue'
   const temp = {
     _id: '',
@@ -95,8 +89,7 @@
   }
   export default {
     components: {
-      RoleDetail,
-      BackToTop
+      RoleDetail
     },
     props: {
       containerClass: {

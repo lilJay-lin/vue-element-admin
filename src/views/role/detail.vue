@@ -106,7 +106,6 @@ export default {
             type: 'success',
             duration: 2000
           })
-          this.$emit('submit')
         }, () => {})
       }, () => {})
     },
@@ -120,7 +119,6 @@ export default {
             type: 'success',
             duration: 2000
           })
-          this.$emit('submit')
         }, () => {})
       }, () => {})
     },

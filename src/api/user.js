@@ -56,13 +56,25 @@ export const batch = (ids = [], data = null) => {
 }
 
 /*
-* 新增
-* */
+ * 新增
+ * */
 export const create = (data) => {
   const url = 'users/'
   return fetch({
     url,
     method: 'post',
+    data
+  })
+}
+
+/*
+ * 修改密码
+ * */
+export const updatePass = (data) => {
+  const url = 'users/password'
+  return fetch({
+    url,
+    method: 'put',
     data
   })
 }

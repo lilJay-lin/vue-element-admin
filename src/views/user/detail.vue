@@ -22,6 +22,11 @@
           <el-input type="password" v-model="detail.second_password"></el-input>
         </el-form-item>
       </template>
+      <template v-if="dialogStatus === 'update'">
+        <el-form-item label="密码">
+          <el-button type="primary" size="small" @click="showPass">修改密码</el-button>
+        </el-form-item>
+      </template>
       <el-form-item label="状态">
         <el-select class="filter-item" v-model="detail.status" placeholder="状态">
           <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
@@ -59,6 +64,20 @@
             @crop-success="cropSuccess"
             @crop-upload-success="cropUploadSuccess"
             @crop-upload-fail="cropUploadFail"></Upload>
+    <el-dialog title="修改密码" :visible="passVisible" :before-close="closePass" size="tiny">
+      <el-form class="small-space" :model="pass" :rules="passRules" ref="passForm" label-position="left" label-width="100px" style='width: 290px;'>
+        <el-form-item label="密码" prop="val1">
+          <el-input type="password" v-model="pass.val1"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="val2">
+          <el-input type="password" v-model="pass.val2"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closePass">取 消</el-button>
+        <el-button type="primary" @click="updatePass">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -130,31 +149,48 @@
           callback()
         }
       }
-      const validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'))
-        } else if (value.length < 6) {
-          callback(new Error('密码不能小于6位'))
-        } else {
-          if (this.detail.second_password !== '') {
-            this.$refs.detailForm.validateField('second_password');
+      const validatePass = (form, data, key) => {
+        return (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error('请输入密码'))
+          } else if (value.length < 6) {
+            callback(new Error('密码不能小于6位'))
+          } else {
+            if (this[data][key] !== '') {
+              this.$refs[form].validateField(key);
+            }
+            callback()
           }
-          callback()
         }
       }
-      const validateSecondPass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'))
-        } else if (value !== this.detail.password) {
-          callback(new Error('两次输入密码不一致'))
-        } else if (value.length < 6) {
-          callback(new Error('密码不能小于6位'))
-        } else {
-          callback()
+      const validateSecondPass = (data, key) => {
+        return (rule, value, callback) => {
+          if (value === '') {
+            callback(new Error('请再次输入密码'))
+          } else if (value !== this[data][key]) {
+            callback(new Error('两次输入密码不一致'))
+          } else if (value.length < 6) {
+            callback(new Error('密码不能小于6位'))
+          } else {
+            callback()
+          }
         }
       }
       return {
+        passVisible: false,
         isMain: false,
+        pass: {
+          val1: '',
+          val2: ''
+        },
+        passRules: {
+          val1: [
+            { required: true, validator: validatePass('passForm', 'pass', 'val2'), trigger: 'blur' }
+          ],
+          val2: [
+            { required: true, validator: validateSecondPass('pass', 'val1'), trigger: 'blur' }
+          ]
+        },
         detailRules: {
           loginName: [
             { required: true, message: '用户名不能为空', trigger: 'blur' },
@@ -168,19 +204,19 @@
             { required: false, type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur,change' }
           ],
           password: [
-            { required: true, validator: validatePass, trigger: 'blur' }
+            { required: true, validator: validatePass('detailForm', 'detail', 'second_password'), trigger: 'blur' }
           ],
           second_password: [
-            { required: true, validator: validateSecondPass, trigger: 'blur' }
+            { required: true, validator: validateSecondPass('detail', 'password'), trigger: 'blur' }
           ]
         },
         showUpload: false
       }
     },
     methods: {
-      validate () {
+      validate (form) {
         return new Promise((resolve, reject) => {
-          this.$refs.detailForm.validate((valid) => {
+          this.$refs[form].validate((valid) => {
             if (valid) {
               resolve()
             } else {
@@ -191,7 +227,7 @@
       },
       create() {
         const me = this
-        me.validate().then(() => {
+        me.validate('detailForm').then(() => {
           const temp = Object.assign({}, me.detail)
           delete temp._id
           delete temp.second_password
@@ -202,15 +238,13 @@
               type: 'success',
               duration: 2000
             })
-            this.$emit('submit')
-          }, () => {
-          })
+          }, () => {})
         }, () => {
         })
       },
       update() {
         const me = this
-        me.validate().then(() => {
+        me.validate('detailForm').then(() => {
           me.$store.dispatch('UpdateUserDetail', me.detail).then(() => {
             me.$notify({
               title: '成功',
@@ -218,9 +252,7 @@
               type: 'success',
               duration: 2000
             })
-            this.$emit('submit')
-          }, () => {
-          })
+          }, () => {})
         }, () => {
         })
       },
@@ -260,6 +292,31 @@
             })
           })
         }
+      },
+      showPass() {
+        this.passVisible = true
+        if (this.$refs.passForm) {
+          this.$refs.passForm.resetFields()
+        }
+      },
+      closePass () {
+        this.passVisible = false
+        if (this.$refs.passForm) {
+          this.$refs.passForm.resetFields()
+        }
+      },
+      updatePass () {
+        this.validate('passForm').then(() => {
+          this.$store.dispatch('UpdatePass', { password: this.pass.val1 }).then(() => {
+            this.$notify({
+              title: '成功',
+              message: '密码修改成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.closePass()
+          })
+        }, () => {})
       }
     },
     watch: {

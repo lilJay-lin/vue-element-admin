@@ -71,19 +71,13 @@
       </el-pagination>
     </div>
     <Permission-Detail @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Permission-Detail>
-  
-    <!--可自定义按钮的样式、show/hide临界点、返回的位置  -->
-    <!--如需文字提示，可在外部添加element的<el-tooltip></el-tooltip>元素  -->
-    <el-tooltip placement="top" content="返回顶部">
-      <back-to-top transitionName="fade" :visibilityHeight="300" :backPosition="50"></back-to-top>
-    </el-tooltip>
+
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import PermissionDetail from './detail.vue'
-  import BackToTop from 'components/BackToTop'
   const temp = {
     _id: '',
     name: '',
@@ -95,8 +89,7 @@
   }
   export default {
     components: {
-      PermissionDetail,
-      BackToTop
+      PermissionDetail
     },
     props: {
       containerClass: {
