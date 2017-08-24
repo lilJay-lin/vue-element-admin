@@ -167,7 +167,7 @@
             })
             this.getList()
           })
-        })
+        }, () => {})
       },
       handleCreate() {
         this.dialogStatus = 'create'

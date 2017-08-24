@@ -179,7 +179,7 @@
       handleModifyStatus(row, status) {
         let promise = Promise.resolve()
         if (status === '0') {
-          promise = this.$confirm('确认删除权限：' + row.name + '？')
+          promise = this.$confirm('确认删除权限：' + row.userName + '？')
         }
         promise.then(() => {
           this.$store.dispatch('DelUsers', { ids: [row._id], data: { status } }).then(() => {
@@ -189,7 +189,7 @@
             })
             this.getList()
           })
-        })
+        }, () => {})
       },
       handleCreate() {
         this.dialogStatus = 'create'

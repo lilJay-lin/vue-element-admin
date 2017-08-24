@@ -7,7 +7,7 @@
 		<screenfull class='screenfull'></screenfull>
 		<el-dropdown class="avatar-container" trigger="click">
 			<div class="avatar-wrapper">
-				<img class="user-avatar" :src="avatar">
+				<img class="user-avatar" :src="proxyImage(avatar)">
 				<i class="el-icon-caret-bottom"></i>
 			</div>
 			<el-dropdown-menu class="user-dropdown" slot="dropdown">
@@ -35,6 +35,7 @@
   import Screenfull from 'components/Screenfull';
   import ErrorLog from 'components/ErrLog';
   import errLogStore from 'store/errLog';
+  import proxyImage from '../../utils/proxyImage'
 
   export default {
     components: {
@@ -57,6 +58,7 @@
       ])
     },
     methods: {
+      proxyImage,
       toggleSideBar() {
         this.$store.dispatch('ToggleSideBar')
       },

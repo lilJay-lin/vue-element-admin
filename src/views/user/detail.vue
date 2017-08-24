@@ -3,7 +3,7 @@
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left"
              label-width="100px" style='margin-left:50px' :style="{width: width + 'px'}">
       <el-form-item label="头像">
-        <pan-thumb :image='detail.avatar'></pan-thumb>
+        <pan-thumb :image="proxyImage(detail.avatar)"></pan-thumb>
         <el-button type="primary" icon="upload" style="position: absolute;bottom: 15px;margin-left: 40px"
                    @click="toggleShow">修改头像
         </el-button>
@@ -84,6 +84,7 @@
   import Permissions from '../role/records.vue'
   import PanThumb from 'components/PanThumb'
   import Upload from 'components/ImageUpload2'
+  import proxyImage from '../../utils/proxyImage'
   export default {
     components: {
       Permissions,
@@ -214,6 +215,7 @@
       }
     },
     methods: {
+      proxyImage,
       validate (form) {
         return new Promise((resolve, reject) => {
           this.$refs[form].validate((valid) => {
@@ -278,7 +280,7 @@
       },
       cropUploadSuccess(jsonData) {
         /* TODO 删除api*/
-        this.detail.avatar = 'http://localhost' + jsonData.avatar
+        this.detail.avatar = jsonData.avatar
       },
       cropUploadFail({ status }) {
         if (status === 4) {
