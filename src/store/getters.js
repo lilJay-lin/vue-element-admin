@@ -16,6 +16,9 @@ const getters = {
   },
   crpUsers: (state) => {
     return { records: state.user.records, pageInfo: state.user.pageInfo }
-  }
+  },
+  products: state => state.product,
+  brands: state => state.brand,
+  types: state => state.type
 };
 export default getters

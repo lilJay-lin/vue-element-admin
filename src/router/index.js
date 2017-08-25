@@ -31,14 +31,6 @@ export const constantRouterMap = [
     name: '首页',
     hidden: true,
     children: [{ path: 'dashboard', component: _import('dashboard/index') }]
-  },
-  {
-    path: '/introduction',
-    component: Layout,
-    redirect: '/introduction/index',
-    icon: 'xinrenzhinan',
-    noDropdown: true,
-    children: [{ path: 'index', component: _import('introduction/index'), name: '简述' }]
   }
 ]
 
@@ -60,6 +52,19 @@ export const asyncRouterMap = [
       { path: 'users', component: _import('user/index'), name: '用户管理', meta: { role: [Constant.manageUser] } },
       { path: 'roles', component: _import('role/index'), name: '角色管理', meta: { role: [Constant.manageRole] } },
       { path: 'permissions', component: _import('permission/index'), name: '权限管理', meta: { role: [Constant.managePermission] } }
+    ]
+  },
+  {
+    path: '/product',
+    component: Layout,
+    redirect: 'noredirect',
+    // noDropdown: true,
+    name: '商品配置',
+    icon: 'zujian',
+    children: [
+      { path: 'index', component: _import('product/index'), name: '商品管理' },
+      { path: 'brand', component: _import('product/brand'), name: '品牌管理' },
+      { path: 'type', component: _import('product/type'), name: '类别管理' }
     ]
   },
   {
