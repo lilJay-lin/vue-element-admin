@@ -240,6 +240,7 @@
               type: 'success',
               duration: 2000
             })
+            this.$emit('submit')
           }, () => {})
         }, () => {
         })
@@ -254,6 +255,7 @@
               type: 'success',
               duration: 2000
             })
+            this.$emit('submit')
           }, () => {})
         }, () => {
         })

@@ -8,8 +8,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="类别"  prop="type">
-        <el-select v-model = "detail.type._id"
-                   @change="changeType">
+        <el-select v-model = "type"  placeholder="请选择" @change="changeType">
           <el-option
             v-for="item in types"
             :key="item._id"
@@ -19,8 +18,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="厂家"  prop="factory">
-        <el-select v-model = "detail.factory._id" filterable
-                   @change="changeFactory">
+        <el-select v-model = "factory" placeholder="请选择" @change="changeFactory">
           <el-option
             v-for="item in factories"
             :key="item._id"
@@ -30,18 +28,17 @@
         </el-select>
       </el-form-item>
       <el-form-item label="品牌"  prop="brand">
-        <el-select v-model = "detail.brand._id" filterable
-                   @change="changeBrand">
+        <el-select v-model = "brand" placeholder="请选择" @change="changeBrand">
           <el-option
             v-for="item in brands"
-            :key="item._id"
+            :key="item._id + 'brand'"
             :label="item.name"
             :value="item._id">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="型号">
-        <el-input  placeholder="请输入型号" v-model="detail.model">
+        <el-input  placeholder="请输入型号" v-model="detail.model" autoComplete="on">
         </el-input>
       </el-form-item>
       <el-form-item label="描述">
@@ -87,8 +84,9 @@ export default {
       default () {
         return {
           _id: '',
-          type: {},
-          brand: {},
+          type: { _id: '' },
+          brand: { _id: '' },
+          factory: { _id: '' },
           model: '',
           photos: '',
           description: '',
@@ -104,6 +102,9 @@ export default {
       factories: [],
       brands: [],
       types: [],
+      type: '',
+      brand: '',
+      factory: '',
       textMap: {
         update: '编辑',
         create: '创建'
@@ -122,9 +123,14 @@ export default {
     }
   },
   created () {
-    this.remote('', 'getAllBrands', 'factories')
-    this.remote('', 'getAllTypes', 'types')
-    this.remote('', 'getAllBrands', 'brands')
+    this.remote('', 'getAllBrands', 'factories').then(() => {
+      this.brands = this.factories
+      this.brand = this.detail.brand._id
+      this.factory = this.detail.factory._id
+    })
+    this.remote('', 'getAllTypes', 'types').then(() => {
+      this.type = this.detail.type._id
+    })
   },
   methods: {
     validate () {
@@ -148,6 +154,7 @@ export default {
             type: 'success',
             duration: 2000
           })
+          this.$emit('submit')
         }, () => {})
       }, () => {})
     },
@@ -161,6 +168,7 @@ export default {
             type: 'success',
             duration: 2000
           })
+          this.$emit('submit')
         }, () => {})
       }, () => {})
     },
@@ -168,7 +176,7 @@ export default {
       this.$emit('cancel')
     },
     remote (query, req, key) {
-      API[req]({ name: query, status: '1' }).then(({ data }) => {
+      return API[req]({ name: query, status: '1' }).then(({ data }) => {
         this[key] = data.records.filter(item => {
           return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
         })
@@ -185,7 +193,6 @@ export default {
       this.detail[key] = data
     },
     changeType (id) {
-      console.log(222222)
       this.change('type', id)
     },
     changeFactory (id) {
@@ -196,9 +203,19 @@ export default {
     }
   },
   watch: {
-    dialogFormVisible () {
+    dialogFormVisible (val) {
       if (this.$refs.detailForm) {
         this.$refs.detailForm.resetFields()
+      }
+      if (val) {
+        this.remote('', 'getAllBrands', 'factories').then(() => {
+          this.brands = this.factories
+          this.brand = this.detail.brand._id
+          this.factory = this.detail.factory._id
+        })
+        this.remote('', 'getAllTypes', 'types').then(() => {
+          this.type = this.detail.type._id
+        })
       }
     }
   }

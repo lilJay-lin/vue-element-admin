@@ -16,7 +16,7 @@
         </template>
       </el-table-column>
       
-      <el-table-column width="110" align="center" label="商品名称">
+      <el-table-column width="260" align="center" label="商品名称">
         <template scope="scope">
           <span v-if="scope.row.status === '1'" :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">
             {{scope.row.brand.name}}/{{scope.row.model}}/{{scope.row.type.name}}
@@ -27,7 +27,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column min-width="250px" align="center" label="描述">
+      <el-table-column min-width="100px" align="center" label="描述">
         <template scope="scope">
           <span >{{scope.row.description}}</span>
         </template>
