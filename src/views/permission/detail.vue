@@ -121,12 +121,12 @@ export default {
     },
     cancel () {
       this.$emit('cancel')
-    },
-    watch: {
-      dialogFormVisible () {
-        if (this.$refs.detailForm) {
-          this.$refs.detailForm.resetFields()
-        }
+    }
+  },
+  watch: {
+    dialogFormVisible () {
+      if (this.$refs.detailForm) {
+        this.$refs.detailForm.resetFields()
       }
     }
   }
