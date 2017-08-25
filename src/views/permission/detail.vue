@@ -103,6 +103,7 @@ export default {
             type: 'success',
             duration: 2000
           })
+          this.$emit('submit')
         }, () => {})
       }, () => {})
     },
@@ -116,17 +117,18 @@ export default {
             type: 'success',
             duration: 2000
           })
+          this.$emit('submit')
         }, () => {})
       }, () => {})
     },
     cancel () {
       this.$emit('cancel')
-    },
-    watch: {
-      dialogFormVisible () {
-        if (this.$refs.detailForm) {
-          this.$refs.detailForm.resetFields()
-        }
+    }
+  },
+  watch: {
+    dialogFormVisible () {
+      if (this.$refs.detailForm) {
+        this.$refs.detailForm.resetFields()
       }
     }
   }

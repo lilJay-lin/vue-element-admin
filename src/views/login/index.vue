@@ -9,7 +9,7 @@
       </el-form-item>
       <el-form-item prop="password">
         <span class="svg-container"><icon-svg icon-class="mima"></icon-svg></span>
-        <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on"
+        <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password"
           placeholder="密码"></el-input>
       </el-form-item>
       <el-form-item>
