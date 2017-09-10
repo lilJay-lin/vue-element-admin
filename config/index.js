@@ -32,8 +32,10 @@ module.exports = {
         staticPath:'/static/',
         proxyTable: {
             localhost: {
-              filter: '/api',
-              target: 'http://localhost/',
+              filter: function (pathname, req) {
+                return pathname.match('^/(ui|mi|shop|open)/');
+              },
+              target: 'http://djq.tunnel.qydev.com',
               changeOrigin: true
             }
         },

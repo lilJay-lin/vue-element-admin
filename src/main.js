@@ -19,7 +19,7 @@ import IconSvg from 'components/Icon-svg';// svg 组件
 import vueWaves from './directive/waves';// 水波纹指令
 import errLog from 'store/errLog';// error log组件
 import './mock/index.js';  // 该项目所有请求使用mockjs模拟
-import { getToken } from 'utils/auth';
+import { getToken, removeToken } from 'utils/auth';
 
 // register globally
 Vue.component('multiselect', Multiselect);
@@ -54,7 +54,7 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' });
     } else {
       if (generate_routes) { // 更新路由
-        store.dispatch('GetInfo').then(() => {
+        store.dispatch('GetInfo', getToken()).then(() => {
           store.dispatch('GenerateRoutes', { roles: store.getters.ownerPermissions }).then(() => { // 生成可访问的路由表
             generate_routes = 0
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表

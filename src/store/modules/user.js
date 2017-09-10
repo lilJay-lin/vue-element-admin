@@ -1,7 +1,7 @@
-import { loginByName, logout, getInfo } from 'api/login';
-import { getToken, setToken, removeToken } from 'utils/auth';
+import { loginByName, logout, getInfo, getPublicKey, geetest } from 'api/login';
 import { each, has } from '../../utils'
 import * as TYPES from '../types'
+import * as Token from '../../utils/auth'
 import { getAll, getDetail, updateDetail, batch, create, updatePass } from '../../api/user'
 
 /*
@@ -9,15 +9,10 @@ import { getAll, getDetail, updateDetail, batch, create, updatePass } from '../.
 * */
 const user = {
   state: {
-    _id: '',
+    id: '',
     userName: '',
-    loginName: '',
-    email: '',
-    status: '',
-    token: getToken(),
+    locked: '',
     avatar: '',
-    introduction: '',
-    roles: [],
     permissions: [],
     setting: {
       articlePlatform: []
@@ -33,14 +28,12 @@ const user = {
 
   mutations: {
     [TYPES.SET_USER]: (state, user) => {
-      each(user, (val, key) => {
-        if (has(state, key)) {
-          state[key] = val
-        }
+      state.id = user.id
+      state.userName = user.name
+      state.permissions = user.permissionList.map((permission) => {
+        return permission.code
       })
-    },
-    [TYPES.SET_TOKEN]: (state, token) => {
-      state.token = token;
+      state.locked = user.locked
     },
     [TYPES.SET_SETTING]: (state, setting) => {
       state.setting = setting;
@@ -56,14 +49,13 @@ const user = {
 
   actions: {
     // 邮箱登录
-    LoginByName({ commit }, userInfo) {
-      const loginName = userInfo.loginName.trim();
+    LoginByName({ commit }, data) {
       return new Promise((resolve, reject) => {
-        loginByName(loginName, userInfo.password).then(response => {
-          const data = response.data;
-          setToken(data.token);
-          commit(TYPES.SET_TOKEN, data.token);
-          resolve();
+        loginByName(data).then(response => {
+          const result = response.data.result
+          Token.setToken(result.id)
+          commit(TYPES.SET_USER, result)
+          resolve(result);
         }).catch(error => {
           reject(error);
         });
@@ -71,17 +63,41 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo({ commit, state }) {
+    GetInfo({ commit, state }, id) {
       return new Promise((resolve, reject) => {
-        getInfo(state.token).then(response => {
-          commit(TYPES.SET_USER, response.data.user)
+        getInfo(id).then(response => {
+          commit(TYPES.SET_USER, response.data.result)
           resolve(response);
         }).catch(error => {
           reject(error);
         });
       });
     },
-
+    // 获取公钥
+    GetPublicKey () {
+      return new Promise((resolve, reject) => {
+        getPublicKey().then(response => {
+          resolve(response.data.result);
+        }).catch(error => {
+          reject(error);
+        });
+      });
+    },
+    Geetest () {
+      return new Promise((resolve, reject) => {
+        geetest().then(({ data: { user_id, success, gt, challenge } }) => {
+          resolve({
+            user_id,
+            challenge,
+            offline: success,
+            product: 'popup',
+            gt
+          });
+        }).catch(error => {
+          reject(error);
+        });
+      });
+    },
 /*    // 第三方验证登录
     LoginByThirdparty({ commit, state }, code) {
       return new Promise((resolve, reject) => {
@@ -97,12 +113,10 @@ const user = {
     },*/
 
     // 登出
-    LogOut({ commit, state }) {
+    LogOut({ commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit(TYPES.SET_TOKEN, '');
+        logout().then(() => {
           commit(TYPES.SET_USER, { roles: [] });
-          removeToken();
           resolve();
         }).catch(error => {
           reject(error);
@@ -111,10 +125,8 @@ const user = {
     },
 
     // 前端 登出
-    FedLogOut({ commit }) {
+    FedLogOut() {
       return new Promise(resolve => {
-        commit(TYPES.SET_TOKEN, '');
-        removeToken();
         resolve();
       });
     },
@@ -123,8 +135,6 @@ const user = {
     ChangeRole({ commit }, roles) {
       return new Promise(resolve => {
         commit(TYPES.SET_USER, { roles });
-        commit(TYPES.SET_TOKEN, user);
-        setToken(user);
         resolve();
       })
     },

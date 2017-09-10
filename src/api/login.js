@@ -1,29 +1,36 @@
 import fetch from '../utils/fetch_new';
 
-export function loginByName(loginName, password) {
-  const data = {
-    loginName,
-    password
-  };
+export function getPublicKey () {
   return fetch({
-    url: '/users/login',
+    url: '/open/getPublicKey'
+  })
+}
+
+export function geetest () {
+  return fetch({
+    method: 'post',
+    url: '/open/geetest?t=' + Date.now()
+  })
+}
+
+export function loginByName(data) {
+  return fetch({
+    url: '/mi/login',
     method: 'post',
     data
   });
 }
 
-export function logout() {
+export function getInfo (id) {
   return fetch({
-    url: '/users/logout',
-    method: 'get'
+    url: '/mi/admin/' + id
   });
 }
 
-export function getInfo(token) {
+export function logout() {
   return fetch({
-    url: '/users/info',
-    method: 'get',
-    params: { token }
+    url: '/mi/logout'
   });
 }
+
 

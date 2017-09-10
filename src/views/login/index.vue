@@ -2,7 +2,7 @@
   <div class="login-container">
     <el-form autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left" label-width="0px"
       class="card-box login-form">
-      <h3 class="title">系统登录</h3>
+      <h3 class="title">代金券管理后台</h3>
       <el-form-item prop="loginName">
         <span class="svg-container"><icon-svg icon-class="jiedianyoujian"></icon-svg></span>
         <el-input name="loginName" type="text" v-model="loginForm.loginName" autoComplete="on" placeholder="用户名"></el-input>
@@ -12,33 +12,24 @@
         <el-input name="password" type="password" @keyup.enter.native="handleLogin" v-model="loginForm.password"
           placeholder="密码"></el-input>
       </el-form-item>
+      <div id="popup-captcha" style="margin-bottom: 22px"></div>
       <el-form-item>
         <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
           登录
         </el-button>
       </el-form-item>
-      <!--<div class='tips'>admin账号为:admin@wallstreetcn.com 密码随便填</div>
-      <div class='tips'>editor账号:editor@wallstreetcn.com 密码随便填</div>-->
     </el-form>
-
-    <el-dialog title="第三方验证" :visible.sync="showDialog">
-      邮箱登录成功,请选择第三方验证
-      <social-sign></social-sign>
-    </el-dialog>
 
   </div>
 </template>
 
 <script>
-  import socialSign from './socialsignin';
-
   export default {
-    components: { socialSign },
     name: 'login',
     data() {
-      const NAME_MESSAGE = '登录名只能为数字、字母和下划线组成，长度6到20位'
+      const NAME_MESSAGE = '登录名开头必须是字母，其它为数字、字母和下划线组成'
       const validateLoginName = (rule, value, callback) => {
-        if (!/^[0-9_a-zA-Z]{6,20}$/.test(value)) {
+        if (!/^[a-zA-Z_][a-zA-Z0-9_]{3,31}$/.test(value)) {
           callback(new Error(NAME_MESSAGE));
         } else {
           callback();
@@ -46,41 +37,67 @@
       }
 
       const validatePass = (rule, value, callback) => {
-        if (value.length < 6) {
-          callback(new Error('密码不能小于6位'));
+        if (!/[a-zA-Z0-9!@#\\$%\\^&\\*\\(\\)]{6,32}$/.test(value)) {
+          callback(new Error('密码只能由大小写字母、数字和特殊字符(!@#$%^&*())组成'));
         } else {
           callback();
         }
       };
       return {
+        publicKey: '',
+        userId: '', /* 验证码用户ID */
+        gtServerStatus: '',
+        captchaObj: null,
         loginForm: {
-          loginName: 'liljay',
-          password: '8293526@'
+          loginName: 'admin',
+          password: '123456'
         },
         loginRules: {
           loginName: [
-            { required: true, message: '用户名不能为空', trigger: 'blur' },
+            { required: true, message: '登录名不能为空', trigger: 'blur' },
+            { min: 3, max: 32, message: '登录名长度3到32位', trigger: 'blur' },
             { validator: validateLoginName, trigger: 'blur' }
           ],
           password: [
-                { required: true, trigger: 'blur', validator: validatePass }
+            { required: true, message: '密码不能为空', trigger: 'blur' },
+            { min: 6, max: 32, message: '登录名长度6到32位', trigger: 'blur' },
+            { trigger: 'blur', validator: validatePass }
           ]
         },
-        loading: false,
-        showDialog: false
+        loading: false
       }
     },
     methods: {
       handleLogin() {
-        this.$refs.loginForm.validate(valid => {
+        const me = this
+        const validate = me.captchaObj.getValidate()
+        const encrypt = new JSEncrypt();
+        encrypt.setPublicKey(me.publicKey);
+        if (!validate) {
+          me.$message({
+            message: '请先进行验证',
+            type: 'error',
+            duration: 2 * 1000
+          })
+          return
+        }
+        me.$refs.loginForm.validate(valid => {
           if (valid) {
-            this.loading = true;
-            this.$store.dispatch('LoginByName', this.loginForm).then(() => {
-              this.loading = false;
-              this.$router.push({ path: '/' });
+            me.loading = true;
+            me.$store.dispatch('LoginByName', {
+              name: me.loginForm.loginName,
+              password: encrypt.encrypt(me.loginForm.password),
+              gt_server_status: this.gtServerStatus,
+              user_id: this.user_id,
+              geetest_challenge: validate.geetest_challenge,
+              geetest_validate: validate.geetest_validate,
+              geetest_seccode: validate.geetest_seccode
+            }).then(() => {
+              me.loading = false;
+              me.$router.push({ path: '/' });
                 // this.showDialog = true;
             }).catch(() => {
-              this.loading = false;
+              me.loading = false;
             });
           } else {
             console.log('error submit!!');
@@ -88,27 +105,31 @@
           }
         });
       },
-      afterQRScan() {
-          // const hash = window.location.hash.slice(1);
-          // const hashObj = getQueryObject(hash);
-          // const originUrl = window.location.origin;
-          // history.replaceState({}, '', originUrl);
-          // const codeMap = {
-          //   wechat: 'code',
-          //   tencent: 'code'
-          // };
-          // const codeName = hashObj[codeMap[this.auth_type]];
-          // if (!codeName) {
-          //   alert('第三方登录失败');
-          // } else {
-          //   this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-          //     this.$router.push({ path: '/' });
-          //   });
-          // }
+      initCaptcha () {
+        const me = this
+        me.$store.dispatch('GetPublicKey').then((key) => {
+          me.publicKey = key
+          me.$store.dispatch('Geetest').then(data => {
+            me.userId = data.user_id
+            me.gtServerStatus = data.offline
+            data.offline = !data.offline
+            delete data.user_id
+            window.initGeetest(data, (captchaObj) => {
+              me.captchaObj = captchaObj
+              captchaObj.appendTo('#popup-captcha')
+            })
+          })
+        })
+      }
+    },
+    watch: {
+      $route () {
+        this.captchaObj = null
+        this.initCaptcha()
       }
     },
     created() {
-        // window.addEventListener('hashchange', this.afterQRScan);
+      this.initCaptcha()
     },
     destroyed() {
         // window.removeEventListener('hashchange', this.afterQRScan);
@@ -162,9 +183,9 @@
       position: absolute;
       left: 0;
       right: 0;
-      width: 400px;
+      width: 370px;
       padding: 35px 35px 15px 35px;
-      margin: 120px auto;
+      margin: 120px auto 0;
     }
     .el-form-item {
       border: 1px solid rgba(255, 255, 255, 0.1);
