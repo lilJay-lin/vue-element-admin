@@ -1,7 +1,7 @@
 import { loginByName, logout, getInfo, getPublicKey, geetest } from 'api/login';
 import * as TYPES from '../types'
 import * as Token from '../../utils/auth'
-import { getAll, getDetail, updateDetail, batch, create } from '../../api/user'
+import { getAll, getDetail, updateDetail, batch, create, updateSelf } from '../../api/user'
 
 /*
 * 登录用户和用户列表state
@@ -69,6 +69,18 @@ const user = {
           result.permissionList = (permissions.split(',')).map((code) => {
             return { code }
           })
+          commit(TYPES.SET_USER, result)
+          resolve(result)
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    // 更新当前用户信息
+    UpdateSelf({ commit, state }, detail) {
+      return new Promise((resolve, reject) => {
+        updateSelf(detail).then(({ data: { result } }) => {
+          result.permissionList = state.permissionList
           commit(TYPES.SET_USER, result)
           resolve(result)
         }).catch(error => {

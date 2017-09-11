@@ -3,7 +3,7 @@
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left"
              label-width="100px" style='margin-left:50px' :style="{width: width + 'px'}">
       <el-form-item label="管理员名称" prop="name">
-        <el-input v-model="detail.name"></el-input>
+        <el-input :disabled="dialogStatus === 'info'" v-model="detail.name"></el-input>
       </el-form-item>
       <template v-if="dialogStatus === 'create'">
         <el-form-item label="密码" prop="password">
@@ -22,29 +22,33 @@
         <el-input v-model="detail.mobile"></el-input>
       </el-form-item>
       <el-form-item label="状态">
-        <el-select class="filter-item" v-model="detail.locked" placeholder="状态">
+        <el-select class="filter-item" :disabled="dialogStatus === 'info'" v-model="detail.locked" placeholder="状态">
           <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="关联权限">
-        <el-tooltip v-for="role in detail.roleList" :key="role.id" :content="role.description" placement="top">
-          <el-tag type="success" :closable="checkPermission(permissionConstant.amdin_u)"
+      <el-form-item label="关联角色">
+        <span v-if ="detail.roleList.length === 0">无关联角色</span>
+        <el-tooltip v-else v-for="role in detail.roleList" :key="role.id" :content="role.description" placement="top">
+          <el-tag type="success" :closable="checkPermission(permissionConstant.admin_u)"
                   :close-transition="false" @close="handleDelRelation(role)">
             {{role.name}}
           </el-tag>
         </el-tooltip>
       </el-form-item>
-      <el-form-item label="选择关联权限" v-if="checkPermission(permissionConstant.amdin_u)">
+      <el-form-item label="选择关联角色" v-if="checkPermission(permissionConstant.admin_u) && dialogStatus !== 'info'">
         <Permissions :is-main="isMain" :roles="detail.roleList" @check="handleAddRelation"
                      @cancel-check="handleDelRelation"></Permissions>
       </el-form-item>
     </el-form>
     <div class="dialog-footer" style="text-align: right;">
       <el-button @click="cancel" v-if="cancelVisible">取 消</el-button>
-      <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-      <template v-else>
-        <el-button type="primary" v-if="checkPermission(permissionConstant.amdin_u)" @click="update">确 定</el-button>
+      <el-button v-if="dialogStatus === 'create'" type="primary" @click="create">确 定</el-button>
+      <template v-if="dialogStatus === 'update' && checkPermission(permissionConstant.admin_u)">
+        <el-button type="primary" @click="update">确 定</el-button>
+      </template>
+      <template v-if="dialogStatus === 'info'">
+        <el-button type="primary" @click="updateSelf">确 定</el-button>
       </template>
     </div>
     <el-dialog :modal="false" title="修改密码" :visible="passVisible" :before-close="closePass" size="tiny">
@@ -220,7 +224,7 @@
         return encrypt.encrypt(password)
       },
       filterData (temp) {
-        temp.roleIds = (temp.roleList.map(role => {
+        temp.roleIds = ((temp.roleList || []).map(role => {
           return role.id
         })).join(',')
         temp.password = this.encryptPass(temp.password)
@@ -253,6 +257,26 @@
           let temp = Object.assign({}, me.detail)
           temp = me.filterData(temp)
           me.$store.dispatch('UpdateUserDetail', temp).then(() => {
+            me.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
+            this.$emit('submit')
+          }, () => {})
+        }, () => {
+        })
+      },
+      updateSelf() {
+        const me = this
+        me.validate('detailForm').then(() => {
+          let temp = Object.assign({}, me.detail)
+          temp = me.filterData(temp)
+          delete temp.name
+          delete temp.locked
+          delete temp.roleIds
+          me.$store.dispatch('UpdateSelf', temp).then(() => {
             me.$notify({
               title: '成功',
               message: '更新成功',

@@ -27,14 +27,25 @@ export const getDetail = (id) => {
 }
 
 /*
-* 更新详情
-* */
+ * 更新详情
+ * */
 export const updateDetail = (data = { id: '' }) => {
   if (data.id === '') {
     return Promise.reject('id不能为空')
   }
   return fetch({
     url: base + '/' + data.id,
+    method: 'patch',
+    data
+  })
+}
+
+/*
+ * 更新详情
+ * */
+export const updateSelf = (data) => {
+  return fetch({
+    url: '/mi/adminAction/self',
     method: 'patch',
     data
   })

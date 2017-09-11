@@ -9,7 +9,8 @@
         </el-input>
       </el-form-item>
       <el-form-item label="关联权限">
-        <el-tooltip  v-for="permission in detail.permissionList" :key="permission.id" :content="permission.description" placement="top">
+        <span v-if ="detail.permissionList.length === 0">无关联角色</span>
+        <el-tooltip v-else v-for="permission in detail.permissionList" :key="permission.id" :content="permission.description" placement="top">
           <el-tag type="success" :closable="checkPermission(permissionConstant.role_u)"
                   :close-transition="false" @close="handleDelRelation(permission)">
             {{permission.name}}

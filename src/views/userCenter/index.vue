@@ -6,16 +6,14 @@
 <script type="text/ecmascript-6">
 import Detail from '../user/detail.vue'
 const temp = {
-  _id: '',
-  userName: '',
-  loginName: '',
-  email: '',
-  status: '1',
-  avatar: '',
-  introduction: '',
-  roles: [],
-  createdAt: '',
-  updatedAt: ''
+  id: '',
+  name: '',
+  mobile: '',
+  password: '',
+  second_password: '',
+  locked: 'false',
+  permissionList: [],
+  roleList: []
 }
 export default {
   components: {
@@ -25,7 +23,7 @@ export default {
     return {
       detailLoading: true,
       temp: Object.assign({}, temp),
-      statusOptions: [{ label: '有效', key: '1' }, { label: '无效', key: '0' }]
+      statusOptions: [{ label: '有效', key: 'false' }, { label: '无效', key: 'true' }]
     }
   },
   created () {
@@ -34,9 +32,10 @@ export default {
   methods: {
     getDetail () {
       this.detailLoading = true
-      this.$store.dispatch('GetInfo').then(({ data: { user } }) => {
+      this.$store.dispatch('GetInfo').then((result) => {
         this.detailLoading = false
-        this.temp = Object.assign({}, user)
+        this.temp = Object.assign({}, result)
+        this.temp.locked = String(this.temp.locked)
       })
     }
   }
