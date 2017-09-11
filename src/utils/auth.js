@@ -6,6 +6,10 @@ export function getToken() {
   return Cookies.get(TokenKey)
 }
 
+export function getPermissions() {
+  return Cookies.get('miPermission')
+}
+
 export function setToken(token) {
   return Cookies.set(TokenKey, token)
 }

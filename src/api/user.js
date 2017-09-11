@@ -4,12 +4,13 @@
 import fetch from '../utils/fetch_new'
 import { cleanArray } from '../utils'
 
+const base = '/mi/admin'
 /*
 * 获取列表
 * */
 export const getAll = (query) => {
   return fetch({
-    url: '/users',
+    url: base,
     method: 'get',
     params: query
   })
@@ -20,7 +21,7 @@ export const getAll = (query) => {
 * */
 export const getDetail = (id) => {
   return fetch({
-    url: '/users/' + id,
+    url: base + '/' + id,
     method: 'get'
   })
 }
@@ -28,13 +29,13 @@ export const getDetail = (id) => {
 /*
 * 更新详情
 * */
-export const updateDetail = (data = { _id: '' }) => {
-  if (data._id === '') {
+export const updateDetail = (data = { id: '' }) => {
+  if (data.id === '') {
     return Promise.reject('id不能为空')
   }
   return fetch({
-    url: 'users/' + data._id,
-    method: 'put',
+    url: base + '/' + data.id,
+    method: 'patch',
     data
   })
 }
@@ -42,16 +43,14 @@ export const updateDetail = (data = { _id: '' }) => {
 /*
 * 批量操作数据
 * */
-export const batch = (ids = [], data = null) => {
+export const batch = (ids = []) => {
   ids = cleanArray(ids)
   if (ids.length === 0) {
     return Promise.reject('ids不能为空')
   }
-  const url = 'users/batch/' + ids.join(',')
   return fetch({
-    url,
-    method: 'put',
-    data
+    url: base + '?ids=' + ids.join(','),
+    method: 'delete'
   })
 }
 
@@ -59,22 +58,11 @@ export const batch = (ids = [], data = null) => {
  * 新增
  * */
 export const create = (data) => {
-  const url = 'users/'
   return fetch({
-    url,
+    url: base,
     method: 'post',
     data
   })
 }
 
-/*
- * 修改密码
- * */
-export const updatePass = (data) => {
-  const url = 'users/password'
-  return fetch({
-    url,
-    method: 'put',
-    data
-  })
-}
+

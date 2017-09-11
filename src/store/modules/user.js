@@ -1,8 +1,7 @@
 import { loginByName, logout, getInfo, getPublicKey, geetest } from 'api/login';
-import { each, has } from '../../utils'
 import * as TYPES from '../types'
 import * as Token from '../../utils/auth'
-import { getAll, getDetail, updateDetail, batch, create, updatePass } from '../../api/user'
+import { getAll, getDetail, updateDetail, batch, create } from '../../api/user'
 
 /*
 * 登录用户和用户列表state
@@ -30,7 +29,7 @@ const user = {
     [TYPES.SET_USER]: (state, user) => {
       state.id = user.id
       state.userName = user.name
-      state.permissions = user.permissionList.map((permission) => {
+      state.permissions = (user.permissionList || []).map((permission) => {
         return permission.code
       })
       state.locked = user.locked
@@ -39,11 +38,12 @@ const user = {
       state.setting = setting;
     },
     [TYPES.SET_USERS_LIST] (state, data) {
-      each(data, (val, key) => {
-        if (has(state, key)) {
-          state[key] = val
-        }
-      })
+      state.records = data.datas
+      state.pageInfo = {
+        currentPage: data.targetPage,
+        totalRow: data.total,
+        totalPage: data.totalPage
+      }
     }
   },
 
@@ -53,7 +53,6 @@ const user = {
       return new Promise((resolve, reject) => {
         loginByName(data).then(response => {
           const result = response.data.result
-          Token.setToken(result.id)
           commit(TYPES.SET_USER, result)
           resolve(result);
         }).catch(error => {
@@ -63,15 +62,19 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo({ commit, state }, id) {
+    GetInfo({ commit }) {
       return new Promise((resolve, reject) => {
-        getInfo(id).then(response => {
-          commit(TYPES.SET_USER, response.data.result)
-          resolve(response);
+        getInfo().then(({ data: { result } }) => {
+          const permissions = Token.getPermissions() || ''
+          result.permissionList = (permissions.split(',')).map((code) => {
+            return { code }
+          })
+          commit(TYPES.SET_USER, result)
+          resolve(result)
         }).catch(error => {
-          reject(error);
-        });
-      });
+          reject(error)
+        })
+      })
     },
     // 获取公钥
     GetPublicKey () {
@@ -116,7 +119,8 @@ const user = {
     LogOut({ commit }) {
       return new Promise((resolve, reject) => {
         logout().then(() => {
-          commit(TYPES.SET_USER, { roles: [] });
+          Token.removeToken()
+          commit(TYPES.SET_USER, { id: '', userName: '', permissionList: [], locked: false });
           resolve();
         }).catch(error => {
           reject(error);
@@ -127,6 +131,7 @@ const user = {
     // 前端 登出
     FedLogOut() {
       return new Promise(resolve => {
+        Token.removeToken()
         resolve();
       });
     },
@@ -140,8 +145,8 @@ const user = {
     },
     GetAllUsers ({ commit }, query) {
       return new Promise((resolve, reject) => {
-        getAll(query).then(({ data }) => {
-          commit(TYPES.SET_USERS_LIST, data)
+        getAll(query).then(({ data: { result } }) => {
+          commit(TYPES.SET_USERS_LIST, result)
           resolve()
         }).catch(error => {
           reject(error)
@@ -150,8 +155,8 @@ const user = {
     },
     GetUserDetail ({ commit }, id) {
       return new Promise((resolve, reject) => {
-        getDetail(id).then(({ data: { user } }) => {
-          resolve(user)
+        getDetail(id).then(({ data: { result } }) => {
+          resolve(result)
         }).catch(error => {
           reject(error)
         })
@@ -164,9 +169,9 @@ const user = {
         })
       })
     },
-    DelUsers ({ dispatch }, { ids, data }) {
+    DelUsers ({ dispatch }, { ids }) {
       return new Promise((resolve, reject) => {
-        batch(ids, data).then(() => {
+        batch(ids).then(() => {
           resolve()
         }).catch(error => {
           reject(error)
@@ -176,15 +181,6 @@ const user = {
     CreateUser(store, detail) {
       return new Promise((resolve, reject) => {
         create(detail).then(() => {
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-    UpdatePass(store, data) {
-      return new Promise((resolve, reject) => {
-        updatePass(data).then(() => {
           resolve()
         }).catch(error => {
           reject(error)

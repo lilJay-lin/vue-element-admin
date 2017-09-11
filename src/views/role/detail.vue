@@ -1,12 +1,6 @@
 <template>
   <el-dialog :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="full">
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 900px;margin-left:50px'>
-      <el-form-item label="状态">
-        <el-select class="filter-item" v-model="detail.status" placeholder="状态">
-          <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
-          </el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="角色名称"  prop="name">
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
@@ -15,21 +9,23 @@
         </el-input>
       </el-form-item>
       <el-form-item label="关联权限">
-        <el-tooltip  v-for="permission in detail.permissions" :key="permission._id" :content="permission.description" placement="top">
-          <el-tag type="success" :closable="true"
+        <el-tooltip  v-for="permission in detail.permissionList" :key="permission.id" :content="permission.description" placement="top">
+          <el-tag type="success" :closable="checkPermission(permissionConstant.role_u)"
                   :close-transition="false" @close="handleDelRelation(permission)">
             {{permission.name}}
           </el-tag>
         </el-tooltip>
       </el-form-item>
-      <el-form-item label="选择关联权限">
-        <Permissions :is-main = "isMain" :permissions="detail.permissions" @check="handleAddRelation" @cancel-check="handleDelRelation"></Permissions>
+      <el-form-item label="选择关联权限" v-if="checkPermission(permissionConstant.role_u)">
+        <Permissions :permissions="detail.permissionList" @check="handleAddRelation" @cancel-check="handleDelRelation"></Permissions>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-      <el-button v-else type="primary" @click="update">确 定</el-button>
+      <template v-else>
+        <el-button type="primary" v-if="checkPermission(permissionConstant.role_u)" @click="update">确 定</el-button>
+      </template>
     </div>
   </el-dialog>
 </template>
@@ -48,23 +44,15 @@ export default {
       type: Boolean,
       default: false
     },
-    statusOptions: {
-      type: Array,
-      default () {
-        return []
-      }
-    },
     detail: {
       type: Object,
       default () {
         return {
-          _id: '',
+          id: '',
           name: '',
           description: '',
-          status: '1',
-          createdAt: '',
-          updatedAt: '',
-          permissions: []
+          permissionList: [],
+          permissionListStr: ''
         }
       }
     }
@@ -79,7 +67,7 @@ export default {
       detailRules: {
         name: [
           { required: true, message: '角色名称不能为空', trigger: 'blur' },
-          { min: 2, max: 10, message: '角色名称长度2到10位', trigger: 'blur' }
+          { min: 3, max: 10, message: '角色名称长度3到10位', trigger: 'blur' }
         ]
       }
     }
@@ -96,10 +84,20 @@ export default {
         })
       })
     },
+    filterData (temp) {
+      temp.permissionListStr = (temp.permissionList.map((permissoin) => {
+        return permissoin.code
+      })).join(',')
+      delete temp.permissionList
+      return temp
+    },
     create() {
       const me = this
       me.validate().then(() => {
-        me.$store.dispatch('CreateRole', me.detail).then(() => {
+        let temp = Object.assign({}, me.detail)
+        delete temp.id
+        temp = me.filterData(temp)
+        me.$store.dispatch('CreateRole', temp).then(() => {
           this.$notify({
             title: '成功',
             message: '创建成功',
@@ -113,7 +111,9 @@ export default {
     update() {
       const me = this
       me.validate().then(() => {
-        me.$store.dispatch('UpdateRoleDetail', me.detail).then(() => {
+        let temp = Object.assign({}, me.detail)
+        temp = me.filterData(temp)
+        me.$store.dispatch('UpdateRoleDetail', temp).then(() => {
           me.$notify({
             title: '成功',
             message: '更新成功',
@@ -127,13 +127,13 @@ export default {
     cancel () {
       this.$emit('cancel')
     },
-    handleDelRelation ({ _id }) {
-      this.detail.permissions = this.detail.permissions.filter((permission) => {
-        return permission._id !== _id
+    handleDelRelation ({ code }) {
+      this.detail.permissionList = this.detail.permissionList.filter((permission) => {
+        return permission.code !== code
       })
     },
     handleAddRelation (permission) {
-      this.detail.permissions.push(permission)
+      this.detail.permissionList.push(permission)
     }
   },
   watch: {

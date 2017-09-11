@@ -4,65 +4,64 @@
 import fetch from '../utils/fetch_new'
 import { cleanArray } from '../utils'
 
+const base = '/mi/role'
 /*
-* 获取列表
-* */
+ * 获取列表
+ * */
 export const getAll = (query) => {
   return fetch({
-    url: '/roles',
+    url: base,
     method: 'get',
     params: query
   })
 }
 
 /*
-* 查询详情
-* */
+ * 查询详情
+ * */
 export const getDetail = (id) => {
   return fetch({
-    url: '/roles/' + id,
+    url: base + '/' + id,
     method: 'get'
   })
 }
 
 /*
-* 更新详情
-* */
-export const updateDetail = (data = { _id: '' }) => {
-  if (data._id === '') {
+ * 更新详情
+ * */
+export const updateDetail = (data = { id: '' }) => {
+  if (data.id === '') {
     return Promise.reject('id不能为空')
   }
   return fetch({
-    url: 'roles/' + data._id,
-    method: 'put',
+    url: base + '/' + data.id,
+    method: 'patch',
     data
   })
 }
 
 /*
-* 批量操作数据
-* */
-export const batch = (ids = [], data = null) => {
+ * 批量操作数据
+ * */
+export const batch = (ids = []) => {
   ids = cleanArray(ids)
   if (ids.length === 0) {
     return Promise.reject('ids不能为空')
   }
-  const url = 'roles/batch/' + ids.join(',')
   return fetch({
-    url,
-    method: 'put',
-    data
+    url: base + '?ids=' + ids.join(','),
+    method: 'delete'
   })
 }
 
 /*
-* 新增
-* */
+ * 新增
+ * */
 export const create = (data) => {
-  const url = 'roles/'
   return fetch({
-    url,
+    url: base,
     method: 'post',
     data
   })
 }
+

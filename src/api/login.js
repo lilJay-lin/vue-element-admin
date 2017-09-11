@@ -21,15 +21,16 @@ export function loginByName(data) {
   });
 }
 
-export function getInfo (id) {
+export function getInfo () {
   return fetch({
-    url: '/mi/admin/' + id
+    url: '/mi/adminAction/self'
   });
 }
 
 export function logout() {
   return fetch({
-    url: '/mi/logout'
+    url: '/mi/logout',
+    method: 'post'
   });
 }
 

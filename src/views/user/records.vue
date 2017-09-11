@@ -1,69 +1,40 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="权限名称" v-model="listQuery.name"></el-input>
-      <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.status" placeholder="状态">
-        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
-      </el-select>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="管理员名称" v-model="listQuery.keyword"></el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="isMain" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+      <template v-if="isMain">
+        <el-button  v-if="checkPermission(permissionConstant.admin_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+        <el-button  v-if="checkPermission(permissionConstant.admin_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
+      </template>
     </div>
-    <el-table :key='tableKey' :data="crpUsers.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
-  
-<!--      <el-table-column v-if="isMain" align="center" label="序号">
+    <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="crpUsers.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+      <el-table-column
+        type="selection"
+        width="55">
+      </el-table-column>
+      <el-table-column min-width="110" align="center" label="管理员名称">
         <template scope="scope">
-          <span>{{scope.row._id}}</span>
-        </template>
-      </el-table-column>-->
-  
-      <el-table-column width="110" align="center" label="登录名称">
-        <template scope="scope">
-          <span v-if="scope.row.status === '1'" :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.loginName}}</span>
-          <span v-if="scope.row.status === '0'" >{{scope.row.loginName}}</span>
+          <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
         </template>
       </el-table-column>
   
-      <el-table-column min-width="110" align="center" label="昵称">
+      <el-table-column width="180" align="center" label="手机号码">
         <template scope="scope">
-          <span>{{scope.row.userName}}</span>
-        </template>
-      </el-table-column>
-  
-      <el-table-column width="180" align="center" label="email">
-        <template scope="scope">
-          <span>{{scope.row.email}}</span>
-        </template>
-      </el-table-column>
-
-<!--      <el-table-column min-width="220px" align="center" label="签名档">
-        <template scope="scope">
-          <span >{{scope.row.introduction}}</span>
-        </template>
-      </el-table-column>-->
-  
-      <el-table-column width="110" align="center" label="创建时间">
-        <template scope="scope">
-          <span >{{scope.row.createdAt}}</span>
-        </template>
-      </el-table-column>
-      
-      <el-table-column width="110" align="center" label="更新时间">
-        <template scope="scope">
-          <span >{{scope.row.updatedAt}}</span>
+          <span>{{scope.row.mobile}}</span>
         </template>
       </el-table-column>
       
       <template  v-if="isMain" >
         <el-table-column class-name="status-col" label="状态" width="60">
           <template scope="scope">
-            <el-tag :type="scope.row.status ? 'primary' : 'danger'">{{scope.row.status | statusFilter}}</el-tag>
+            <el-tag :type="scope.row.locked ? 'primary' : 'danger'">{{scope.row.locked | statusFilter}}</el-tag>
           </template>
         </el-table-column>
   
-        <el-table-column   v-if="isMain" align="center" label="操作" width="150" >
+        <el-table-column v-if="checkPermission(permissionConstant.amdin_d)" align="center" label="操作" width="150" >
           <template scope="scope">
-            <el-button  v-if="scope.row.status === '1'" size="small" type="danger" @click="handleModifyStatus(scope.row,'0')">删除</el-button>
-            <el-button  v-if="scope.row.status === '0'" size="small" type="success" @click="handleModifyStatus(scope.row,'1')">恢复</el-button>
+            <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
         </el-table-column>
       </template>
@@ -92,18 +63,14 @@
   import { mapGetters } from 'vuex'
   import UserDetail from './detail.vue'
   const temp = {
-    _id: '',
-    userName: '',
-    loginName: '',
-    email: '',
+    id: '',
+    name: '',
+    mobile: '',
     password: '',
     second_password: '',
-    status: '1',
-    avatar: '',
-    introduction: '',
-    roles: [],
-    createdAt: '',
-    updatedAt: ''
+    locked: 'false',
+    permissionList: [],
+    roleList: []
   }
   export default {
     components: {
@@ -128,20 +95,19 @@
     name: 'crp_user',
     data() {
       return {
+        selections: [], /* 选中 */
         listLoading: true,
-        detailLoading: true,
         textMap: {
           update: '编辑',
           create: '创建'
         },
         listQuery: {
-          page: 1,
-          pageSize: 20,
-          name: undefined,
-          status: '1'
+          targetPage: 1,
+          pageSize: 10,
+          keyword: undefined
         },
         temp: Object.assign({}, temp),
-        statusOptions: [{ label: '有效', key: '1' }, { label: '无效', key: '0' }],
+        statusOptions: [{ label: '有效', key: 'false' }, { label: '冻结', key: 'true' }],
         dialogFormVisible: false,
         dialogStatus: '',
         tableKey: 0
@@ -155,7 +121,7 @@
     },
     filters: {
       statusFilter(status) {
-        return status === '1' ? '有效' : '失效'
+        return status === false ? '有效' : '冻结'
       }
     },
     methods: {
@@ -173,16 +139,21 @@
         this.getList()
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val
+        this.listQuery.targetPage = val
         this.getList()
       },
-      handleModifyStatus(row, status) {
-        let promise = Promise.resolve()
-        if (status === '0') {
-          promise = this.$confirm('确认删除权限：' + row.userName + '？')
-        }
-        promise.then(() => {
-          this.$store.dispatch('DelUsers', { ids: [row._id], data: { status } }).then(() => {
+      handleBatchDelete () {
+        const ids = this.selections.map((selection) => {
+          return selection.id
+        })
+        this.delete(ids, '确认批量删除管理员？')
+      },
+      handleModifyStatus(row) {
+        this.delete([row.id], '确认删除管理员：' + row.name + '？')
+      },
+      delete (ids, msg) {
+        this.$confirm(msg).then(() => {
+          this.$store.dispatch('DelUsers', { ids }).then(() => {
             this.$message({
               message: '操作成功',
               type: 'success'
@@ -202,10 +173,10 @@
         })
       },
       handleUpdate(row) {
-        this.detailLoading = true
-        this.$store.dispatch('GetUserDetail', row._id).then((detail) => {
-          this.detailLoading = false
+        this.$store.dispatch('GetUserDetail', row.id).then((detail) => {
           this.temp = Object.assign({ password: '', second_password: '' }, detail)
+          this.temp.locked = String(this.temp.locked)
+          this.temp.roleList = detail.roleList || []
         })
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -232,6 +203,9 @@
         return this.users.some((user) => {
           return user._id === id
         })
+      },
+      handleSelectionChange(val) {
+        this.selections = val
       }
     }
   }

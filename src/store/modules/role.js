@@ -16,18 +16,19 @@ const role = {
   },
   mutations: {
     [TYPES.SET_ROLES_LIST] (state, data) {
-      each(data, (val, key) => {
-        if (has(state, key)) {
-          state[key] = val
-        }
-      })
+      state.records = data.datas
+      state.pageInfo = {
+        currentPage: data.targetPage,
+        totalRow: data.total,
+        totalPage: data.totalPage
+      }
     }
   },
   actions: {
     GetAllRoles ({ commit }, query) {
       return new Promise((resolve, reject) => {
-        getAll(query).then(({ data }) => {
-          commit(TYPES.SET_ROLES_LIST, data)
+        getAll(query).then(({ data: { result } }) => {
+          commit(TYPES.SET_ROLES_LIST, result)
           resolve()
         }).catch(error => {
           reject(error)
@@ -36,8 +37,8 @@ const role = {
     },
     GetRoleDetail ({ commit }, id) {
       return new Promise((resolve, reject) => {
-        getDetail(id).then(({ data: { role } }) => {
-          resolve(role)
+        getDetail(id).then(({ data: { result } }) => {
+          resolve(result)
         }).catch(error => {
           reject(error)
         })
@@ -50,9 +51,9 @@ const role = {
         })
       })
     },
-    DelRoles ({ dispatch }, { ids, data }) {
+    DelRoles ({ dispatch }, { ids }) {
       return new Promise((resolve, reject) => {
-        batch(ids, data).then(() => {
+        batch(ids).then(() => {
           resolve()
         }).catch(error => {
           reject(error)

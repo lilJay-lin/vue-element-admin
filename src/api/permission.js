@@ -7,63 +7,9 @@ import { cleanArray } from '../utils'
 /*
 * 获取列表
 * */
-export const getAll = (query) => {
+export const getAll = () => {
   return fetch({
-    url: '/permissions',
-    method: 'get',
-    params: query
-  })
-}
-
-/*
-* 查询详情
-* */
-export const getDetail = (id) => {
-  return fetch({
-    url: '/permissions/' + id,
+    url: '/mi/permission',
     method: 'get'
-  })
-}
-
-/*
-* 更新详情
-* */
-export const updateDetail = (data = { _id: '' }) => {
-  if (data._id === '') {
-    return Promise.reject('id不能为空')
-  }
-  return fetch({
-    url: 'permissions/' + data._id,
-    method: 'put',
-    data
-  })
-}
-
-/*
-* 删除数据
-* */
-export const batch = (ids = [], data = null) => {
-  ids = cleanArray(ids)
-  if (ids.length === 0) {
-    return Promise.reject('ids不能为空')
-  }
-  const url = 'permissions/batch/' + ids.join(',')
-  return fetch({
-    url,
-    method: 'put',
-    data
-  })
-}
-
-
-/*
- * 新增
- * */
-export const create = (data) => {
-  const url = 'permissions/'
-  return fetch({
-    url,
-    method: 'post',
-    data
   })
 }

@@ -27,9 +27,13 @@
   export default {
     name: 'login',
     data() {
-      const NAME_MESSAGE = '登录名开头必须是字母，其它为数字、字母和下划线组成'
+      const NAME_MESSAGE = '登录名开头必须是字母或下划线，其它为数字、字母和下划线组成'
       const validateLoginName = (rule, value, callback) => {
-        if (!/^[a-zA-Z_][a-zA-Z0-9_]{3,31}$/.test(value)) {
+        if (value === '') {
+          callback(new Error('登录名不能为空'))
+        } else if (value.length < 3 || value.length > 32) {
+          callback(new Error('登录名长度3到32位'))
+        } else if (!/^[a-zA-Z_][a-zA-Z0-9_]{3,31}$/.test(value)) {
           callback(new Error(NAME_MESSAGE));
         } else {
           callback();
@@ -37,7 +41,7 @@
       }
 
       const validatePass = (rule, value, callback) => {
-        if (!/[a-zA-Z0-9!@#\\$%\\^&\\*\\(\\)]{6,32}$/.test(value)) {
+        if (!/^[a-zA-Z0-9!@#\\$%\\^&\\*\\(\\)]{6,32}$/.test(value)) {
           callback(new Error('密码只能由大小写字母、数字和特殊字符(!@#$%^&*())组成'));
         } else {
           callback();
@@ -54,13 +58,11 @@
         },
         loginRules: {
           loginName: [
-            { required: true, message: '登录名不能为空', trigger: 'blur' },
-            { min: 3, max: 32, message: '登录名长度3到32位', trigger: 'blur' },
             { validator: validateLoginName, trigger: 'blur' }
           ],
           password: [
             { required: true, message: '密码不能为空', trigger: 'blur' },
-            { min: 6, max: 32, message: '登录名长度6到32位', trigger: 'blur' },
+            { min: 6, max: 32, message: '密码长度6到32位', trigger: 'blur' },
             { trigger: 'blur', validator: validatePass }
           ]
         },
@@ -96,8 +98,10 @@
               me.loading = false;
               me.$router.push({ path: '/' });
                 // this.showDialog = true;
-            }).catch(() => {
+            }, () => {
+              console.log('error')
               me.loading = false;
+              me.captchaObj.reset()
             });
           } else {
             console.log('error submit!!');

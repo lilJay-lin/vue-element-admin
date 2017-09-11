@@ -1,6 +1,6 @@
 import { asyncRouterMap, constantRouterMap } from 'src/router'
 import { each, has } from '../../utils'
-import { getAll, getDetail, updateDetail, batch, create } from '../../api/permission'
+import { getAll} from '../../api/permission'
 import * as TYPES from '../types'
 
 /**
@@ -38,12 +38,7 @@ const permission = {
   state: {
     routers: constantRouterMap,
     addRouters: [],
-    records: [],
-    pageInfo: {
-      currentPage: 1,
-      totalRow: 0,
-      totalPage: 0
-    }
+    records: []
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
@@ -51,11 +46,7 @@ const permission = {
       state.routers = constantRouterMap.concat(routers)
     },
     [TYPES.SET_PERMISSIONS_LIST] (state, data) {
-      each(data, (val, key) => {
-        if (has(state, key)) {
-          state[key] = val
-        }
-      })
+      state.records = data
     }
   },
   actions: {
@@ -72,45 +63,10 @@ const permission = {
         resolve();
       })
     },
-    GetAllPermissions ({ commit }, query) {
+    GetAllPermissions ({ commit }) {
       return new Promise((resolve, reject) => {
-        getAll(query).then(({ data }) => {
-          commit(TYPES.SET_PERMISSIONS_LIST, data)
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-    GetPermissionDetail ({ commit }, id) {
-      return new Promise((resolve, reject) => {
-        getDetail(id).then(({ data: { permission } }) => {
-          resolve(permission)
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-    UpdatePermissionDetail ({ commit, state }, detail) {
-      return new Promise((resolve, reject) => {
-        updateDetail(detail).then(() => resolve()).catch(error => {
-          reject(error)
-        })
-      })
-    },
-    DelPermissions ({ dispatch }, { ids, data }) {
-      return new Promise((resolve, reject) => {
-        batch(ids, data).then(() => {
-          dispatch('GetAllPermissions').then(resolve, reject)
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
-    CreatePermission (store, detail) {
-      return new Promise((resolve, reject) => {
-        create(detail).then(() => {
+        getAll().then(({ data: { result } }) => {
+          commit(TYPES.SET_PERMISSIONS_LIST, result)
           resolve()
         }).catch(error => {
           reject(error)

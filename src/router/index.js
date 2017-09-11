@@ -45,13 +45,12 @@ export const asyncRouterMap = [
     path: '/crp',
     component: Layout,
     redirect: 'noredirect',
-    name: '权限配置',
+    name: '系统模块',
     icon: 'quanxian',
-    meta: { role: [Constant.managePermission, Constant.manageRole, Constant.manageUser] },
+    meta: { role: [Constant.admin_r, Constant.role_r] },
     children: [
-      { path: 'users', component: _import('user/index'), name: '用户管理', meta: { role: [Constant.manageUser] } },
-      { path: 'roles', component: _import('role/index'), name: '角色管理', meta: { role: [Constant.manageRole] } },
-      { path: 'permissions', component: _import('permission/index'), name: '权限管理', meta: { role: [Constant.managePermission] } }
+      { path: 'users', component: _import('user/index'), name: '管理员管理', meta: { role: [Constant.admin_r] } },
+      { path: 'roles', component: _import('role/index'), name: '角色管理', meta: { role: [Constant.role_r] } }
     ]
   },
   {
