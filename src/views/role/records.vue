@@ -26,7 +26,7 @@
       </el-table-column>
       
       <template  v-if="isMain" >
-        <el-table-column v-if="checkPermission(permissionConstant.role_d)" align="center" label="操作" width="150" >
+        <el-table-column v-if="checkPermission(permissionConstant.amdin_d)" align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
@@ -152,12 +152,6 @@
       handleCreate() {
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
-      },
-      handleDelRelation (role) {
-        const me = this
-        me.$store.dispatch('DelRoles').then(() => {
-          me.temp.roles.splice(me.temp.roles.indexOf(role), 1)
-        })
       },
       handleUpdate(row) {
         this.$store.dispatch('GetRoleDetail', row.id).then((detail) => {

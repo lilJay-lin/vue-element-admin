@@ -55,6 +55,17 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/shop',
+    component: Layout,
+    redirect: 'noredirect',
+    name: '商家模块',
+    icon: 'zujian',
+    meta: { role: [Constant.shopClassification_r] },
+    children: [
+      { path: 'classification', component: _import('classification/index'), name: '商家分类管理', meta: { role: [Constant.shopClassification_r] } }
+    ]
+  },
+  {
     path: '/info',
     component: Layout,
     redirect: '/info/index',
@@ -151,6 +162,5 @@ export const asyncRouterMap = [
     noDropdown: true,
     children: [{ path: 'index', component: _import('theme/index'), name: '换肤' }]
   },
-
   { path: '*', redirect: '/404', hidden: true }
 ]

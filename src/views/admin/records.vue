@@ -166,12 +166,6 @@
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
       },
-      handleDelRelation (user) {
-        const me = this
-        me.$store.dispatch('DelUsers').then(() => {
-          me.temp.users.splice(me.temp.users.indexOf(user), 1)
-        })
-      },
       handleUpdate(row) {
         this.$store.dispatch('GetUserDetail', row.id).then((detail) => {
           this.temp = Object.assign({ password: '', second_password: '' }, detail)

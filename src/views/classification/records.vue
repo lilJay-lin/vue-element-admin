@@ -1,41 +1,40 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="手机号码" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="分类名称" v-model="listQuery.keyword"></el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
-        <el-button  v-if="checkPermission(permissionConstant.admin_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-        <el-button  v-if="checkPermission(permissionConstant.admin_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
+        <el-button  v-if="checkPermission(permissionConstant.shopClassification_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+        <el-button  v-if="checkPermission(permissionConstant.shopClassification_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
       </template>
     </div>
-    <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="register.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+    <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="shopClassification.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
       <el-table-column
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column align="center" label="手机号码">
+      <el-table-column align="center" label="分类名称">
         <template scope="scope">
-          <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.mobile}}</span>
+          <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="180" align="center" label="抽奖次数">
+      <el-table-column align="center" label="优先级">
         <template scope="scope">
-          <span>{{scope.row.presentChance}}</span>
+          <span >{{scope.row.priority}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="是否分享">
+      <el-table-column align="center" label="描述">
         <template scope="scope">
-          <span v-if="scope.row.shared">是</span>
-          <span v-else>否</span>
+          <span>{{scope.row.description}}</span>
         </template>
       </el-table-column>
       <template  v-if="isMain" >
         <el-table-column class-name="status-col" label="状态" width="60">
           <template scope="scope">
-            <el-tag :type="scope.row.locked ? 'primary' : 'danger'">{{scope.row.locked | statusFilter}}</el-tag>
+            <el-tag :type="scope.row.hide ? 'primary' : 'danger'">{{scope.row.hide | statusFilter}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="checkPermission(permissionConstant.admin_d)" align="center" label="操作" width="150" >
+        <el-table-column v-if="checkPermission(permissionConstant.shopClassification_d)" align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
@@ -53,28 +52,26 @@
     </el-table>
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.currentPage"
-                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="register.pageInfo.totalRow">
+                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="shopClassification.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <Register-Detail  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Register-Detail>
+    <ShopClassification-Detail  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></ShopClassification-Detail>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import RegisterDetail from './detail.vue'
+  import ShopClassificationDetail from './detail.vue'
   const temp = {
     id: '',
     name: '',
-    mobile: '',
-    locked: 'false',
-    presentChance: 0,
-    promotionalPartnerId: '',
-    shared: false
+    description: '',
+    hide: 'false',
+    priority: 0
   }
   export default {
     components: {
-      RegisterDetail
+      ShopClassificationDetail
     },
     props: {
       containerClass: {
@@ -85,14 +82,14 @@
         type: Boolean,
         default: true
       },
-      registers: {
+      shopClassifications: {
         type: Array,
         default () {
           return []
         }
       }
     },
-    name: 'crp_register',
+    name: 'crp_shopClassification',
     data() {
       return {
         selections: [], /* 选中 */
@@ -107,27 +104,27 @@
           keyword: undefined
         },
         temp: Object.assign({}, temp),
-        statusOptions: [{ label: '有效', key: 'false' }, { label: '冻结', key: 'true' }],
+        statusOptions: [{ label: '有效', key: 'false' }, { label: '无效', key: 'true' }],
         dialogFormVisible: false,
         dialogStatus: '',
         tableKey: 0
       }
     },
     computed: {
-      ...mapGetters(['register'])
+      ...mapGetters(['shopClassification'])
     },
     created() {
       this.getList()
     },
     filters: {
       statusFilter(status) {
-        return status === false ? '有效' : '冻结'
+        return status === false ? '有效' : '无效'
       }
     },
     methods: {
       getList() {
         this.listLoading = true
-        this.$store.dispatch('GetAllRegister', this.listQuery).then(() => {
+        this.$store.dispatch('GetAllShopClassification', this.listQuery).then(() => {
           this.listLoading = false
         }, () => {})
       },
@@ -146,14 +143,14 @@
         const ids = this.selections.map((selection) => {
           return selection.id
         })
-        this.delete(ids, '确认批量删除用户？')
+        this.delete(ids, '确认批量删除分类？')
       },
       handleModifyStatus(row) {
-        this.delete([row.id], '确认删除用户：' + row.name + '？')
+        this.delete([row.id], '确认删除分类：' + row.name + '？')
       },
       delete (ids, msg) {
         this.$confirm(msg).then(() => {
-          this.$store.dispatch('DelRegister', { ids }).then(() => {
+          this.$store.dispatch('DelShopClassification', { ids }).then(() => {
             this.$message({
               message: '操作成功',
               type: 'success'
@@ -167,9 +164,9 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {
-        this.$store.dispatch('GetRegisterDetail', row.id).then((detail) => {
+        this.$store.dispatch('GetShopClassificationDetail', row.id).then((detail) => {
           this.temp = Object.assign({}, detail)
-          this.temp.locked = String(this.temp.locked)
+          this.temp.hide = String(this.temp.hide)
         })
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -193,8 +190,8 @@
        *  判断权限是否已经在传入的权限列表里面了
        * */
       has (id) {
-        return this.registers.some((register) => {
-          return register._id === id
+        return this.shopClassifications.some((shopClassification) => {
+          return shopClassification._id === id
         })
       },
       handleSelectionChange(val) {
