@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left"
-             label-width="100px" style='margin-left:50px' :style="{width: width + 'px'}">
+             label-width="100px" style='margin-left:50px'>
       <el-form-item label="管理员名称" prop="name">
         <el-input :disabled="dialogStatus === 'info'" v-model="detail.name"></el-input>
       </el-form-item>
@@ -70,16 +70,13 @@
 <script type="text/ecmascript-6">
   import Permissions from '../role/records.vue'
   import Upload from 'components/ImageUpload2'
+  import * as Validate from '../../utils/validate'
   export default {
     components: {
       Permissions,
       Upload
     },
     props: {
-      width: {
-        type: String,
-        default: '900'
-      },
       cancelVisible: {
         type: Boolean,
         default: true
@@ -111,13 +108,6 @@
             permissionList: [],
             roleList: []
           }
-        }
-      }
-    },
-    computed: {
-      headers () {
-        return {
-          'x-access-token': this.$store.getters['token']
         }
       }
     },
@@ -165,13 +155,6 @@
           }
         }
       }
-      const validatePhone = (rule, value, callback) => {
-        if (value !== '' && !/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(value)) {
-          callback(new Error('手机号码不合法'))
-        } else {
-          callback()
-        }
-      }
       return {
         publicKey: '',
         passVisible: false,
@@ -193,7 +176,7 @@
             { validator: validateLoginName, trigger: 'blur' }
           ],
           mobile: [
-            { required: false, validator: validatePhone, message: '手机号码不合法', trigger: 'blur' }
+            { required: false, validator: Validate.validateMobile, message: '手机号码不合法', trigger: 'blur' }
           ],
           password: [
             { required: true, validator: validatePass('detailForm', 'detail', 'second_password'), trigger: 'blur' }

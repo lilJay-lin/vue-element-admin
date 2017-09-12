@@ -47,10 +47,11 @@ export const asyncRouterMap = [
     redirect: 'noredirect',
     name: '系统模块',
     icon: 'quanxian',
-    meta: { role: [Constant.admin_r, Constant.role_r] },
+    meta: { role: [Constant.admin_r, Constant.role_r, Constant.user_r] },
     children: [
-      { path: 'users', component: _import('user/index'), name: '管理员管理', meta: { role: [Constant.admin_r] } },
-      { path: 'roles', component: _import('role/index'), name: '角色管理', meta: { role: [Constant.role_r] } }
+      { path: 'admin', component: _import('admin/index'), name: '管理员管理', meta: { role: [Constant.admin_r] } },
+      { path: 'role', component: _import('role/index'), name: '角色管理', meta: { role: [Constant.role_r] } },
+      { path: 'user', component: _import('register/index'), name: '注册用户管理', meta: { role: [Constant.user_r] } }
     ]
   },
   {

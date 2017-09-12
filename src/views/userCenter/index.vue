@@ -4,7 +4,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import Detail from '../user/detail.vue'
+import Detail from '../register/detail.vue'
 const temp = {
   id: '',
   name: '',

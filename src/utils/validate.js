@@ -38,4 +38,12 @@ export function validatAlphabets(str) {
   return reg.test(str);
 }
 
+/* 手机号码 */
+export function validateMobile (rule, value, callback) {
+  if (value !== '' && !/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/.test(value)) {
+    callback(new Error('手机号码不合法'))
+  } else {
+    callback()
+  }
+}
 

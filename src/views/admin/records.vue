@@ -32,7 +32,7 @@
           </template>
         </el-table-column>
   
-        <el-table-column v-if="checkPermission(permissionConstant.amdin_d)" align="center" label="操作" width="150" >
+        <el-table-column v-if="checkPermission(permissionConstant.admin_d)" align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>

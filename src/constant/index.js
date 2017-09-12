@@ -50,3 +50,11 @@ export const cashCoupon_r = 'cashCoupon_r'
 export const cashCoupon_u = 'cashCoupon_u'
 /* 删除代金券信息 */
 export const cashCoupon_d = 'cashCoupon_d'
+/* 添加注册用户信息 */
+export const user_c = 'user_c'
+/* 查看注册用户信息 */
+export const user_r = 'user_r'
+/* 更新注册用户信息 */
+export const user_u = 'user_u'
+/* 删除注册用户信息 */
+export const user_d = 'user_d'

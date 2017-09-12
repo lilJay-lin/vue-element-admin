@@ -16,6 +16,7 @@ const getters = {
   },
   crpUsers: (state) => {
     return { records: state.user.records, pageInfo: state.user.pageInfo }
-  }
+  },
+  register: state => state.register
 };
 export default getters

@@ -6,6 +6,7 @@ import permission from './modules/permission';
 import getters from './getters';
 import createLogger from '../../node_modules/vuex/src/plugins/logger'
 import role from './modules/role'
+import register from './modules/register'
 
 Vue.use(Vuex);
 
@@ -14,7 +15,8 @@ const store = new Vuex.Store({
     app,
     user,
     permission,
-    role
+    role,
+    register
   },
   getters,
   plugins: process.env.NODE_ENV === 'development' ? [createLogger()] : []
