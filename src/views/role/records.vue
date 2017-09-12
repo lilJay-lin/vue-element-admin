@@ -114,7 +114,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.$store.dispatch('GetAllRoles', this.listQuery).then(() => {
+        this.$store.dispatch('GetAllRole', this.listQuery).then(() => {
           this.listLoading = false
         }, () => {})
       },
@@ -140,7 +140,7 @@
       },
       delete (ids, msg) {
         this.$confirm(msg).then(() => {
-          this.$store.dispatch('DelRoles', { ids }).then(() => {
+          this.$store.dispatch('DelRole', { ids }).then(() => {
             this.$message({
               message: '操作成功',
               type: 'success'
