@@ -8,6 +8,8 @@ import createLogger from '../../node_modules/vuex/src/plugins/logger'
 import role from './modules/role'
 import register from './modules/register'
 import classification from './modules/classification'
+import shop from './modules/shop'
+import cashCoupon from './modules/cashCoupon'
 
 Vue.use(Vuex);
 
@@ -18,7 +20,9 @@ const store = new Vuex.Store({
     permission,
     role,
     register,
-    classification
+    classification,
+    shop,
+    cashCoupon
   },
   getters,
   plugins: process.env.NODE_ENV === 'development' ? [createLogger()] : []

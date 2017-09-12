@@ -18,6 +18,8 @@ const getters = {
     return { records: state.user.records, pageInfo: state.user.pageInfo }
   },
   register: state => state.register,
-  shopClassification: state => state.classification
+  shopClassification: state => state.classification,
+  shop: state => state.shop,
+  cashCoupon: state => state.cashCoupon
 };
 export default getters

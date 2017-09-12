@@ -143,6 +143,13 @@
         this.getList()
       },
       handleBatchDelete () {
+        if (this.selections.length === 0) {
+          this.$message({
+            message: '请选择要删除的管理员',
+            type: 'warning'
+          })
+          return
+        }
         const ids = this.selections.map((selection) => {
           return selection.id
         })
@@ -195,7 +202,7 @@
        * */
       has (id) {
         return this.users.some((user) => {
-          return user._id === id
+          return user.id === id
         })
       },
       handleSelectionChange(val) {

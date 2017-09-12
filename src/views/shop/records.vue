@@ -1,32 +1,60 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="权限名称" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="商户名称" v-model="listQuery.keyword"></el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
-        <el-button  v-if="checkPermission(permissionConstant.role_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-        <el-button  v-if="checkPermission(permissionConstant.role_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
+        <el-button  v-if="checkPermission(permissionConstant.shop_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+        <el-button  v-if="checkPermission(permissionConstant.shop_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
       </template>
     </div>
-    <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="crpRoles.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+    <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="shop.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
       <el-table-column
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column min-width="110" align="center" label="角色名">
+      <el-table-column width="120" align="center" label="商户名称">
         <template scope="scope">
           <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      
-      <el-table-column align="center" label="描述">
+      <el-table-column width="160" align="center" label="缩略图">
         <template scope="scope">
-          <span>{{scope.row.description}}</span>
+          <img :src="scope.row.preImage" alt="" style="width: 120px;height: auto;padding-top: 5px;">
         </template>
       </el-table-column>
-      
+      <el-table-column width="100" align="center" label="优惠次数">
+        <template scope="scope">
+          <span>{{scope.row.totalCashCouponNumber}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="120" align="center" label="优化金额">
+        <template scope="scope">
+          <span>{{scope.row.totalCashCouponPrice}}</span>
+        </template>
+      </el-table-column>
+<!--      <el-table-column align="center" label="地址">
+        <template scope="scope">
+          <span >{{scope.row.address}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="优先级">
+        <template scope="scope">
+          <span >{{scope.row.priority}}</span>
+        </template>
+      </el-table-column>-->
+      <el-table-column align="center" label="简介">
+        <template scope="scope">
+          <span>{{scope.row.introduction}}</span>
+        </template>
+      </el-table-column>
       <template  v-if="isMain" >
-        <el-table-column v-if="checkPermission(permissionConstant.amdin_d)" align="center" label="操作" width="150" >
+        <el-table-column class-name="status-col" label="状态" width="60">
+          <template scope="scope">
+            <el-tag :type="scope.row.hide ? 'primary' : 'danger'">{{scope.row.hide | statusFilter}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column v-if="checkPermission(permissionConstant.shop_d)" align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
@@ -36,33 +64,42 @@
         <el-table-column  align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button v-if="has(scope.row.id)" size="small" type="primary" @click="cancelCheck(scope.row)">取消选中</el-button>
-            <el-button v-else size ="small" @click="check(scope.row)">选中</el-button>
+            <el-button v-else size="small" @click="check(scope.row)">选中</el-button>
           </template>
         </el-table-column>
       </template>
+      
     </el-table>
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.currentPage"
-                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="crpRoles.pageInfo.totalRow">
+                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="shop.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <Role-Detail :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :dialog-form-visible="dialogFormVisible" ></Role-Detail>
+    <Shop-Detail  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Shop-Detail>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import RoleDetail from './detail.vue'
+  import ShopDetail from './detail.vue'
   const temp = {
+    address: '',
+    cashCouponList: null,
+    hide: true,
     id: '',
+    introduction: '',
+    logo: '',
     name: '',
-    description: '',
-    permissionList: [],
-    permissionListStr: ''
+    preImage: '',
+    priority: 0,
+    shopClassificationList: null,
+    shopIntroductionImageList: null,
+    totalCashCouponNumber: 0,
+    totalCashCouponPrice: 0
   }
   export default {
     components: {
-      RoleDetail
+      ShopDetail
     },
     props: {
       containerClass: {
@@ -73,14 +110,14 @@
         type: Boolean,
         default: true
       },
-      roles: {
+      shops: {
         type: Array,
         default () {
           return []
         }
       }
     },
-    name: 'crp_role',
+    name: 'crp_shop',
     data() {
       return {
         selections: [], /* 选中 */
@@ -95,26 +132,27 @@
           keyword: undefined
         },
         temp: Object.assign({}, temp),
+        statusOptions: [{ label: '有效', key: 'false' }, { label: '无效', key: 'true' }],
         dialogFormVisible: false,
         dialogStatus: '',
         tableKey: 0
       }
     },
     computed: {
-      ...mapGetters(['crpRoles'])
+      ...mapGetters(['shop'])
     },
     created() {
       this.getList()
     },
     filters: {
       statusFilter(status) {
-        return status === false ? '有效' : '冻结'
+        return status === false ? '有效' : '无效'
       }
     },
     methods: {
       getList() {
         this.listLoading = true
-        this.$store.dispatch('GetAllRole', this.listQuery).then(() => {
+        this.$store.dispatch('GetAllShop', this.listQuery).then(() => {
           this.listLoading = false
         }, () => {})
       },
@@ -132,7 +170,7 @@
       handleBatchDelete () {
         if (this.selections.length === 0) {
           this.$message({
-            message: '请选择要删除的权限',
+            message: '请选择要删除的商户',
             type: 'warning'
           })
           return
@@ -140,14 +178,14 @@
         const ids = this.selections.map((selection) => {
           return selection.id
         })
-        this.delete(ids, '确认批量删除权限？')
+        this.delete(ids, '确认批量删除商户？')
       },
       handleModifyStatus(row) {
-        this.delete([row.id], '确认删除权限：' + row.name + '？')
+        this.delete([row.id], '确认删除商户：' + row.name + '？')
       },
       delete (ids, msg) {
         this.$confirm(msg).then(() => {
-          this.$store.dispatch('DelRole', { ids }).then(() => {
+          this.$store.dispatch('DelShop', { ids }).then(() => {
             this.$message({
               message: '操作成功',
               type: 'success'
@@ -161,9 +199,9 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {
-        this.$store.dispatch('GetRoleDetail', row.id).then((detail) => {
+        this.$store.dispatch('GetShopDetail', row.id).then((detail) => {
           this.temp = Object.assign({}, detail)
-          this.temp.permissionList = detail.permissionList || []
+          this.temp.hide = String(this.temp.hide)
         })
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -187,8 +225,8 @@
        *  判断权限是否已经在传入的权限列表里面了
        * */
       has (id) {
-        return this.roles.some((role) => {
-          return role.id === id
+        return this.shops.some((shop) => {
+          return shop.id === id
         })
       },
       handleSelectionChange(val) {

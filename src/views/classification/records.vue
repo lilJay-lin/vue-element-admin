@@ -43,7 +43,7 @@
       <template v-else>
         <el-table-column  align="center" label="操作" width="150" >
           <template scope="scope">
-            <el-button v-if="has(scope.row._id)" size="small" type="primary" @click="cancelCheck(scope.row)">取消选中</el-button>
+            <el-button v-if="has(scope.row.id)" size="small" type="primary" @click="cancelCheck(scope.row)">取消选中</el-button>
             <el-button v-else size="small" @click="check(scope.row)">选中</el-button>
           </template>
         </el-table-column>
@@ -140,6 +140,13 @@
         this.getList()
       },
       handleBatchDelete () {
+        if (this.selections.length === 0) {
+          this.$message({
+            message: '请选择要删除的分类',
+            type: 'warning'
+          })
+          return
+        }
         const ids = this.selections.map((selection) => {
           return selection.id
         })
@@ -191,7 +198,7 @@
        * */
       has (id) {
         return this.shopClassifications.some((shopClassification) => {
-          return shopClassification._id === id
+          return shopClassification.id === id
         })
       },
       handleSelectionChange(val) {

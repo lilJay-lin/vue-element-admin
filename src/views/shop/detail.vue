@@ -1,14 +1,17 @@
 <template>
-  <el-dialog  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
+  <el-dialog  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="full">
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
-      <el-form-item label="分类名称"  prop="name">
+      <el-form-item label="商户名称"  prop="name">
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
-      <el-form-item label="优先级" prop="priority">
+      <el-form-item label="商户名称"  prop="name">
+        <el-input v-model="detail.name"></el-input>
+      </el-form-item>
+      <el-form-item label="优先级">
         <el-input v-model="detail.priority" type="number" min="0"></el-input>
       </el-form-item>
       <el-form-item label="状态">
-        <el-select class="filter-item"  v-model="detail.hide" placeholder="状态">
+        <el-select class="filter-item" v-model="detail.hide" placeholder="状态">
           <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
           </el-option>
         </el-select>
@@ -44,23 +47,24 @@
         type: Object,
         default () {
           return {
+            address: '',
+            cashCouponList: null,
+            hide: true,
             id: '',
+            introduction: '',
+            logo: '',
             name: '',
-            description: '',
-            hide: 'false',
-            priority: 0
+            preImage: '',
+            priority: 0,
+            shopClassificationList: null,
+            shopIntroductionImageList: null,
+            totalCashCouponNumber: 0,
+            totalCashCouponPrice: 0
           }
         }
       }
     },
     data () {
-      const validatePriority = (rule, value, callback) => {
-        if (value > 999) {
-          callback('优先级最大999')
-        } else {
-          callback()
-        }
-      }
       return {
         isMain: false,
         textMap: {
@@ -69,10 +73,7 @@
         },
         detailRules: {
           name: [
-            { required: true, min: 3, max: 32, message: '分类名称长度3到32位', trigger: 'blur' }
-          ],
-          priority: [
-            { validator: validatePriority, trigger: 'blur' }
+            { required: true, min: 3, max: 32, message: '商户名称长度3到32位', trigger: 'blur' }
           ]
         }
       }
@@ -94,7 +95,7 @@
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
           delete temp.id
-          me.$store.dispatch('CreateShopClassification', temp).then(() => {
+          me.$store.dispatch('CreateShop', temp).then(() => {
             this.$notify({
               title: '成功',
               message: '创建成功',
@@ -109,7 +110,7 @@
         const me = this
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
-          me.$store.dispatch('UpdateShopClassificationDetail', temp).then(() => {
+          me.$store.dispatch('UpdateShopDetail', temp).then(() => {
             me.$notify({
               title: '成功',
               message: '更新成功',
