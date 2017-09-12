@@ -4,7 +4,7 @@
       <el-form-item label="分类名称"  prop="name">
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
-      <el-form-item label="分类名称">
+      <el-form-item label="优先级" prop="priority">
         <el-input v-model="detail.priority" type="number" min="0"></el-input>
       </el-form-item>
       <el-form-item label="状态">
@@ -24,11 +24,7 @@
   </el-dialog>
 </template>
 <script type="text/ecmascript-6">
-  import Permissions from '../permission/records.vue'
   export default {
-    components: {
-      Permissions
-    },
     props: {
       dialogStatus: {
         type: String,
@@ -58,6 +54,13 @@
       }
     },
     data () {
+      const validatePriority = (rule, value, callback) => {
+        if (value > 999) {
+          callback('优先级最大999')
+        } else {
+          callback()
+        }
+      }
       return {
         isMain: false,
         textMap: {
@@ -67,6 +70,9 @@
         detailRules: {
           name: [
             { required: true, min: 3, max: 32, message: '分类名称长度3到32位', trigger: 'blur' }
+          ],
+          priority: [
+            { validator: validatePriority, trigger: 'blur' }
           ]
         }
       }
