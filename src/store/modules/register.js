@@ -1,4 +1,4 @@
-import * as API from 'api/register';
+import API from 'api/register';
 import * as TYPES from '../types'
 
 /*

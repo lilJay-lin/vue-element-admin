@@ -1,9 +1,8 @@
 /**
  * Created by linxiaojie on 2017/8/8.
  */
-import { each, has } from '../../utils'
 import * as TYPES from '../types'
-import { getAll, getDetail, updateDetail, batch, create } from '../../api/role'
+import API from '../../api/role'
 
 const role = {
   state: {
@@ -27,7 +26,7 @@ const role = {
   actions: {
     GetAllRoles ({ commit }, query) {
       return new Promise((resolve, reject) => {
-        getAll(query).then(({ data: { result } }) => {
+        API.getAll(query).then(({ data: { result } }) => {
           commit(TYPES.SET_ROLES_LIST, result)
           resolve()
         }).catch(error => {
@@ -37,7 +36,7 @@ const role = {
     },
     GetRoleDetail ({ commit }, id) {
       return new Promise((resolve, reject) => {
-        getDetail(id).then(({ data: { result } }) => {
+        API.getDetail(id).then(({ data: { result } }) => {
           resolve(result)
         }).catch(error => {
           reject(error)
@@ -46,14 +45,14 @@ const role = {
     },
     UpdateRoleDetail ({ commit, state }, detail) {
       return new Promise((resolve, reject) => {
-        updateDetail(detail).then(() => resolve()).catch(error => {
+        API.updateDetail(detail).then(() => resolve()).catch(error => {
           reject(error)
         })
       })
     },
     DelRoles ({ dispatch }, { ids }) {
       return new Promise((resolve, reject) => {
-        batch(ids).then(() => {
+        API.batch(ids).then(() => {
           resolve()
         }).catch(error => {
           reject(error)
@@ -62,7 +61,7 @@ const role = {
     },
     CreateRole (store, detail) {
       return new Promise((resolve, reject) => {
-        create(detail).then(() => {
+        API.create(detail).then(() => {
           resolve()
         }).catch(error => {
           reject(error)

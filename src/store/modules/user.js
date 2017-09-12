@@ -1,7 +1,7 @@
-import { loginByName, logout, getInfo, getPublicKey, geetest } from 'api/login';
+import * as LoginApi from 'api/login';
 import * as TYPES from '../types'
 import * as Token from '../../utils/auth'
-import { getAll, getDetail, updateDetail, batch, create, updateSelf } from '../../api/user'
+import UserApi from '../../api/user'
 
 /*
 * 登录用户和用户列表state
@@ -51,7 +51,7 @@ const user = {
     // 邮箱登录
     LoginByName({ commit }, data) {
       return new Promise((resolve, reject) => {
-        loginByName(data).then(response => {
+        LoginApi.loginByName(data).then(response => {
           const result = response.data.result
           commit(TYPES.SET_USER, result)
           resolve(result);
@@ -64,7 +64,7 @@ const user = {
     // 获取用户信息
     GetInfo({ commit }) {
       return new Promise((resolve, reject) => {
-        getInfo().then(({ data: { result } }) => {
+        LoginApi.getInfo().then(({ data: { result } }) => {
           const permissions = Token.getPermissions() || ''
           result.permissionList = (permissions.split(',')).map((code) => {
             return { code }
@@ -79,7 +79,7 @@ const user = {
     // 更新当前用户信息
     UpdateSelf({ commit, state }, detail) {
       return new Promise((resolve, reject) => {
-        updateSelf(detail).then(({ data: { result } }) => {
+        UserApi.updateSelf(detail).then(({ data: { result } }) => {
           result.permissionList = state.permissionList
           commit(TYPES.SET_USER, result)
           resolve(result)
@@ -91,7 +91,7 @@ const user = {
     // 获取公钥
     GetPublicKey () {
       return new Promise((resolve, reject) => {
-        getPublicKey().then(response => {
+        LoginApi.getPublicKey().then(response => {
           resolve(response.data.result);
         }).catch(error => {
           reject(error);
@@ -100,7 +100,7 @@ const user = {
     },
     Geetest () {
       return new Promise((resolve, reject) => {
-        geetest().then(({ data: { user_id, success, gt, challenge } }) => {
+        LoginApi.geetest().then(({ data: { user_id, success, gt, challenge } }) => {
           resolve({
             user_id,
             challenge,
@@ -130,7 +130,7 @@ const user = {
     // 登出
     LogOut({ commit }) {
       return new Promise((resolve, reject) => {
-        logout().then(() => {
+        LoginApi.logout().then(() => {
           Token.removeToken()
           commit(TYPES.SET_USER, { id: '', userName: '', permissionList: [], locked: false });
           resolve();
@@ -157,7 +157,7 @@ const user = {
     },
     GetAllUsers ({ commit }, query) {
       return new Promise((resolve, reject) => {
-        getAll(query).then(({ data: { result } }) => {
+        UserApi.getAll(query).then(({ data: { result } }) => {
           commit(TYPES.SET_USERS_LIST, result)
           resolve()
         }).catch(error => {
@@ -167,7 +167,7 @@ const user = {
     },
     GetUserDetail ({ commit }, id) {
       return new Promise((resolve, reject) => {
-        getDetail(id).then(({ data: { result } }) => {
+        UserApi.getDetail(id).then(({ data: { result } }) => {
           resolve(result)
         }).catch(error => {
           reject(error)
@@ -176,14 +176,14 @@ const user = {
     },
     UpdateUserDetail ({ commit, state }, detail) {
       return new Promise((resolve, reject) => {
-        updateDetail(detail).then(() => resolve()).catch(error => {
+        UserApi.updateDetail(detail).then(() => resolve()).catch(error => {
           reject(error)
         })
       })
     },
     DelUsers ({ dispatch }, { ids }) {
       return new Promise((resolve, reject) => {
-        batch(ids).then(() => {
+        UserApi.batch(ids).then(() => {
           resolve()
         }).catch(error => {
           reject(error)
@@ -192,7 +192,7 @@ const user = {
     },
     CreateUser(store, detail) {
       return new Promise((resolve, reject) => {
-        create(detail).then(() => {
+        UserApi.create(detail).then(() => {
           resolve()
         }).catch(error => {
           reject(error)
