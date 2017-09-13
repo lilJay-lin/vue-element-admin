@@ -6,6 +6,12 @@ export default class UploadCallback {
     return {
       methods: {
         /*
+        * 统一header
+        * */
+        uploadHeaders () {
+          return {}
+        },
+        /*
          *  图片上传
          * */
         uploadSuccess (res) {

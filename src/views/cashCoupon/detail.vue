@@ -10,6 +10,7 @@
           @change="preImage.change"
           @success="uploadSuccess"
           @error="uploadError"
+          :headers="uploadHeaders()"
           :disabled="preImage.loading">
           <el-button type="primary" :loading="preImage.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
         </upload>
