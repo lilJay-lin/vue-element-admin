@@ -20,6 +20,8 @@ const getters = {
   register: state => state.register,
   shopClassification: state => state.classification,
   shop: state => state.shop,
-  cashCoupon: state => state.cashCoupon
+  cashCoupon: state => state.cashCoupon,
+  shopAccount: state => state.shopAccount,
+  shopIntroductionImage: state => state.shopIntroductionImage
 };
 export default getters

@@ -1,49 +1,91 @@
 <template>
-  <el-dialog  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="full">
-    <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
-      <el-form-item label="商户名称"  prop="name">
-        <el-input v-model="detail.name"></el-input>
-      </el-form-item>
-      <el-form-item label="商标">
-        <img :src="detail.logo" style="width: 80px;height: auto;border: 1px solid #bfcbd9" alt="">
-      </el-form-item>
-      <el-form-item label="缩略图">
-        <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
-      </el-form-item>
-      <el-form-item label="地址">
-        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="detail.address"></el-input>
-      </el-form-item>
-      <el-form-item label="简介">
-        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="detail.introduction"></el-input>
-      </el-form-item>
-      <el-form-item label="优惠次数" prop="priority">
-        <el-input v-model="detail.totalCashCouponNumber" type="number" min="0"></el-input>
-      </el-form-item>
-      <el-form-item label="优化价格" prop="priority">
-        <el-input v-model="detail.totalCashCouponPrice" type="number" min="0"></el-input>
-      </el-form-item>
-      <el-form-item label="优先级" prop="priority">
-        <el-input v-model="detail.priority" type="number" min="0"></el-input>
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select class="filter-item" v-model="detail.hide" placeholder="状态">
-          <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
-          </el-option>
-        </el-select>
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="cancel">取 消</el-button>
-      <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-      <template v-else>
-        <el-button type="primary" v-if="checkPermission(permissionConstant.shopClassification_u)" @click="update">确 定</el-button>
+  <el-dialog  :modal="false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="full">
+    <el-collapse v-model="collapseName">
+      <el-collapse-item title="商家详情" name="1">
+        <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='margin-left:50px'>
+          <el-form-item label="商户名称"  prop="name">
+            <el-input v-model="detail.name"></el-input>
+          </el-form-item>
+          <el-form-item label="商标">
+            <img :src="detail.logo" style="width: 80px;height: auto;border: 1px solid #bfcbd9" alt="">
+          </el-form-item>
+          <el-form-item label="缩略图">
+            <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
+          </el-form-item>
+          <el-form-item label="地址">
+            <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="detail.address"></el-input>
+          </el-form-item>
+          <el-form-item label="简介">
+            <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="detail.introduction"></el-input>
+          </el-form-item>
+          <el-form-item label="优惠次数" prop="totalCashCouponNumber">
+            <el-input v-model="detail.totalCashCouponNumber" type="number" min="0"></el-input>
+          </el-form-item>
+          <el-form-item label="优化价格" prop="totalCashCouponPrice">
+            <el-input v-model="detail.totalCashCouponPrice" type="number" min="0"></el-input>
+          </el-form-item>
+          <el-form-item label="优先级" prop="priority">
+            <el-input v-model="detail.priority" type="number" min="0"></el-input>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select class="filter-item" v-model="detail.hide" placeholder="状态">
+              <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="商店类别">
+            <span v-if ="detail.shopClassificationList.length === 0">未设置类别</span>
+            <el-tooltip v-else v-for="cls in detail.shopClassificationList" :key="cls.id" :content="cls.description" placement="top">
+              <el-tag type="success" :closable="checkPermission(permissionConstant.shop_u)"
+                      :close-transition="false" @close="handleDelRelation(cls)">
+                {{cls.name}}
+              </el-tag>
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item label="选择商店类别" v-if="checkPermission(permissionConstant.shop_u) && dialogStatus !== 'info'">
+            <Classification :is-main="isMain" :shopClassifications="detail.shopClassificationList" @check="handleAddRelation"
+                            @cancel-check="handleDelRelation"></Classification>
+          </el-form-item>
+        </el-form>
+        <div class="dialog-footer" style="text-align: right;">
+          <el-button @click="cancel">取 消</el-button>
+          <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
+          <template v-else>
+            <el-button type="primary" v-if="checkPermission(permissionConstant.shopClassification_u)" @click="update">确 定</el-button>
+          </template>
+        </div>
+      </el-collapse-item>
+      <template v-if="checkPermission(permissionConstant.shop_r)">
+        <el-collapse-item title="商家帐号" name="2">
+          <shop-account :shop-id="detail.id"></shop-account>
+        </el-collapse-item>
       </template>
-    </div>
+      <template v-if="checkPermission(permissionConstant.shop_r)">
+        <el-collapse-item title="商家图集" name="3">
+          <shop-introduction-image :shop-id="detail.id"></shop-introduction-image>
+        </el-collapse-item>
+      </template>
+      <template v-if="checkPermission(permissionConstant.cashCoupon_r)">
+        <el-collapse-item title="商家代金券" name="4">
+          <CashCoupon :shop-id="detail.id"></CashCoupon>
+        </el-collapse-item>
+      </template>
+    </el-collapse>
   </el-dialog>
 </template>
 <script type="text/ecmascript-6">
   import * as Validate from 'utils/validate'
+  import Classification from '../classification/records.vue'
+  import CashCoupon from '../cashCoupon/records.vue'
+  import ShopIntroductionImage from '../shopIntroductionImage/records.vue'
+  import ShopAccount from '../shopAccount/records.vue'
   export default {
+    components: {
+      Classification,
+      CashCoupon,
+      ShopIntroductionImage,
+      ShopAccount
+    },
     props: {
       dialogStatus: {
         type: String,
@@ -64,7 +106,6 @@
         default () {
           return {
             address: '',
-            cashCouponList: null,
             hide: 'true',
             id: '',
             introduction: '',
@@ -72,8 +113,7 @@
             name: '',
             preImage: '',
             priority: 0,
-            shopClassificationList: null,
-            shopIntroductionImageList: null,
+            shopClassificationList: [],
             totalCashCouponNumber: 0,
             totalCashCouponPrice: 0
           }
@@ -82,6 +122,7 @@
     },
     data () {
       return {
+        collapseName: [],
         isMain: false,
         textMap: {
           update: '编辑',
@@ -93,6 +134,12 @@
           ],
           priority: [
             { validator: Validate.validatePriority, trigger: 'blur' },
+            { validator: Validate.validateNumber('优先级只能为数字'), trigger: 'blur' }
+          ],
+          totalCashCouponNumber: [
+            { validator: Validate.validateNumber('优先级只能为数字'), trigger: 'blur' }
+          ],
+          totalCashCouponPrice: [
             { validator: Validate.validateNumber('优先级只能为数字'), trigger: 'blur' }
           ]
         }
@@ -110,12 +157,19 @@
           })
         })
       },
+      filterData (temp) {
+        temp.shopClassificationIds = ((temp.shopClassificationList || []).map(role => {
+          return role.id
+        })).join(',')
+        delete temp.shopClassificationList
+        return temp
+      },
       create() {
         const me = this
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
           delete temp.id
-          me.$store.dispatch('CreateShop', temp).then(() => {
+          me.$store.dispatch('CreateShop', me.filterData(temp)).then(() => {
             this.$notify({
               title: '成功',
               message: '创建成功',
@@ -130,7 +184,7 @@
         const me = this
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
-          me.$store.dispatch('UpdateShopDetail', temp).then(() => {
+          me.$store.dispatch('UpdateShopDetail', me.filterData(temp)).then(() => {
             me.$notify({
               title: '成功',
               message: '更新成功',
@@ -143,12 +197,21 @@
       },
       cancel () {
         this.$emit('cancel')
+      },
+      handleDelRelation ({ id }) {
+        this.detail.shopClassificationList = this.detail.shopClassificationList.filter((cls) => {
+          return cls.id !== id
+        })
+      },
+      handleAddRelation (cls) {
+        this.detail.shopClassificationList.push(cls)
       }
     },
     watch: {
       dialogFormVisible () {
         if (this.$refs.detailForm) {
           this.$refs.detailForm.resetFields()
+          this.collapseName = []
         }
       }
     }

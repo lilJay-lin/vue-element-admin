@@ -41,8 +41,10 @@ Vue.mixin({
     ...mapGetters(['ownerPermissions'])
   },
   methods: {
-    checkPermission (code) {
-      return this.ownerPermissions.indexOf(code) > -1
+    checkPermission (...args) {
+      return args.some((code) => {
+        return this.ownerPermissions.indexOf(code) > -1
+      })
     }
   }
 })

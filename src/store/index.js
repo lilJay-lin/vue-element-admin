@@ -10,6 +10,8 @@ import register from './modules/register'
 import classification from './modules/classification'
 import shop from './modules/shop'
 import cashCoupon from './modules/cashCoupon'
+import shopAccount from './modules/shopAccount'
+import shopIntroductionImage from './modules/shopIntroductionImage'
 
 Vue.use(Vuex);
 
@@ -22,7 +24,9 @@ const store = new Vuex.Store({
     register,
     classification,
     shop,
-    cashCoupon
+    cashCoupon,
+    shopAccount,
+    shopIntroductionImage
   },
   getters,
   plugins: process.env.NODE_ENV === 'development' ? [createLogger()] : []

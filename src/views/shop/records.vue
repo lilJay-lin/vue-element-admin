@@ -84,7 +84,6 @@
   import ShopDetail from './detail.vue'
   const temp = {
     address: '',
-    cashCouponList: null,
     hide: 'true',
     id: '',
     introduction: '',
@@ -92,8 +91,7 @@
     name: '',
     preImage: '',
     priority: 0,
-    shopClassificationList: null,
-    shopIntroductionImageList: null,
+    shopClassificationList: [],
     totalCashCouponNumber: 0,
     totalCashCouponPrice: 0
   }
@@ -200,8 +198,11 @@
       },
       handleUpdate(row) {
         this.$store.dispatch('GetShopDetail', row.id).then((detail) => {
+          delete detail.cashCouponList
+          delete detail.shopIntroductionImageList
+          detail.hide = String(detail.hide)
+          detail.shopClassificationList = detail.shopClassificationList || []
           this.temp = Object.assign({}, detail)
-          this.temp.hide = String(this.temp.hide)
         })
         this.dialogStatus = 'update'
         this.dialogFormVisible = true

@@ -8,8 +8,8 @@
         <el-button  v-if="checkPermission(permissionConstant.cashCoupon_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
       </template>
     </div>
-    <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="cashCoupon.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
-      <el-table-column
+    <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="cashCoupon.records" v-loading="listLoading" border fit highlight-current-row style="width: 100%">
+      <el-table-column v-if="isMain"
         type="selection"
         width="55">
       </el-table-column>
@@ -76,7 +76,7 @@
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="cashCoupon.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <CashCoupon-Detail  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></CashCoupon-Detail>
+    <CashCoupon-Detail :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></CashCoupon-Detail>
   </div>
 </template>
 
@@ -99,6 +99,10 @@
       CashCouponDetail
     },
     props: {
+      shopId: {
+        type: String,
+        default: ''
+      },
       containerClass: {
         type: String,
         default: ''
@@ -126,7 +130,8 @@
         listQuery: {
           targetPage: 1,
           pageSize: 10,
-          keyword: undefined
+          keyword: undefined,
+          shopId: ''
         },
         temp: Object.assign({}, temp),
         statusOptions: [{ label: '显示', key: 'false' }, { label: '隐藏', key: 'true' }],
@@ -138,9 +143,6 @@
     computed: {
       ...mapGetters(['cashCoupon'])
     },
-    created() {
-      this.getList()
-    },
     filters: {
       statusFilter(status) {
         return status === false ? '显示' : '隐藏'
@@ -148,6 +150,10 @@
     },
     methods: {
       getList() {
+        if (this.shopId === '') {
+          return
+        }
+        this.listQuery.shopId = this.shopId
         this.listLoading = true
         this.$store.dispatch('GetAllCashCoupon', this.listQuery).then(() => {
           this.listLoading = false
@@ -194,6 +200,7 @@
       handleCreate() {
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
+        this.temp.shopId = this.shopId
       },
       handleUpdate(row) {
         this.$store.dispatch('GetCashCouponDetail', row.id).then((detail) => {
@@ -229,6 +236,11 @@
       },
       handleSelectionChange(val) {
         this.selections = val
+      }
+    },
+    watch: {
+      shopId () {
+        this.getList()
       }
     }
   }

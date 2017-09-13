@@ -49,7 +49,7 @@ export function validateMobile (rule, value, callback) {
 
 export function validateNumber (msg) {
   return (rule, value, callback) => {
-    if (!/^[\d]+$/.test(value)) {
+    if (!!value && !/^[\d]+$/.test(value)) {
       callback(new Error(msg))
     } else {
       callback()

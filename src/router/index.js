@@ -68,10 +68,9 @@ export const asyncRouterMap = [
         redirect: 'noredirect',
         name: '商家管理',
         icon: 'zujian',
-        meta: { role: [Constant.shop_r, Constant.cashCoupon_r] },
+        meta: { role: [Constant.shop_r] },
         children: [
-          { path: 'index', component: _import('shop/index'), name: '商家帐号管理', meta: { role: [Constant.shop_r] } },
-          { path: 'cashCoupon', component: _import('cashCoupon/index'), name: '商家代金券管理', meta: { role: [Constant.cashCoupon_r] } }
+          { path: 'index', component: _import('shop/index'), name: '商家帐号管理', meta: { role: [Constant.shop_r] } }
         ]
       },
       { path: 'classification', component: _import('classification/index'), name: '商家分类管理', meta: { role: [Constant.shopClassification_r] } }
