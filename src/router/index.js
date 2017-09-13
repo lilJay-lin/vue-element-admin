@@ -59,7 +59,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: 'noredirect',
     name: '商家模块',
-    icon: 'zujian',
+    icon: 'zonghe',
     meta: { role: [Constant.shopClassification_r, Constant.shop_r, Constant.cashCoupon_r] },
     children: [
       {
@@ -67,7 +67,7 @@ export const asyncRouterMap = [
         component: _import('layout/InnerLayout'),
         redirect: 'noredirect',
         name: '商家管理',
-        icon: 'zonghe',
+        icon: 'zujian',
         meta: { role: [Constant.shop_r, Constant.cashCoupon_r] },
         children: [
           { path: 'index', component: _import('shop/index'), name: '商家帐号管理', meta: { role: [Constant.shop_r] } },

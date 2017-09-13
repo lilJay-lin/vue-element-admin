@@ -47,3 +47,25 @@ export function validateMobile (rule, value, callback) {
   }
 }
 
+export function validateNumber (msg) {
+  return (rule, value, callback) => {
+    if (!/^[\d]+$/.test(value)) {
+      callback(new Error(msg))
+    } else {
+      callback()
+    }
+  }
+}
+
+/*
+* 优先级
+* */
+export function validatePriority (rule, value, callback) {
+  if (value > 999) {
+    callback('优先级最大999')
+  } else {
+    callback()
+  }
+}
+
+

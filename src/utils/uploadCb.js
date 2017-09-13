@@ -20,7 +20,7 @@ export default class UploadCallback {
                 location.reload()// 为了重新实例化vue-router对象 避免bug
               })
             })
-          } else { /* 0: 错误; 3: 无权限 */
+          } else if (res.status !== 1) { /* 0: 错误; 3: 无权限 */
             me.$message({
               message: res.message || res.msg,
               type: 'error',

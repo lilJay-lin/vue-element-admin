@@ -7,7 +7,7 @@
       <el-form-item label="商户名称"  prop="name">
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
-      <el-form-item label="优先级">
+      <el-form-item label="优先级" prop="priority">
         <el-input v-model="detail.priority" type="number" min="0"></el-input>
       </el-form-item>
       <el-form-item label="状态">
@@ -27,6 +27,7 @@
   </el-dialog>
 </template>
 <script type="text/ecmascript-6">
+  import * as Validate from 'utils/validate'
   export default {
     props: {
       dialogStatus: {
@@ -74,6 +75,10 @@
         detailRules: {
           name: [
             { required: true, min: 3, max: 32, message: '商户名称长度3到32位', trigger: 'blur' }
+          ],
+          priority: [
+            { validator: Validate.validatePriority, trigger: 'blur' },
+            { validator: Validate.validateNumber('优先级只能为数字'), trigger: 'blur' }
           ]
         }
       }

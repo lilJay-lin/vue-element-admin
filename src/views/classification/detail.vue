@@ -24,6 +24,7 @@
   </el-dialog>
 </template>
 <script type="text/ecmascript-6">
+  import * as Validate from 'utils/validate'
   export default {
     props: {
       dialogStatus: {
@@ -54,13 +55,6 @@
       }
     },
     data () {
-      const validatePriority = (rule, value, callback) => {
-        if (value > 999) {
-          callback('优先级最大999')
-        } else {
-          callback()
-        }
-      }
       return {
         isMain: false,
         textMap: {
@@ -72,7 +66,8 @@
             { required: true, min: 3, max: 32, message: '分类名称长度3到32位', trigger: 'blur' }
           ],
           priority: [
-            { validator: validatePriority, trigger: 'blur' }
+            { validator: Validate.validatePriority, trigger: 'blur' },
+            { validator: Validate.validateNumber('优先级只能为数字'), trigger: 'blur' }
           ]
         }
       }

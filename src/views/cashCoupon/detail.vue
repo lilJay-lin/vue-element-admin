@@ -15,10 +15,10 @@
         </upload>
         <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
       </el-form-item>
-      <el-form-item label="价格">
+      <el-form-item label="价格" prop="price">
         <el-input v-model="detail.price" type="number" min="0"></el-input>
       </el-form-item>
-      <el-form-item label="优惠金额">
+      <el-form-item label="优惠金额" prop="discountAmount">
         <el-input v-model="detail.discountAmount" type="number" min="0"></el-input>
       </el-form-item>
       <el-form-item label="过期时间">
@@ -52,6 +52,8 @@
 <script type="text/ecmascript-6">
   import Upload from 'components/Upload'
   import UploadCallback from 'utils/uploadCb'
+  import * as Validate from 'utils/validate'
+  import { parseTime } from 'utils/index'
   export default {
     components: {
       Upload
@@ -98,13 +100,6 @@
       }
     },
     data () {
-      const validatePriority = (rule, value, callback) => {
-        if (value > 999) {
-          callback('优先级最大999')
-        } else {
-          callback()
-        }
-      }
       const me = this
       return {
         expireOptions: [{ label: '否', key: 'false' }, { label: '是', key: 'true' }],
@@ -126,7 +121,14 @@
             { required: true, min: 3, max: 32, message: '代金券名称长度3到32位', trigger: 'blur' }
           ],
           priority: [
-            { validator: validatePriority, trigger: 'blur' }
+            { validator: Validate.validatePriority, trigger: 'blur' },
+            { validator: Validate.validateNumber('优先级只能为数字'), trigger: 'blur' }
+          ],
+          price: [
+            { validator: Validate.validateNumber('价格只能为数字'), trigger: 'blur' }
+          ],
+          discountAmount: [
+            { validator: Validate.validateNumber('优惠金额只能为数字'), trigger: 'blur' }
           ],
           expireDate: [
             { require: true, message: '过期时间不能为空', trigger: 'blur' }
@@ -157,6 +159,7 @@
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
           delete temp.id
+          temp.expiryDate = parseTime(temp.expiryDate)
           me.$store.dispatch('CreateCashCoupon', temp).then(() => {
             this.$notify({
               title: '成功',
@@ -172,6 +175,7 @@
         const me = this
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
+          temp.expiryDate = parseTime(temp.expiryDate)
           me.$store.dispatch('UpdateCashCouponDetail', temp).then(() => {
             me.$notify({
               title: '成功',

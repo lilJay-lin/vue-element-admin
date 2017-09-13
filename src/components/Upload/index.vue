@@ -48,9 +48,7 @@
       headers: {
         type: Object,
         default: () => {
-          return {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-          }
+          return {}
         }
       },
       data: {
@@ -69,7 +67,7 @@
       },
       name: {
         type: String,
-        default: "file"
+        default: "theFile"
       },
       // File upload limit
       limit: {
