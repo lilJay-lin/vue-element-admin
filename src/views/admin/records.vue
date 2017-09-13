@@ -28,7 +28,7 @@
       <template  v-if="isMain" >
         <el-table-column class-name="status-col" label="状态" width="60">
           <template scope="scope">
-            <el-tag :type="scope.row.locked ? 'primary' : 'danger'">{{scope.row.locked | statusFilter}}</el-tag>
+            <el-tag :type="scope.row.locked ? 'danger' : 'primary'">{{scope.row.locked | statusFilter}}</el-tag>
           </template>
         </el-table-column>
   

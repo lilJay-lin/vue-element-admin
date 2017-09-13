@@ -31,7 +31,7 @@
       <template  v-if="isMain" >
         <el-table-column class-name="status-col" label="状态" width="60">
           <template scope="scope">
-            <el-tag :type="scope.row.hide ? 'primary' : 'danger'">{{scope.row.hide | statusFilter}}</el-tag>
+            <el-tag :type="scope.row.hide ?  'danger' : 'primary'">{{scope.row.hide | statusFilter}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column v-if="checkPermission(permissionConstant.shopClassification_d)" align="center" label="操作" width="150" >
@@ -104,7 +104,7 @@
           keyword: undefined
         },
         temp: Object.assign({}, temp),
-        statusOptions: [{ label: '有效', key: 'false' }, { label: '无效', key: 'true' }],
+        statusOptions: [{ label: '显示', key: 'false' }, { label: '隐藏', key: 'true' }],
         dialogFormVisible: false,
         dialogStatus: '',
         tableKey: 0
@@ -118,7 +118,7 @@
     },
     filters: {
       statusFilter(status) {
-        return status === false ? '有效' : '无效'
+        return status === false ? '显示' : '隐藏'
       }
     },
     methods: {

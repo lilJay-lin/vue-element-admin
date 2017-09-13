@@ -4,8 +4,23 @@
       <el-form-item label="商户名称"  prop="name">
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
-      <el-form-item label="商户名称"  prop="name">
-        <el-input v-model="detail.name"></el-input>
+      <el-form-item label="商标">
+        <img :src="detail.logo" style="width: 80px;height: auto;border: 1px solid #bfcbd9" alt="">
+      </el-form-item>
+      <el-form-item label="缩略图">
+        <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
+      </el-form-item>
+      <el-form-item label="地址">
+        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="detail.address"></el-input>
+      </el-form-item>
+      <el-form-item label="简介">
+        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="detail.introduction"></el-input>
+      </el-form-item>
+      <el-form-item label="优惠次数" prop="priority">
+        <el-input v-model="detail.totalCashCouponNumber" type="number" min="0"></el-input>
+      </el-form-item>
+      <el-form-item label="优化价格" prop="priority">
+        <el-input v-model="detail.totalCashCouponPrice" type="number" min="0"></el-input>
       </el-form-item>
       <el-form-item label="优先级" prop="priority">
         <el-input v-model="detail.priority" type="number" min="0"></el-input>
@@ -50,7 +65,7 @@
           return {
             address: '',
             cashCouponList: null,
-            hide: true,
+            hide: 'true',
             id: '',
             introduction: '',
             logo: '',

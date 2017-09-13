@@ -59,7 +59,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: 'noredirect',
     name: '商家模块',
-    icon: 'zonghe',
+    icon: 'zujian',
     meta: { role: [Constant.shopClassification_r, Constant.shop_r, Constant.cashCoupon_r] },
     children: [
       {
