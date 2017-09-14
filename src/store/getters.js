@@ -22,6 +22,8 @@ const getters = {
   shop: state => state.shop,
   cashCoupon: state => state.cashCoupon,
   shopAccount: state => state.shopAccount,
-  shopIntroductionImage: state => state.shopIntroductionImage
+  shopIntroductionImage: state => state.shopIntroductionImage,
+  cashCouponOrder: state => state.cashCouponOrder,
+  refund: state => state.refund
 };
 export default getters

@@ -22,7 +22,7 @@
         <el-input v-model="detail.moneyChance" type="number" min="0"></el-input>
       </el-form-item>
       <el-form-item label="账户余额"  prop="totalMoney">
-        <el-input v-model="detail.totalMoney" type="number" min="0"></el-input>
+        <el-input v-model="detail.totalMoney"></el-input>
       </el-form-item>
       <el-form-item label="描述">
         <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="detail.description">
@@ -184,7 +184,7 @@
             { validator: Validate.validateNumber('抽奖机会只能为数字'), trigger: 'blur' }
           ],
           totalMoney: [
-            { validator: Validate.validateNumber('账户余额只能为数字'), trigger: 'blur' }
+            { validator: Validate.validateFloatNumber('账户余额只能为数字'), trigger: 'blur' }
           ]
         },
         showUpload: false

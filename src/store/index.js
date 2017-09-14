@@ -12,6 +12,8 @@ import shop from './modules/shop'
 import cashCoupon from './modules/cashCoupon'
 import shopAccount from './modules/shopAccount'
 import shopIntroductionImage from './modules/shopIntroductionImage'
+import cashCouponOrder from './modules/cashCouponOrder'
+import refund from './modules/refund'
 
 Vue.use(Vuex);
 
@@ -26,7 +28,9 @@ const store = new Vuex.Store({
     shop,
     cashCoupon,
     shopAccount,
-    shopIntroductionImage
+    shopIntroductionImage,
+    cashCouponOrder,
+    refund
   },
   getters,
   plugins: process.env.NODE_ENV === 'development' ? [createLogger()] : []

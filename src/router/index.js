@@ -55,6 +55,18 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/order',
+    component: Layout,
+    redirect: 'noredirect',
+    name: '业务管理',
+    icon: 'zonghe',
+    meta: { role: [Constant.cashCouponOrder_r, Constant.refund_r] },
+    children: [
+      { path: 'cashCouponOrder', component: _import('cashCouponOrder/index'), name: '代金券订单管理', meta: { role: [Constant.cashCouponOrder_r] } },
+      { path: 'refund', component: _import('refund/index'), name: '代金券退款管理', meta: { role: [Constant.refund_r] } }
+    ]
+  },
+  {
     path: '/shop',
     component: Layout,
     redirect: 'noredirect',

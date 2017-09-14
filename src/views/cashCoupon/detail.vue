@@ -17,10 +17,10 @@
         <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
       </el-form-item>
       <el-form-item label="价格" prop="price">
-        <el-input v-model="detail.price" type="number" min="0"></el-input>
+        <el-input v-model="detail.price" ></el-input>
       </el-form-item>
       <el-form-item label="优惠金额" prop="discountAmount">
-        <el-input v-model="detail.discountAmount" type="number" min="0"></el-input>
+        <el-input v-model="detail.discountAmount"></el-input>
       </el-form-item>
       <el-form-item label="过期时间">
         <el-date-picker v-model="detail.expiryDate" :clearable="false" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
@@ -126,10 +126,10 @@
             { validator: Validate.validateNumber('优先级只能为数字'), trigger: 'blur' }
           ],
           price: [
-            { validator: Validate.validateNumber('价格只能为数字'), trigger: 'blur' }
+            { validator: Validate.validateFloatNumber('价格只能为数字'), trigger: 'blur' }
           ],
           discountAmount: [
-            { validator: Validate.validateNumber('优惠金额只能为数字'), trigger: 'blur' }
+            { validator: Validate.validateFloatNumber('优惠金额只能为数字'), trigger: 'blur' }
           ],
           expireDate: [
             { require: true, message: '过期时间不能为空', trigger: 'blur' }

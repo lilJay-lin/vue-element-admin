@@ -1,35 +1,50 @@
 <template>
-  <div :class="[containerClass]" style="width: 720px;margin:0 auto;">
+  <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="代金券名称" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="退款订单名称" v-model="listQuery.keyword"></el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
-        <el-button  v-if="checkPermission(permissionConstant.shop_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-        <el-button  v-if="checkPermission(permissionConstant.shop_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
+        <el-button  v-if="checkPermission(permissionConstant.refund_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+        <el-button  v-if="checkPermission(permissionConstant.refund_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
       </template>
     </div>
-    <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="shopIntroductionImage.records" v-loading="listLoading" border fit highlight-current-row style="width: 100%">
+    <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="refund.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
       <el-table-column v-if="isMain"
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column width="350" align="center" label="图片">
+      <el-table-column align="center" label="订单ID" width="300">
         <template scope="scope">
-          <img :src="scope.row.contentUrl" alt="" style="width: 300px;height: auto;padding-top: 5px;">
+          <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.id}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="优先级">
+      <el-table-column align="center" label="退款金额" width="120">
         <template scope="scope">
-          <span >{{scope.row.priority}}</span>
+          <span>{{scope.row.refundAmount}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="退款理由">
+        <template scope="scope">
+          <span >{{scope.row.reason}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="平台意见">
+        <template scope="scope">
+          <span >{{scope.row.comment}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="160" align="center" label="退款凭证">
+        <template scope="scope">
+          <img :src="scope.row.evidence" alt="" style="width: 120px;height: auto;padding-top: 5px;">
         </template>
       </el-table-column>
       <template  v-if="isMain" >
-        <el-table-column class-name="status-col" label="状态" width="60">
+        <el-table-column class-name="status-col" label="状态" width="100">
           <template scope="scope">
-            <el-tag :type="scope.row.hide ?  'danger' : 'primary'">{{scope.row.hide | statusFilter}}</el-tag>
+            <el-tag >{{scope.row.status | statusFilter}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="checkPermission(permissionConstant.shop_d)" align="center" label="操作" width="150" >
+        <el-table-column v-if="checkPermission(permissionConstant.refund_d)" align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
@@ -47,32 +62,30 @@
     </el-table>
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.currentPage"
-                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="shopIntroductionImage.pageInfo.totalRow">
+                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="refund.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <ShopIntroductionImage-Detail :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></ShopIntroductionImage-Detail>
+    <Refund-Detail  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Refund-Detail>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import ShopIntroductionImageDetail from './detail.vue'
+  import RefundDetail from './detail.vue'
   const temp = {
+    cashCouponOrderId: '',
+    comment: '',
+    evidence: '',
     id: '',
-    shopId: '',
-    contentUrl: '',
-    hide: 'false',
-    priority: 0
+    reason: '',
+    refundAmount: '',
+    status: 0
   }
   export default {
     components: {
-      ShopIntroductionImageDetail
+      RefundDetail
     },
     props: {
-      shopId: {
-        type: String,
-        default: ''
-      },
       containerClass: {
         type: String,
         default: ''
@@ -81,14 +94,14 @@
         type: Boolean,
         default: true
       },
-      shopIntroductionImages: {
+      refunds: {
         type: Array,
         default () {
           return []
         }
       }
     },
-    name: 'crp_shopIntroductionImage',
+    name: 'crp_refund',
     data() {
       return {
         selections: [], /* 选中 */
@@ -100,29 +113,40 @@
         listQuery: {
           targetPage: 1,
           pageSize: 10,
-          keyword: undefined,
-          shopId: ''
+          keyword: undefined
         },
         temp: Object.assign({}, temp),
-        statusOptions: [{ label: '显示', key: 'false' }, { label: '隐藏', key: 'true' }],
+        statusOptions: [
+          { key: 0, label: '初始' },
+          { key: 1, label: '申请退款' },
+          { key: 2, label: '已使用' },
+          { key: 3, label: '退款中' },
+          { key: 4, label: '退款中' },
+          { key: 5, label: '退款成功' },
+          { key: 6, label: '已退款' },
+          { key: 7, label: '已撤销' },
+          { key: 8, label: '退款失败' }
+        ],
         dialogFormVisible: false,
         dialogStatus: '',
         tableKey: 0
       }
     },
     computed: {
-      ...mapGetters(['shopIntroductionImage'])
+      ...mapGetters(['refund'])
+    },
+    created() {
+      this.getList()
     },
     filters: {
       statusFilter(status) {
-        return status === false ? '显示' : '隐藏'
+        return ['初始', '申请退款', '已使用', '退款中', '退款中', '退款成功', '已退款', '已撤销', '退款失败'][status]
       }
     },
     methods: {
       getList() {
-        this.listQuery.shopId = this.shopId
         this.listLoading = true
-        this.$store.dispatch('GetAllShopIntroductionImage', this.listQuery).then(() => {
+        this.$store.dispatch('GetAllRefund', this.listQuery).then(() => {
           this.listLoading = false
         }, () => {})
       },
@@ -140,7 +164,7 @@
       handleBatchDelete () {
         if (this.selections.length === 0) {
           this.$message({
-            message: '请选择要删除的代金券',
+            message: '请选择要删除的退款订单',
             type: 'warning'
           })
           return
@@ -148,14 +172,14 @@
         const ids = this.selections.map((selection) => {
           return selection.id
         })
-        this.delete(ids, '确认批量删除代价券？')
+        this.delete(ids, '确认批量删除退款订单？')
       },
       handleModifyStatus(row) {
-        this.delete([row.id], '确认删除代价券？')
+        this.delete([row.id], '确认删除退款订单：' + row.id + '？')
       },
       delete (ids, msg) {
         this.$confirm(msg).then(() => {
-          this.$store.dispatch('DelShopIntroductionImage', { ids }).then(() => {
+          this.$store.dispatch('DelRefund', { ids }).then(() => {
             this.$message({
               message: '操作成功',
               type: 'success'
@@ -167,12 +191,10 @@
       handleCreate() {
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
-        this.temp.shopId = this.shopId
       },
       handleUpdate(row) {
-        this.$store.dispatch('GetShopIntroductionImageDetail', row.id).then((detail) => {
+        this.$store.dispatch('GetRefundDetail', row.id).then((detail) => {
           this.temp = Object.assign({}, detail)
-          this.temp.hide = String(this.temp.hide)
         })
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -196,17 +218,12 @@
        *  判断权限是否已经在传入的权限列表里面了
        * */
       has (id) {
-        return this.shopIntroductionImages.some((shopIntroductionImage) => {
-          return shopIntroductionImage.id === id
+        return this.refunds.some((refund) => {
+          return refund.id === id
         })
       },
       handleSelectionChange(val) {
         this.selections = val
-      }
-    },
-    watch: {
-      shopId () {
-        this.getList()
       }
     }
   }

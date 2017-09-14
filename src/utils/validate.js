@@ -57,6 +57,17 @@ export function validateNumber (msg) {
   }
 }
 
+export function validateFloatNumber (msg) {
+  return (rule, value, callback) => {
+    console.log(value)
+    if (!!value && !/^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/.test(value)) {
+      callback(new Error(msg))
+    } else {
+      callback()
+    }
+  }
+}
+
 /*
 * 优先级
 * */

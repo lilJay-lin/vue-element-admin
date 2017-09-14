@@ -58,3 +58,19 @@ export const user_r = 'user_r'
 export const user_u = 'user_u'
 /* 删除注册用户信息 */
 export const user_d = 'user_d'
+/* 添加代金券订单信息 */
+export const cashCouponOrder_c = 'cashCouponOrder_c'
+/* 查看代金券订单信息 */
+export const cashCouponOrder_r = 'cashCouponOrder_r'
+/* 更新代金券订单信息 */
+export const cashCouponOrder_u = 'cashCouponOrder_u'
+/* 删除代金券订单信息 */
+export const cashCouponOrder_d = 'cashCouponOrder_d'
+/* 添加退款信息 */
+export const refund_c = 'refund_c'
+/* 查看退款信息 */
+export const refund_r = 'refund_r'
+/* 更新退款信息 */
+export const refund_u = 'refund_u'
+/* 删除退款信息 */
+export const refund_d = 'refund_d'
