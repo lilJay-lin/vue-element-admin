@@ -73,13 +73,35 @@
   import { mapGetters } from 'vuex'
   import RefundDetail from './detail.vue'
   const temp = {
-    cashCouponOrderId: '',
-    comment: '',
-    evidence: '',
-    id: '',
-    reason: '',
-    refundAmount: '',
-    status: 0
+    refund: {
+      cashCouponOrderId: '',
+      comment: '',
+      evidence: '',
+      id: '',
+      reason: '',
+      refundAmount: '',
+      status: 0
+    },
+    cashCoupon: {
+      id: '',
+      shopId: '',
+      name: '',
+      preImage: '',
+      discountAmount: 0,
+      expiryDate: '',
+      expired: 'false',
+      hide: 'false',
+      priority: 0
+    },
+    cashCouponOrder: {
+      id: '',
+      number: '',
+      payOrderNumber: '',
+      price: '',
+      refundAmount: 0,
+      status: 0,
+      userId: ''
+    }
   }
   export default {
     components: {

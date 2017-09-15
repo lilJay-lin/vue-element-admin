@@ -1,5 +1,5 @@
 <template>
-  <el-dialog  :modal="false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="full">
+  <el-dialog  :modal-append-to-body="false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left"
              label-width="100px" style='margin-left:50px'>
       <el-form-item label="商家帐号名称" prop="name">

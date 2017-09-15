@@ -1,5 +1,5 @@
 <template>
-  <el-dialog  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
+  <el-dialog  :modal="false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
       <el-form-item label="编码" >
         <el-input v-model="detail.number" :disabled="true"></el-input>
@@ -24,7 +24,7 @@
       <el-button @click="cancel">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
       <template v-else>
-        <el-button type="primary" v-if="checkPermission(permissionConstant.cashCouponOrder_u)" @click="update">确 定</el-button>
+        <el-button type="primary" v-if="checkPermission(permissionConstant.cashCouponOrder_u) && dialogStatus !== 'info'" @click="update">确 定</el-button>
       </template>
     </div>
   </el-dialog>

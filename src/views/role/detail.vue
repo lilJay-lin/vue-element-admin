@@ -5,8 +5,7 @@
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
       <el-form-item label="描述">
-        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="detail.description">
-        </el-input>
+        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="detail.description"></el-input>
       </el-form-item>
       <el-form-item label="关联权限">
         <span v-if ="detail.permissionList.length === 0">无关联角色</span>

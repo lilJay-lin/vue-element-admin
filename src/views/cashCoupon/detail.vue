@@ -5,15 +5,17 @@
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
       <el-form-item label="缩略图">
-        <upload
-          :action="preImage.action"
-          @change="preImage.change"
-          @success="uploadSuccess"
-          @error="uploadError"
-          :headers="uploadHeaders()"
-          :disabled="preImage.loading">
-          <el-button type="primary" :loading="preImage.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
-        </upload>
+        <template v-if="checkPermission(permissionConstant.cashCoupon_u) && dialogStatus !== 'info'">
+          <upload
+            :action="preImage.action"
+            @change="preImage.change"
+            @success="uploadSuccess"
+            @error="uploadError"
+            :headers="uploadHeaders()"
+            :disabled="preImage.loading">
+            <el-button type="primary" :loading="preImage.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
+          </upload>
+        </template>
         <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
       </el-form-item>
       <el-form-item label="价格" prop="price">
@@ -45,7 +47,7 @@
       <el-button @click="cancel">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
       <template v-else>
-        <el-button type="primary" v-if="checkPermission(permissionConstant.cashCoupon_u)" @click="update">确 定</el-button>
+        <el-button type="primary" v-if="checkPermission(permissionConstant.cashCoupon_u) && dialogStatus !== 'info'" @click="update">确 定</el-button>
       </template>
     </div>
   </el-dialog>
@@ -115,7 +117,8 @@
         showUpload: false,
         textMap: {
           update: '编辑',
-          create: '创建'
+          create: '创建',
+          info: '浏览'
         },
         detailRules: {
           name: [

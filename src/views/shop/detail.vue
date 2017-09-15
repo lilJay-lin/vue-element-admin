@@ -7,9 +7,31 @@
             <el-input v-model="detail.name"></el-input>
           </el-form-item>
           <el-form-item label="商标">
+            <template v-if="checkPermission(permissionConstant.shop_u) && dialogStatus !== 'info'">
+              <upload
+                :action="logo.action"
+                @change="logo.change"
+                @success="logo.uploadSuccess"
+                @error="logo.uploadError"
+                :headers="uploadHeaders()"
+                :disabled="logo.loading">
+                <el-button type="primary" :loading="logo.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
+              </upload>
+            </template>
             <img :src="detail.logo" style="width: 80px;height: auto;border: 1px solid #bfcbd9" alt="">
           </el-form-item>
           <el-form-item label="缩略图">
+            <template v-if="checkPermission(permissionConstant.shop_u) && dialogStatus !== 'info'">
+              <upload
+                :action="preImage.action"
+                @change="preImage.change"
+                @success="preImage.uploadSuccess"
+                @error="preImage.uploadError"
+                :headers="uploadHeaders()"
+                :disabled="preImage.loading">
+                <el-button type="primary" :loading="preImage.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
+              </upload>
+            </template>
             <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
           </el-form-item>
           <el-form-item label="地址">
@@ -79,12 +101,16 @@
   import CashCoupon from '../cashCoupon/records.vue'
   import ShopIntroductionImage from '../shopIntroductionImage/records.vue'
   import ShopAccount from '../shopAccount/records.vue'
+  import Upload from 'components/Upload'
+  import UploadCallback from 'utils/uploadCb'
   export default {
+    mixins: [new UploadCallback(() => {}, () => {})],
     components: {
       Classification,
       CashCoupon,
       ShopIntroductionImage,
-      ShopAccount
+      ShopAccount,
+      Upload
     },
     props: {
       dialogStatus: {
@@ -121,12 +147,49 @@
       }
     },
     data () {
+      const me = this
       return {
         collapseName: [],
         isMain: false,
         textMap: {
           update: '编辑',
           create: '创建'
+        },
+        preImage: {
+          action: process.env.BASE_API + '/mi/shopAction/uploadPreImage',
+          loading: false,
+          change () {
+            me.preImage.loading = true
+          },
+          uploadSuccess (res) {
+            me.uploadSuccess(res)
+            if (res.status === 1) {
+              me.detail.preImage = res.result
+            }
+            me.preImage.loading = false
+          },
+          uploadError () {
+            me.uploadError(type)
+            me.preImage.loading = false
+          }
+        },
+        logo: {
+          action: process.env.BASE_API + '/mi/shopAction/uploadLogo',
+          loading: false,
+          change () {
+            me.logo.loading = true
+          },
+          uploadSuccess (res) {
+            me.uploadSuccess(res)
+            if (res.status === 1) {
+              me.detail.logo = res.result
+            }
+            me.logo.loading = false
+          },
+          uploadError (type) {
+            me.uploadError(type)
+            me.logo.loading = false
+          }
         },
         detailRules: {
           name: [
@@ -147,8 +210,14 @@
     },
     methods: {
       validate () {
+        const me = this
         return new Promise((resolve, reject) => {
           this.$refs.detailForm.validate((valid) => {
+            if (me.preImage.loading || me.logo.loading) {
+              me.$message.warning('正在上传图片' + (me.preImage ? '缩略图' : 'logo') + '，请稍后提交')
+              reject()
+              return
+            }
             if (valid) {
               resolve()
             } else {
@@ -212,6 +281,8 @@
         if (this.$refs.detailForm) {
           this.$refs.detailForm.resetFields()
           this.collapseName = []
+          this.preImage.loading = false
+          this.logo.loading = false
         }
       }
     }

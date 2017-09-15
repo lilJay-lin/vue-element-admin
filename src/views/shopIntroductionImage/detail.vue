@@ -2,15 +2,17 @@
   <el-dialog :modal-append-to-body="false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
       <el-form-item label="图片">
-        <upload
-          :action="contentUrl.action"
-          @change="contentUrl.change"
-          @success="uploadSuccess"
-          @error="uploadError"
-          :headers="uploadHeaders()"
-          :disabled="contentUrl.loading">
-          <el-button type="primary" :loading="contentUrl.loading" style="margin-bottom: 10px;">上传图片</el-button>
-        </upload>
+        <template v-if="checkPermission(permissionConstant.shop_u)">
+          <upload
+            :action="contentUrl.action"
+            @change="contentUrl.change"
+            @success="uploadSuccess"
+            @error="uploadError"
+            :headers="uploadHeaders()"
+            :disabled="contentUrl.loading">
+            <el-button type="primary" :loading="contentUrl.loading" style="margin-bottom: 10px;">上传图片</el-button>
+          </upload>
+        </template>
         <img :src="detail.contentUrl" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
       </el-form-item>
       <el-form-item label="优先级" prop="priority">
