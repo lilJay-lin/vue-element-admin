@@ -1,51 +1,36 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="商户名称" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="广告名称" v-model="listQuery.keyword"></el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
-        <el-button  v-if="checkPermission(permissionConstant.shop_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
-        <el-button  v-if="checkPermission(permissionConstant.shop_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
+        <el-button  v-if="checkPermission(permissionConstant.advertisement_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+        <el-button  v-if="checkPermission(permissionConstant.advertisement_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
       </template>
     </div>
-    <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="shop.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
-      <el-table-column
+    <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="advertisement.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+      <el-table-column v-if="isMain"
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column width="120" align="center" label="商户名称">
+      <el-table-column align="center" label="名称">
         <template scope="scope">
           <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="缩略图">
+      <el-table-column width="160" align="center" label="图片">
         <template scope="scope">
-          <img :src="scope.row.preImage" alt="" style="width: 120px;height: auto;padding-top: 5px;">
+          <img :src="scope.row.image" alt="" style="width: 120px;height: auto;padding-top: 5px;">
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="优惠次数">
+      <el-table-column align="center" label="超链接">
         <template scope="scope">
-          <span>{{scope.row.totalCashCouponNumber}}</span>
+          <span>{{scope.row.link}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120" align="center" label="优化金额">
+      <el-table-column width="120" align="center" label="优先权重">
         <template scope="scope">
-          <span>{{scope.row.totalCashCouponPrice}}</span>
-        </template>
-      </el-table-column>
-<!--      <el-table-column align="center" label="地址">
-        <template scope="scope">
-          <span >{{scope.row.address}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="优先权重">
-        <template scope="scope">
-          <span >{{scope.row.priority}}</span>
-        </template>
-      </el-table-column>-->
-      <el-table-column align="center" label="简介">
-        <template scope="scope">
-          <span>{{scope.row.introduction}}</span>
+          <span>{{scope.row.priority}}</span>
         </template>
       </el-table-column>
       <template  v-if="isMain" >
@@ -54,7 +39,7 @@
             <el-tag :type="scope.row.hide ?  'danger' : 'primary'">{{scope.row.hide | statusFilter}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="checkPermission(permissionConstant.shop_d)" align="center" label="操作" width="150" >
+        <el-table-column v-if="checkPermission(permissionConstant.advertisement_d)" align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
@@ -72,32 +57,28 @@
     </el-table>
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.currentPage"
-                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="shop.pageInfo.totalRow">
+                     :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="advertisement.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <Shop-Detail  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Shop-Detail>
+    <Advertisement-Detail  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Advertisement-Detail>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
-  import ShopDetail from './detail.vue'
+  import AdvertisementDetail from './detail.vue'
   const temp = {
-    address: '',
-    hide: 'true',
     id: '',
-    introduction: '',
-    logo: '',
     name: '',
-    preImage: '',
+    image: '',
+    link: '',
     priority: 0,
-    shopClassificationList: [],
-    totalCashCouponNumber: 0,
-    totalCashCouponPrice: 0
+    hide: 'false',
+    description: ''
   }
   export default {
     components: {
-      ShopDetail
+      AdvertisementDetail
     },
     props: {
       containerClass: {
@@ -108,14 +89,14 @@
         type: Boolean,
         default: true
       },
-      shops: {
+      advertisements: {
         type: Array,
         default () {
           return []
         }
       }
     },
-    name: 'crp_shop',
+    name: 'crp_advertisement',
     data() {
       return {
         selections: [], /* 选中 */
@@ -137,7 +118,7 @@
       }
     },
     computed: {
-      ...mapGetters(['shop'])
+      ...mapGetters(['advertisement'])
     },
     created() {
       this.getList()
@@ -150,7 +131,7 @@
     methods: {
       getList() {
         this.listLoading = true
-        this.$store.dispatch('GetAllShop', this.listQuery).then(() => {
+        this.$store.dispatch('GetAllAdvertisement', this.listQuery).then(() => {
           this.listLoading = false
         }, () => {})
       },
@@ -168,7 +149,7 @@
       handleBatchDelete () {
         if (this.selections.length === 0) {
           this.$message({
-            message: '请选择要删除的商户',
+            message: '请选择要删除的分类',
             type: 'warning'
           })
           return
@@ -176,14 +157,14 @@
         const ids = this.selections.map((selection) => {
           return selection.id
         })
-        this.delete(ids, '确认批量删除商户？')
+        this.delete(ids, '确认批量删除分类？')
       },
       handleModifyStatus(row) {
-        this.delete([row.id], '确认删除商户：' + row.name + '？')
+        this.delete([row.id], '确认删除分类：' + row.name + '？')
       },
       delete (ids, msg) {
         this.$confirm(msg).then(() => {
-          this.$store.dispatch('DelShop', { ids }).then(() => {
+          this.$store.dispatch('DelAdvertisement', { ids }).then(() => {
             this.$message({
               message: '操作成功',
               type: 'success'
@@ -197,12 +178,9 @@
         this.dialogFormVisible = true
       },
       handleUpdate(row) {
-        this.$store.dispatch('GetShopDetail', row.id).then((detail) => {
-          delete detail.cashCouponList
-          delete detail.shopIntroductionImageList
-          detail.hide = String(detail.hide)
-          detail.shopClassificationList = detail.shopClassificationList || []
+        this.$store.dispatch('GetAdvertisementDetail', row.id).then((detail) => {
           this.temp = Object.assign({}, detail)
+          this.temp.hide = String(this.temp.hide)
         })
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -226,8 +204,8 @@
        *  判断权限是否已经在传入的权限列表里面了
        * */
       has (id) {
-        return this.shops.some((shop) => {
-          return shop.id === id
+        return this.advertisements.some((advertisement) => {
+          return advertisement.id === id
         })
       },
       handleSelectionChange(val) {

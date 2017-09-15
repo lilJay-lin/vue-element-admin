@@ -18,7 +18,7 @@
           <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="优先级">
+      <el-table-column align="center" label="优先权重">
         <template scope="scope">
           <span >{{scope.row.priority}}</span>
         </template>

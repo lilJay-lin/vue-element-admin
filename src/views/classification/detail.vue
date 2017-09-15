@@ -4,7 +4,7 @@
       <el-form-item label="分类名称"  prop="name">
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
-      <el-form-item label="优先级" prop="priority">
+      <el-form-item label="优先权重" prop="priority">
         <el-input v-model="detail.priority" type="number" min="0"></el-input>
       </el-form-item>
       <el-form-item label="状态">
@@ -67,7 +67,7 @@
           ],
           priority: [
             { validator: Validate.validatePriority, trigger: 'blur' },
-            { validator: Validate.validateNumber('优先级只能为数字'), trigger: 'blur' }
+            { validator: Validate.validateNumber('优先权重只能为数字'), trigger: 'blur' }
           ]
         }
       }

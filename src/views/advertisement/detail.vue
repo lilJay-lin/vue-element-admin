@@ -1,40 +1,25 @@
 <template>
-  <el-dialog :modal-append-to-body="false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
+  <el-dialog  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
-      <el-form-item label="代金券名称"  prop="name">
+      <el-form-item label="分类名称"  prop="name">
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
       <el-form-item label="缩略图">
-        <template v-if="checkPermission(permissionConstant.cashCoupon_u) && dialogStatus !== 'info'">
+        <template v-if="checkPermission(permissionConstant.advertisement_u) && dialogStatus !== 'info'">
           <upload
-            :action="preImage.action"
-            @change="preImage.change"
+            :action="image.action"
+            @change="image.change"
             @success="uploadSuccess"
             @error="uploadError"
             :headers="uploadHeaders()"
-            :disabled="preImage.loading">
-            <el-button type="primary" :loading="preImage.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
+            :disabled="image.loading">
+            <el-button type="primary" :loading="image.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
           </upload>
         </template>
-        <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
-      </el-form-item>
-      <el-form-item label="价格" prop="price">
-        <el-input v-model="detail.price" ></el-input>
-      </el-form-item>
-      <el-form-item label="优惠金额" prop="discountAmount">
-        <el-input v-model="detail.discountAmount"></el-input>
-      </el-form-item>
-      <el-form-item label="过期时间">
-        <el-date-picker v-model="detail.expiryDate" :clearable="false" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
+        <img :src="detail.image" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
       </el-form-item>
       <el-form-item label="优先权重" prop="priority">
         <el-input v-model="detail.priority" type="number" min="0"></el-input>
-      </el-form-item>
-      <el-form-item label="是否过期">
-        <el-select class="filter-item"  v-model="detail.expired" placeholder="状态">
-          <el-option v-for="item in expireOptions" :key="item.key" :label="item.label" :value="item.key">
-          </el-option>
-        </el-select>
       </el-form-item>
       <el-form-item label="状态">
         <el-select class="filter-item"  v-model="detail.hide" placeholder="状态">
@@ -47,7 +32,7 @@
       <el-button @click="cancel">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
       <template v-else>
-        <el-button type="primary" v-if="checkPermission(permissionConstant.cashCoupon_u) && dialogStatus !== 'info'" @click="update">确 定</el-button>
+        <el-button type="primary" v-if="checkPermission(permissionConstant.advertisement_u)" @click="update">确 定</el-button>
       </template>
     </div>
   </el-dialog>
@@ -56,18 +41,17 @@
   import Upload from 'components/Upload'
   import UploadCallback from 'utils/uploadCb'
   import * as Validate from 'utils/validate'
-  import { parseTime } from 'utils/index'
   export default {
     components: {
       Upload
     },
     mixins: [new UploadCallback(function (data) {
       if (data.status === 1) {
-        this.detail.preImage = data.result
+        this.detail.image = data.result
       }
-      this.preImage.loading = false
+      this.image.loading = false
     }, function () {
-      this.preImage.loading = false
+      this.image.loading = false
     })],
     props: {
       dialogStatus: {
@@ -89,13 +73,8 @@
         default () {
           return {
             id: '',
-            shopId: '',
             name: '',
-            preImage: '',
-            price: 0,
-            discountAmount: 0,
-            expiryDate: '',
-            expired: 'false',
+            description: '',
             hide: 'false',
             priority: 0
           }
@@ -105,37 +84,25 @@
     data () {
       const me = this
       return {
-        expireOptions: [{ label: '否', key: 'false' }, { label: '是', key: 'true' }],
-        preImage: {
-          action: process.env.BASE_API + '/mi/cashCouponAction/uploadImage',
+        isMain: false,
+        image: {
+          action: process.env.BASE_API + '/mi/advertisementAction/uploadImage',
           loading: false,
           change () {
-            me.preImage.loading = true
+            me.image.loading = true
           }
         },
-        isMain: false,
-        showUpload: false,
         textMap: {
           update: '编辑',
-          create: '创建',
-          info: '浏览'
+          create: '创建'
         },
         detailRules: {
           name: [
-            { required: true, min: 3, max: 32, message: '代金券名称长度3到32位', trigger: 'blur' }
+            { required: true, min: 3, max: 32, message: '分类名称长度3到32位', trigger: 'blur' }
           ],
           priority: [
             { validator: Validate.validatePriority, trigger: 'blur' },
             { validator: Validate.validateNumber('优先权重只能为数字'), trigger: 'blur' }
-          ],
-          price: [
-            { validator: Validate.validateFloatNumber('价格只能为数字'), trigger: 'blur' }
-          ],
-          discountAmount: [
-            { validator: Validate.validateFloatNumber('优惠金额只能为数字'), trigger: 'blur' }
-          ],
-          expireDate: [
-            { require: true, message: '过期时间不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -144,12 +111,12 @@
       validate () {
         const me = this
         return new Promise((resolve, reject) => {
-          if (me.preImage.loading) {
+          if (me.image.loading) {
             me.$message.warning('正在上传图片缩略图，请稍后提交')
             reject()
             return
           }
-          this.$refs.detailForm.validate((valid) => {
+          me.$refs.detailForm.validate((valid) => {
             if (valid) {
               resolve()
             } else {
@@ -163,8 +130,7 @@
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
           delete temp.id
-          temp.expiryDate = parseTime(temp.expiryDate)
-          me.$store.dispatch('CreateCashCoupon', temp).then(() => {
+          me.$store.dispatch('CreateAdvertisement', temp).then(() => {
             this.$notify({
               title: '成功',
               message: '创建成功',
@@ -179,8 +145,7 @@
         const me = this
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
-          temp.expiryDate = parseTime(temp.expiryDate)
-          me.$store.dispatch('UpdateCashCouponDetail', temp).then(() => {
+          me.$store.dispatch('UpdateAdvertisementDetail', temp).then(() => {
             me.$notify({
               title: '成功',
               message: '更新成功',
@@ -199,7 +164,6 @@
       dialogFormVisible () {
         if (this.$refs.detailForm) {
           this.$refs.detailForm.resetFields()
-          this.preImage.loading = false
         }
       }
     }

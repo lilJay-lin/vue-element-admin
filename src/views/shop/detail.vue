@@ -46,7 +46,7 @@
           <el-form-item label="优化价格" prop="totalCashCouponPrice">
             <el-input v-model="detail.totalCashCouponPrice"></el-input>
           </el-form-item>
-          <el-form-item label="优先级" prop="priority">
+          <el-form-item label="优先权重" prop="priority">
             <el-input v-model="detail.priority" type="number" min="0"></el-input>
           </el-form-item>
           <el-form-item label="状态">
@@ -200,10 +200,10 @@
             { validator: Validate.validateNumber('优惠次数只能为数字'), trigger: 'blur' }
           ],
           totalCashCouponNumber: [
-            { validator: Validate.validateNumber('优先级只能为数字'), trigger: 'blur' }
+            { validator: Validate.validateNumber('优先权重只能为数字'), trigger: 'blur' }
           ],
           totalCashCouponPrice: [
-            { validator: Validate.validateFloatNumber('优先级只能为数字'), trigger: 'blur' }
+            { validator: Validate.validateFloatNumber('优先权重只能为数字'), trigger: 'blur' }
           ]
         }
       }

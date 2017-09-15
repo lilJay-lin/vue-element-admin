@@ -69,11 +69,11 @@ export function validateFloatNumber (msg) {
 }
 
 /*
-* 优先级
+* 优先权重
 * */
 export function validatePriority (rule, value, callback) {
   if (value > 999) {
-    callback('优先级最大999')
+    callback('优先权重最大999')
   } else {
     callback()
   }

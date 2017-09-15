@@ -14,6 +14,8 @@ import shopAccount from './modules/shopAccount'
 import shopIntroductionImage from './modules/shopIntroductionImage'
 import cashCouponOrder from './modules/cashCouponOrder'
 import refund from './modules/refund'
+import advertisement from './modules/advertisement'
+import refundReason from './modules/refundReason'
 
 Vue.use(Vuex);
 
@@ -30,7 +32,9 @@ const store = new Vuex.Store({
     shopAccount,
     shopIntroductionImage,
     cashCouponOrder,
-    refund
+    refund,
+    advertisement,
+    refundReason
   },
   getters,
   plugins: process.env.NODE_ENV === 'development' ? [createLogger()] : []

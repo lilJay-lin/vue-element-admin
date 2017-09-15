@@ -74,3 +74,11 @@ export const refund_r = 'refund_r'
 export const refund_u = 'refund_u'
 /* 删除退款信息 */
 export const refund_d = 'refund_d'
+/* 添加退款管理信息 */
+export const refundReason_c = 'refundReason_c'
+/* 查看退款管理信息 */
+export const refundReason_r = 'refundReason_r'
+/* 更新退款管理信息 */
+export const refundReason_u = 'refundReason_u'
+/* 删除退款管理信息 */
+export const refundReason_d = 'refundReason_d'
