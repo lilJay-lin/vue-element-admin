@@ -16,6 +16,8 @@ import cashCouponOrder from './modules/cashCouponOrder'
 import refund from './modules/refund'
 import advertisement from './modules/advertisement'
 import refundReason from './modules/refundReason'
+import present from './modules/present'
+import presentOrder from './modules/presentOrder'
 
 Vue.use(Vuex);
 
@@ -34,7 +36,9 @@ const store = new Vuex.Store({
     cashCouponOrder,
     refund,
     advertisement,
-    refundReason
+    refundReason,
+    present,
+    presentOrder
   },
   getters,
   plugins: process.env.NODE_ENV === 'development' ? [createLogger()] : []

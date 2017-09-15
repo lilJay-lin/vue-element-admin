@@ -96,7 +96,19 @@ export const asyncRouterMap = [
     children: [{ path: 'index', component: _import('userCenter/index'), name: '个人中心' }]
   },
   {
-    path: '/shop',
+    path: '/ad',
+    component: Layout,
+    redirect: 'noredirect',
+    name: '抽奖模块',
+    icon: 'zujian',
+    meta: { role: [Constant.refundReason_r, Constant.advertisement_r] },
+    children: [
+      { path: 'present', component: _import('present/index'), name: '礼品管理', meta: { role: [Constant.advertisement_r] } },
+      { path: 'presentOrder', component: _import('presentOrder/index'), name: '抽奖管理', meta: { role: [Constant.refundReason_r] } }
+    ]
+  },
+  {
+    path: '/other',
     component: Layout,
     redirect: 'noredirect',
     name: '其他',

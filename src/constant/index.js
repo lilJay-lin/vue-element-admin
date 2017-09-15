@@ -82,3 +82,19 @@ export const refundReason_r = 'refundReason_r'
 export const refundReason_u = 'refundReason_u'
 /* 删除退款管理信息 */
 export const refundReason_d = 'refundReason_d'
+/* 添加礼品信息 */
+export const present_c = 'present_c'
+/* 查看礼品信息 */
+export const present_r = 'present_r'
+/* 更新礼品信息 */
+export const present_u = 'present_u'
+/* 删除礼品信息 */
+export const present_d = 'present_d'
+/* 添加抽奖订单信息 */
+export const presentOrder_c = 'presentOrder_c'
+/* 查看抽奖订单信息 */
+export const presentOrder_r = 'presentOrder_r'
+/* 更新抽奖订单信息 */
+export const presentOrder_u = 'presentOrder_u'
+/* 删除抽奖订单信息 */
+export const presentOrder_d = 'presentOrder_d'
