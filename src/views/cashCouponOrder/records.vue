@@ -148,7 +148,7 @@
           status: 0
         },
         temp: Object.assign({}, temp),
-        statusOptions: statusOptions,
+        statusOptions,
         dialogFormVisible: false,
         dialogStatus: '',
         tableKey: 0

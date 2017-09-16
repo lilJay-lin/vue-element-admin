@@ -152,6 +152,7 @@
         const me = this
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail.cashCouponOrder)
+          delete temp.cashCoupon
           me.$store.dispatch('UpdateCashCouponOrderDetail', temp).then(() => {
             me.$notify({
               title: '成功',
