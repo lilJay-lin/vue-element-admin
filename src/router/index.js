@@ -59,7 +59,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: 'noredirect',
     name: '业务管理',
-    icon: 'zonghe',
+    icon: 'xinrenzhinan',
     meta: { role: [Constant.cashCouponOrder_r, Constant.refund_r] },
     children: [
       { path: 'cashCouponOrder', component: _import('cashCouponOrder/index'), name: '代金券订单管理', meta: { role: [Constant.cashCouponOrder_r] } },
@@ -71,7 +71,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: 'noredirect',
     name: '商家模块',
-    icon: 'zujian',
+    icon: 'yinhangqia',
     meta: { role: [Constant.shopClassification_r, Constant.shop_r, Constant.cashCoupon_r] },
     children: [
       {
@@ -79,7 +79,6 @@ export const asyncRouterMap = [
         component: _import('layout/InnerLayout'),
         redirect: 'noredirect',
         name: '商家管理',
-        icon: 'zujian',
         meta: { role: [Constant.shop_r] },
         children: [
           { path: 'index', component: _import('shop/index'), name: '商家帐号管理', meta: { role: [Constant.shop_r] } }
@@ -100,7 +99,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: 'noredirect',
     name: '抽奖模块',
-    icon: 'zujian',
+    icon: 'table',
     meta: { role: [Constant.refundReason_r, Constant.advertisement_r] },
     children: [
       { path: 'present', component: _import('present/index'), name: '礼品管理', meta: { role: [Constant.advertisement_r] } },
@@ -112,7 +111,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: 'noredirect',
     name: '其他',
-    icon: 'zujian',
+    icon: 'zonghe',
     meta: { role: [Constant.refundReason_r, Constant.advertisement_r] },
     children: [
       { path: 'advertisement', component: _import('advertisement/index'), name: '广告管理', meta: { role: [Constant.advertisement_r] } },
@@ -124,7 +123,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: '/components/index',
     name: '组件',
-    icon: 'zujian',
+    icon: 'ziliaoshouce',
     children: [
       { path: 'index', component: _import('components/index'), name: '介绍 ' },
       { path: 'tinymce', component: _import('components/tinymce'), name: '富文本编辑器' },
@@ -159,7 +158,7 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: 'noredirect',
     name: '综合实例',
-    icon: 'zonghe',
+    icon: 'yinhangqia',
     children: [
       {
         path: '/example/table',

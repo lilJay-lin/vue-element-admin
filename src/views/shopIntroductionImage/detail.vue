@@ -2,7 +2,7 @@
   <el-dialog :modal-append-to-body="false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
       <el-form-item label="图片">
-        <template v-if="checkPermission(permissionConstant.shop_u)">
+        <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.shop_u) && dialogStatus=='update'">
           <upload
             :action="contentUrl.action"
             @change="contentUrl.change"
@@ -28,8 +28,8 @@
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-      <template v-else>
-        <el-button type="primary" v-if="checkPermission(permissionConstant.shop_u)" @click="update">确 定</el-button>
+      <template v-if="dialogStatus=='update' && checkPermission(permissionConstant.shop_u)">
+        <el-button type="primary" @click="update">确 定</el-button>
       </template>
     </div>
   </el-dialog>

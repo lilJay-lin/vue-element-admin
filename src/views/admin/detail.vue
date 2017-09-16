@@ -30,13 +30,13 @@
       <el-form-item label="关联角色">
         <span v-if ="detail.roleList.length === 0">无关联角色</span>
         <el-tooltip v-else v-for="role in detail.roleList" :key="role.id" :content="role.description" placement="top">
-          <el-tag type="success" :closable="checkPermission(permissionConstant.admin_u)"
+          <el-tag type="success" :closable="dialogStatus=='create' || checkPermission(permissionConstant.admin_u) && dialogStatus === 'update'"
                   :close-transition="false" @close="handleDelRelation(role)">
             {{role.name}}
           </el-tag>
         </el-tooltip>
       </el-form-item>
-      <el-form-item label="选择关联角色" v-if="checkPermission(permissionConstant.admin_u) && dialogStatus !== 'info'">
+      <el-form-item label="选择关联角色" v-if="dialogStatus=='create' || checkPermission(permissionConstant.admin_u) && dialogStatus === 'update'">
         <Permissions :is-main="isMain" :roles="detail.roleList" @check="handleAddRelation"
                      @cancel-check="handleDelRelation"></Permissions>
       </el-form-item>

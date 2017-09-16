@@ -7,7 +7,7 @@
             <el-input v-model="detail.name"></el-input>
           </el-form-item>
           <el-form-item label="商标">
-            <template v-if="checkPermission(permissionConstant.shop_u) && dialogStatus !== 'info'">
+            <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.shop_u) && dialogStatus === 'update'">
               <upload
                 :action="logo.action"
                 @change="logo.change"
@@ -21,7 +21,7 @@
             <img :src="detail.logo" style="width: 80px;height: auto;border: 1px solid #bfcbd9" alt="">
           </el-form-item>
           <el-form-item label="缩略图">
-            <template v-if="checkPermission(permissionConstant.shop_u) && dialogStatus !== 'info'">
+            <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.shop_u) && dialogStatus === 'update'">
               <upload
                 :action="preImage.action"
                 @change="preImage.change"
@@ -58,13 +58,13 @@
           <el-form-item label="商店类别">
             <span v-if ="detail.shopClassificationList.length === 0">未设置类别</span>
             <el-tooltip v-else v-for="cls in detail.shopClassificationList" :key="cls.id" :content="cls.description" placement="top">
-              <el-tag type="success" :closable="checkPermission(permissionConstant.shop_u)"
+              <el-tag type="success" :closable="dialogStatus=='create' || checkPermission(permissionConstant.shop_u) && dialogStatus=='update'"
                       :close-transition="false" @close="handleDelRelation(cls)">
                 {{cls.name}}
               </el-tag>
             </el-tooltip>
           </el-form-item>
-          <el-form-item label="选择商店类别" v-if="checkPermission(permissionConstant.shop_u) && dialogStatus !== 'info'">
+          <el-form-item label="选择商店类别" v-if="dialogStatus=='create' || checkPermission(permissionConstant.shop_u) && dialogStatus === 'update'">
             <Classification :is-main="isMain" :shopClassifications="detail.shopClassificationList" @check="handleAddRelation"
                             @cancel-check="handleDelRelation"></Classification>
           </el-form-item>
@@ -72,22 +72,22 @@
         <div class="dialog-footer" style="text-align: right;">
           <el-button @click="cancel">取 消</el-button>
           <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-          <template v-else>
-            <el-button type="primary" v-if="checkPermission(permissionConstant.shopClassification_u)" @click="update">确 定</el-button>
+          <template v-if="checkPermission(permissionConstant.shopClassification_u) && dialogStatus === 'update'">
+            <el-button type="primary" @click="update">确 定</el-button>
           </template>
         </div>
       </el-collapse-item>
-      <template v-if="checkPermission(permissionConstant.shop_r)">
+      <template v-if="checkPermission(permissionConstant.shop_r) && dialogStatus !=='create'">
         <el-collapse-item title="商家帐号" name="2">
           <shop-account :shop-id="detail.id"></shop-account>
         </el-collapse-item>
       </template>
-      <template v-if="checkPermission(permissionConstant.shop_r)">
+      <template v-if="checkPermission(permissionConstant.shop_r) && dialogStatus !== 'create'">
         <el-collapse-item title="商家图集" name="3">
           <shop-introduction-image :shop-id="detail.id"></shop-introduction-image>
         </el-collapse-item>
       </template>
-      <template v-if="checkPermission(permissionConstant.cashCoupon_r)">
+      <template v-if="checkPermission(permissionConstant.cashCoupon_r) && dialogStatus !=='create'">
         <el-collapse-item title="商家代金券" name="4">
           <CashCoupon :shop-id="detail.id"></CashCoupon>
         </el-collapse-item>

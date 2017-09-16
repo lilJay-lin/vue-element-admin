@@ -28,8 +28,8 @@
       <div class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-        <template v-else>
-          <el-button type="primary" v-if="checkPermission(permissionConstant.refund_u)" @click="update">确 定</el-button>
+        <template v-if="checkPermission(permissionConstant.refund_u) && dialogStatus === 'update'">
+          <el-button type="primary" @click="update">确 定</el-button>
         </template>
       </div>
       <CashCouponOrder-Detail :dialog-status="'info'" @cancel="cancelCashCouponOrder()" :detail="detail.cashCouponOrder" :status-options="statusOptions" :dialog-form-visible="cashCouponOrderVisible" ></CashCouponOrder-Detail>

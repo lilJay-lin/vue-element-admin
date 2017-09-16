@@ -10,21 +10,21 @@
       <el-form-item label="关联权限">
         <span v-if ="detail.permissionList.length === 0">无关联角色</span>
         <el-tooltip v-else v-for="permission in detail.permissionList" :key="permission.id" :content="permission.description" placement="top">
-          <el-tag type="success" :closable="checkPermission(permissionConstant.role_u)"
+          <el-tag type="success" :closable="dialogStatus=='create' || checkPermission(permissionConstant.role_u) && dialogStatus === 'update'"
                   :close-transition="false" @close="handleDelRelation(permission)">
             {{permission.name}}
           </el-tag>
         </el-tooltip>
       </el-form-item>
-      <el-form-item label="选择关联权限" v-if="checkPermission(permissionConstant.role_u)">
+      <el-form-item label="选择关联权限" v-if="dialogStatus=='create' || checkPermission(permissionConstant.role_u) && dialogStatus === 'update'">
         <Permissions :permissions="detail.permissionList" @check="handleAddRelation" @cancel-check="handleDelRelation"></Permissions>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-      <template v-else>
-        <el-button type="primary" v-if="checkPermission(permissionConstant.role_u)" @click="update">确 定</el-button>
+      <template  v-if="dialogStatus=='update' && checkPermission(permissionConstant.role_u)">
+        <el-button type="primary" @click="update">确 定</el-button>
       </template>
     </div>
   </el-dialog>

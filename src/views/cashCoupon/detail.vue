@@ -5,7 +5,7 @@
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
       <el-form-item label="缩略图">
-        <template v-if="checkPermission(permissionConstant.cashCoupon_u) && dialogStatus !== 'info'">
+        <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.cashCoupon_u) && dialogStatus === 'update'">
           <upload
             :action="preImage.action"
             @change="preImage.change"
@@ -46,8 +46,8 @@
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-      <template v-else>
-        <el-button type="primary" v-if="checkPermission(permissionConstant.cashCoupon_u) && dialogStatus !== 'info'" @click="update">确 定</el-button>
+      <template v-if="dialogStatus=='update' && checkPermission(permissionConstant.cashCoupon_u)">
+        <el-button type="primary" @click="update">确 定</el-button>
       </template>
     </div>
   </el-dialog>

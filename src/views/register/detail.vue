@@ -22,8 +22,8 @@
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-      <template v-else>
-        <el-button type="primary" v-if="checkPermission(permissionConstant.role_u)" @click="update">确 定</el-button>
+      <template v-if="dialogStatus=='update' && checkPermission(permissionConstant.role_u)">
+        <el-button type="primary" @click="update">确 定</el-button>
       </template>
     </div>
   </el-dialog>

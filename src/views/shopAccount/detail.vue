@@ -41,9 +41,6 @@
       <template v-if="dialogStatus === 'update' && checkPermission(permissionConstant.shop_u)">
         <el-button type="primary" @click="update">确 定</el-button>
       </template>
-      <template v-if="dialogStatus === 'info'">
-        <el-button type="primary" @click="updateSelf">确 定</el-button>
-      </template>
     </div>
     <el-dialog :modal="false" title="修改密码" :visible="passVisible" :before-close="closePass" size="tiny">
       <el-form class="small-space" :model="pass" :rules="passRules" ref="passForm" label-position="left" label-width="100px">

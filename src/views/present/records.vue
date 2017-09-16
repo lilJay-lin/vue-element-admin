@@ -13,7 +13,7 @@
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column align="center" label="名称">
+      <el-table-column align="center" label="名称" width="120">
         <template scope="scope">
           <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
         </template>
@@ -23,14 +23,29 @@
           <img :src="scope.row.image" alt="" style="width: 120px;height: auto;padding-top: 5px;">
         </template>
       </el-table-column>
-      <el-table-column align="center" label="超链接">
+      <el-table-column align="center" label="地址">
         <template scope="scope">
-          <span>{{scope.row.link}}</span>
+          <span>{{scope.row.address}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120" align="center" label="优先权重">
+      <el-table-column align="center" label="库存"  width="80">
         <template scope="scope">
-          <span>{{scope.row.priority}}</span>
+          <span>{{scope.row.stock}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="需求" width="80">
+        <template scope="scope">
+          <span>{{scope.row.requirement}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="抽奖权重" width="120">
+        <template scope="scope">
+          <span>{{scope.row.weight}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="有效时间" width="120">
+        <template scope="scope">
+          <span>{{scope.row.expiryDate}}</span>
         </template>
       </el-table-column>
       <template  v-if="isMain" >
@@ -68,13 +83,15 @@
   import { mapGetters } from 'vuex'
   import PresentDetail from './detail.vue'
   const temp = {
+    address: '',
+    expiryDate: '',
+    hide: '',
     id: '',
-    name: '',
     image: '',
-    link: '',
-    priority: 0,
-    hide: 'false',
-    description: ''
+    name: '',
+    requirement: 0,
+    stock: 0,
+    weight: 0
   }
   export default {
     components: {
@@ -149,7 +166,7 @@
       handleBatchDelete () {
         if (this.selections.length === 0) {
           this.$message({
-            message: '请选择要删除的分类',
+            message: '请选择要删除的奖品',
             type: 'warning'
           })
           return
@@ -157,10 +174,10 @@
         const ids = this.selections.map((selection) => {
           return selection.id
         })
-        this.delete(ids, '确认批量删除分类？')
+        this.delete(ids, '确认批量删除奖品？')
       },
       handleModifyStatus(row) {
-        this.delete([row.id], '确认删除分类：' + row.name + '？')
+        this.delete([row.id], '确认删除广告：' + row.name + '？')
       },
       delete (ids, msg) {
         this.$confirm(msg).then(() => {

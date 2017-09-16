@@ -4,8 +4,8 @@
       <el-form-item label="分类名称"  prop="name">
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
-      <el-form-item label="缩略图">
-        <template v-if="checkPermission(permissionConstant.present_u) && dialogStatus !== 'info'">
+      <el-form-item label="图片">
+        <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.present_u) && dialogStatus === 'update'">
           <upload
             :action="image.action"
             @change="image.change"
@@ -18,8 +18,20 @@
         </template>
         <img :src="detail.image" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
       </el-form-item>
-      <el-form-item label="优先权重" prop="priority">
-        <el-input v-model="detail.priority" type="number" min="0"></el-input>
+      <el-form-item label="地址" prop="priority">
+        <el-input v-model="detail.address"></el-input>
+      </el-form-item>
+      <el-form-item label="权重" prop="weight">
+        <el-input v-model="detail.weight" type="number" min="0"></el-input>
+      </el-form-item>
+      <el-form-item label="需求" prop="requirement">
+        <el-input v-model="detail.requirement" type="number" min="0"></el-input>
+      </el-form-item>
+      <el-form-item label="库存" prop="stock">
+        <el-input v-model="detail.stock" type="number" min="0"></el-input>
+      </el-form-item>
+      <el-form-item label="有效时间">
+        <el-date-picker v-model="detail.expiryDate" :clearable="false" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
       </el-form-item>
       <el-form-item label="状态">
         <el-select class="filter-item"  v-model="detail.hide" placeholder="状态">
@@ -31,8 +43,8 @@
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-      <template v-else>
-        <el-button type="primary" v-if="checkPermission(permissionConstant.present_u)" @click="update">确 定</el-button>
+      <template v-if="dialogStatus=='update' && checkPermission(permissionConstant.present_u)">
+        <el-button type="primary" @click="update">确 定</el-button>
       </template>
     </div>
   </el-dialog>
@@ -74,9 +86,13 @@
           return {
             id: '',
             name: '',
-            description: '',
-            hide: 'false',
-            priority: 0
+            hide: '',
+            image: '',
+            address: '',
+            expiryDate: '',
+            requirement: 0,
+            stock: 0,
+            weight: 0
           }
         }
       }
@@ -98,11 +114,16 @@
         },
         detailRules: {
           name: [
-            { required: true, min: 3, max: 32, message: '分类名称长度3到32位', trigger: 'blur' }
+            { required: true, min: 3, max: 32, message: '奖品名称长度3到32位', trigger: 'blur' }
           ],
-          priority: [
-            { validator: Validate.validatePriority, trigger: 'blur' },
-            { validator: Validate.validateNumber('优先权重只能为数字'), trigger: 'blur' }
+          requirement: [
+            { validator: Validate.validateNumber('需求只能为数字'), trigger: 'blur' }
+          ],
+          stock: [
+            { validator: Validate.validateNumber('库存只能为数字'), trigger: 'blur' }
+          ],
+          weight: [
+            { validator: Validate.validateNumber('权重只能为数字'), trigger: 'blur' }
           ]
         }
       }

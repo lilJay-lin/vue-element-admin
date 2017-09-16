@@ -1,8 +1,8 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-<!--      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="分类名称" v-model="listQuery.keyword"></el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>-->
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="分类名称" v-model="listQuery.keyword"></el-input>
+      <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
         <el-button  v-if="checkPermission(permissionConstant.presentOrder_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
         <el-button  v-if="checkPermission(permissionConstant.presentOrder_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
@@ -68,11 +68,24 @@
   import { mapGetters } from 'vuex'
   import PresentOrderDetail from './detail.vue'
   const temp = {
-    id: '',
-    presentId: '',
-    userId: '',
-    number: '',
-    status: ''
+    present: {
+      id: '',
+      name: '',
+      image: '',
+      address: '',
+      stock: '',
+      requirement: '',
+      weight: 0,
+      expiryDate: '',
+      hide: ''
+    },
+    presentOrder: {
+      id: '',
+      presentId: '',
+      userId: '',
+      number: '',
+      status: ''
+    }
   }
   export default {
     components: {
