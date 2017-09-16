@@ -35,7 +35,6 @@
   import Screenfull from 'components/Screenfull';
   import ErrorLog from 'components/ErrLog';
   import errLogStore from 'store/errLog';
-  import proxyImage from '../../utils/proxyImage'
 
   export default {
     components: {
@@ -58,7 +57,6 @@
       ])
     },
     methods: {
-      proxyImage,
       toggleSideBar() {
         this.$store.dispatch('ToggleSideBar')
       },

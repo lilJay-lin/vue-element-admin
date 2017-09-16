@@ -35,7 +35,7 @@
 			<el-col :span="6">
 				<el-card class="box-card">
 					<div slot="header" class="box-card-header">
-						<pan-thumb class="panThumb" :image="proxyImage(avatar)"> 你的权限:
+						<pan-thumb class="panThumb" :image="avatar"> 你的权限:
 							<span class="pan-info-roles" :key='item' v-for="item in ownerPermissions">{{item}}</span>
 						</pan-thumb>
 					</div>
@@ -82,7 +82,6 @@
 	import lineChart from './lineChart';
 	import countTo from 'vue-count-to';
 	import todoList from 'components/TodoList';
-	import proxyImage from '../../../utils/proxyImage'
 	export default {
 	  name: 'dashboard-editor',
 	  components: { panThumb, countTo, pieChart, lineChart, barChart, todoList },
@@ -103,10 +102,7 @@
 	      'avatar',
 	      'ownerPermissions'
     ])
-  },
-    methods: {
-      proxyImage
-    }
+  }
 	}
 </script>
 
