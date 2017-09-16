@@ -14,7 +14,7 @@
     components: { EditorDashboard, DefaultDashboard },
     data() {
       return {
-        currentRole: 'EditorDashboard'
+        currentRole: 'DefaultDashboard'
       }
     },
     computed: {
@@ -27,10 +27,10 @@
       ])
     },
     created() {
-      if (this.ownerPermissions.indexOf('super') >= 0) {
+/*      if (this.ownerPermissions.indexOf('super') >= 0) {
         return;
       }
-      this.currentRole = 'DefaultDashboard';
+      this.currentRole = 'DefaultDashboard';*/
     }
   }
 </script>

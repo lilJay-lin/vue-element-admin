@@ -4,7 +4,7 @@ import app from './modules/app';
 import user from './modules/user';
 import permission from './modules/permission';
 import getters from './getters';
-import createLogger from '../../node_modules/vuex/src/plugins/logger'
+import createLogger from 'vuex/dist/logger'
 import role from './modules/role'
 import register from './modules/register'
 import classification from './modules/classification'

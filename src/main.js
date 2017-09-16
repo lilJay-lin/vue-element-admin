@@ -17,7 +17,7 @@ import 'vue-multiselect/dist/vue-multiselect.min.css';// 多选框组件css
 import Sticky from 'components/Sticky'; // 粘性header组件
 import IconSvg from 'components/Icon-svg';// svg 组件
 import vueWaves from './directive/waves';// 水波纹指令
-import errLog from 'store/errLog';// error log组件
+/* import errLog from 'store/errLog';// error log组件 */
 import './mock/index.js';  // 该项目所有请求使用mockjs模拟
 import { getToken } from 'utils/auth';
 import { mapGetters } from 'vuex'
@@ -113,7 +113,7 @@ router.afterEach(() => {
 Vue.config.productionTip = false;
 
 // 生产环境错误日志
-if (process.env.NODE_ENV === 'production') {
+/* if (process.env.NODE_ENV === 'production') {
   Vue.config.errorHandler = function(err, vm) {
     console.log(err, window.location.href);
     errLog.pushLog({
@@ -122,7 +122,7 @@ if (process.env.NODE_ENV === 'production') {
       vm
     })
   };
-}
+} */
 
 new Vue({
   el: '#app',
