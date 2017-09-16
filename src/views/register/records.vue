@@ -9,7 +9,7 @@
       </template>
     </div>
     <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="register.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
-      <el-table-column
+      <el-table-column v-if="isMain"
         type="selection"
         width="55">
       </el-table-column>
@@ -56,7 +56,7 @@
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="register.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <Register-Detail  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Register-Detail>
+    <Register-Detail  :title="textMap[dialogStatus]" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Register-Detail>
   </div>
 </template>
 

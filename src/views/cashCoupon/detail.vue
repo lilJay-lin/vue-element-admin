@@ -1,56 +1,59 @@
 <template>
-  <el-dialog :modal-append-to-body="false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
-    <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
-      <el-form-item label="代金券名称"  prop="name">
-        <el-input v-model="detail.name"></el-input>
-      </el-form-item>
-      <el-form-item label="缩略图">
-        <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.cashCoupon_u) && dialogStatus === 'update'">
-          <upload
-            :action="preImage.action"
-            @change="preImage.change"
-            @success="uploadSuccess"
-            @error="uploadError"
-            :headers="uploadHeaders()"
-            :disabled="preImage.loading">
-            <el-button type="primary" :loading="preImage.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
-          </upload>
+  <div>
+    <div class="modal" style="z-index: 1200" v-if="dialogFormVisible"></div>
+    <el-dialog :modal="false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
+      <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
+        <el-form-item label="代金券名称"  prop="name">
+          <el-input v-model="detail.name"></el-input>
+        </el-form-item>
+        <el-form-item label="缩略图">
+          <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.cashCoupon_u) && dialogStatus === 'update'">
+            <upload
+              :action="preImage.action"
+              @change="preImage.change"
+              @success="uploadSuccess"
+              @error="uploadError"
+              :headers="uploadHeaders()"
+              :disabled="preImage.loading">
+              <el-button type="primary" :loading="preImage.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
+            </upload>
+          </template>
+          <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
+        </el-form-item>
+        <el-form-item label="价格" prop="price">
+          <el-input v-model="detail.price" ></el-input>
+        </el-form-item>
+        <el-form-item label="优惠金额" prop="discountAmount">
+          <el-input v-model="detail.discountAmount"></el-input>
+        </el-form-item>
+        <el-form-item label="过期时间">
+          <el-date-picker v-model="detail.expiryDate" :clearable="false" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="优先权重" prop="priority">
+          <el-input v-model="detail.priority" type="number" min="0"></el-input>
+        </el-form-item>
+        <el-form-item label="是否过期">
+          <el-select class="filter-item"  v-model="detail.expired" placeholder="状态">
+            <el-option v-for="item in expireOptions" :key="item.key" :label="item.label" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select class="filter-item"  v-model="detail.hide" placeholder="状态">
+            <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
+        <template v-if="dialogStatus=='update' && checkPermission(permissionConstant.cashCoupon_u)">
+          <el-button type="primary" @click="update">确 定</el-button>
         </template>
-        <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
-      </el-form-item>
-      <el-form-item label="价格" prop="price">
-        <el-input v-model="detail.price" ></el-input>
-      </el-form-item>
-      <el-form-item label="优惠金额" prop="discountAmount">
-        <el-input v-model="detail.discountAmount"></el-input>
-      </el-form-item>
-      <el-form-item label="过期时间">
-        <el-date-picker v-model="detail.expiryDate" :clearable="false" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
-      </el-form-item>
-      <el-form-item label="优先权重" prop="priority">
-        <el-input v-model="detail.priority" type="number" min="0"></el-input>
-      </el-form-item>
-      <el-form-item label="是否过期">
-        <el-select class="filter-item"  v-model="detail.expired" placeholder="状态">
-          <el-option v-for="item in expireOptions" :key="item.key" :label="item.label" :value="item.key">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select class="filter-item"  v-model="detail.hide" placeholder="状态">
-          <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
-          </el-option>
-        </el-select>
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="cancel">取 消</el-button>
-      <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-      <template v-if="dialogStatus=='update' && checkPermission(permissionConstant.cashCoupon_u)">
-        <el-button type="primary" @click="update">确 定</el-button>
-      </template>
-    </div>
-  </el-dialog>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 <script type="text/ecmascript-6">
   import Upload from 'components/Upload'

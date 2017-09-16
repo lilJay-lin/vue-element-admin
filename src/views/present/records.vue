@@ -1,7 +1,7 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="广告名称" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="礼品名称" v-model="listQuery.keyword"></el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
         <el-button  v-if="checkPermission(permissionConstant.present_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>

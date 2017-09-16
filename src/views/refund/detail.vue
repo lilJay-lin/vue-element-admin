@@ -32,7 +32,7 @@
           <el-button type="primary" @click="update">确 定</el-button>
         </template>
       </div>
-      <CashCouponOrder-Detail :dialog-status="'info'" @cancel="cancelCashCouponOrder()" :detail="detail.cashCouponOrder" :status-options="statusOptions" :dialog-form-visible="cashCouponOrderVisible" ></CashCouponOrder-Detail>
+      <CashCouponOrder-Detail :dialog-status="'info'" @cancel="cancelCashCouponOrder()" :detail="cashCouponOrder" :status-options="statusOptions" :dialog-form-visible="cashCouponOrderVisible" ></CashCouponOrder-Detail>
       <CashCoupon-Detail :dialog-status="'info'" @cancel="cancelCashCoupon()" :detail="detail.cashCoupon" :status-options="statusOptions" :dialog-form-visible="cashCouponVisible" ></CashCoupon-Detail>
     </el-dialog>
   </div>
@@ -100,6 +100,37 @@
     },
     data () {
       return {
+        cashCouponOrder: {
+          cashCoupon: {
+            id: '',
+            shopId: '',
+            name: '',
+            preImage: '',
+            discountAmount: 0,
+            expiryDate: '',
+            expired: 'false',
+            hide: 'false',
+            priority: 0
+          },
+          cashCouponOrder: {
+            id: '',
+            number: '',
+            payOrderNumber: '',
+            price: '',
+            refundAmount: 0,
+            status: 0,
+            userId: ''
+          },
+          user: {
+            id: '',
+            name: '',
+            mobile: '',
+            locked: 'false',
+            presentChance: 0,
+            promotionalPartnerId: '',
+            shared: false
+          }
+        },
         cashCouponVisible: false,
         cashCouponOrderVisible: false,
         collapseName: [],
@@ -182,6 +213,16 @@
         if (this.$refs.detailForm) {
           this.$refs.detailForm.resetFields()
           this.collapseName = []
+        }
+      },
+      'detail.cashCouponOrder.id' (val) {
+        if (val) {
+          this.$store.dispatch('GetCashCouponOrderDetail', this.detail.cashCouponOrder.id).then((detail) => {
+            detail.cashCoupon.expired = String(detail.cashCoupon.expired)
+            detail.cashCoupon.hide = String(detail.cashCoupon.hide)
+            detail.user.locked = String(detail.user.locked)
+            this.cashCouponOrder = detail
+          })
         }
       }
     }

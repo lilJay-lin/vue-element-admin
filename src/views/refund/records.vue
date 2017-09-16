@@ -2,6 +2,9 @@
   <div :class="[containerClass]">
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="退款订单名称" v-model="listQuery.keyword"></el-input>
+      <el-select  v-if="isMain"  @change='handleFilter' style="width: 160px" class="filter-item" v-model="listQuery.status" placeholder="状态">
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
+      </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
         <el-button  v-if="checkPermission(permissionConstant.refund_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
@@ -39,7 +42,7 @@
         </template>
       </el-table-column>
       <template  v-if="isMain" >
-        <el-table-column class-name="status-col" label="状态" width="100">
+        <el-table-column class-name="status-col" label="状态" width="140">
           <template scope="scope">
             <el-tag >{{scope.row.status | statusFilter}}</el-tag>
           </template>
@@ -72,6 +75,15 @@
 <script>
   import { mapGetters } from 'vuex'
   import RefundDetail from './detail.vue'
+  const statusOptions = [
+    { key: 0, label: '未使用待退款' },
+    { key: 1, label: '未使用退款成功' },
+    { key: 2, label: '未使用退款撤销' },
+    { key: 3, label: '已使用待退款' },
+    { key: 4, label: '已使用退款成功' },
+    { key: 5, label: '已使用退款失败' },
+    { key: 6, label: '已使用退款撤销' }
+  ]
   const temp = {
     refund: {
       cashCouponOrderId: '',
@@ -135,20 +147,11 @@
         listQuery: {
           targetPage: 1,
           pageSize: 10,
-          keyword: undefined
+          keyword: undefined,
+          status: 0
         },
         temp: Object.assign({}, temp),
-        statusOptions: [
-          { key: 0, label: '初始' },
-          { key: 1, label: '申请退款' },
-          { key: 2, label: '已使用' },
-          { key: 3, label: '退款中' },
-          { key: 4, label: '退款中' },
-          { key: 5, label: '退款成功' },
-          { key: 6, label: '已退款' },
-          { key: 7, label: '已撤销' },
-          { key: 8, label: '退款失败' }
-        ],
+        statusOptions: statusOptions,
         dialogFormVisible: false,
         dialogStatus: '',
         tableKey: 0
@@ -162,7 +165,10 @@
     },
     filters: {
       statusFilter(status) {
-        return ['初始', '申请退款', '已使用', '退款中', '退款中', '退款成功', '已退款', '已撤销', '退款失败'][status]
+        const option = statusOptions.filter((s) => {
+          return s.key === status
+        })
+        return option[0].label
       }
     },
     methods: {
@@ -216,6 +222,7 @@
       },
       handleUpdate(row) {
         this.$store.dispatch('GetRefundDetail', row.id).then((detail) => {
+          detail.hide = String(detail.hide)
           this.temp = Object.assign({}, detail)
         })
         this.dialogStatus = 'update'

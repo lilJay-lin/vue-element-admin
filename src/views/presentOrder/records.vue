@@ -1,10 +1,15 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="分类名称" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="订单ID" v-model="listQuery.keyword"></el-input>
+      <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.status" placeholder="状态">
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
+      </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
+<!--
         <el-button  v-if="checkPermission(permissionConstant.presentOrder_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+-->
         <el-button  v-if="checkPermission(permissionConstant.presentOrder_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
       </template>
     </div>
@@ -60,7 +65,7 @@
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="presentOrder.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <PresentOrder-Detail  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></PresentOrder-Detail>
+    <PresentOrder-Detail  :title="textMap[dialogStatus]" :before-close="cancel" @submit="submit()" @cancel="cancel" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></PresentOrder-Detail>
   </div>
 </template>
 
@@ -84,7 +89,16 @@
       presentId: '',
       userId: '',
       number: '',
-      status: ''
+      status: '0'
+    },
+    user: {
+      id: '',
+      name: '',
+      mobile: '',
+      locked: 'false',
+      presentChance: 0,
+      promotionalPartnerId: '',
+      shared: false
     }
   }
   export default {
@@ -119,7 +133,8 @@
         listQuery: {
           targetPage: 1,
           pageSize: 10,
-          keyword: undefined
+          keyword: undefined,
+          status: '0'
         },
         temp: Object.assign({}, temp),
         statusOptions: [{ label: '待取', key: '0' }, { label: '已取', key: '1' }],
@@ -185,13 +200,17 @@
         }, () => {})
       },
       handleCreate() {
+        this.temp = Object.assign({}, temp)
         this.dialogStatus = 'create'
         this.dialogFormVisible = true
       },
       handleUpdate(row) {
         this.$store.dispatch('GetPresentOrderDetail', row.id).then((detail) => {
+          detail.present.expiryDate = String(detail.present.expiryDate)
+          detail.present.hide = String(detail.present.hide)
+          detail.presentOrder.status = String(detail.presentOrder.status)
+          detail.user.locked = String(detail.user.locked)
           this.temp = Object.assign({}, detail)
-          this.temp.status = String(this.temp.status)
         })
         this.dialogStatus = 'update'
         this.dialogFormVisible = true

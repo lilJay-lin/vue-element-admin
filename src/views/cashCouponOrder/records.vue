@@ -1,10 +1,15 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="订单名称" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="支付订单编码" v-model="listQuery.keyword"></el-input>
+      <el-select  v-if="isMain"  @change='handleFilter' style="width: 160px" class="filter-item" v-model="listQuery.status" placeholder="状态">
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
+      </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
+<!--
         <el-button  v-if="checkPermission(permissionConstant.cashCouponOrder_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
+-->
         <el-button  v-if="checkPermission(permissionConstant.cashCouponOrder_d)" class="filter-item" style="margin-left: 10px" @click="handleBatchDelete" type="danger" icon="edit">批量删除</el-button>
       </template>
     </div>
@@ -34,7 +39,7 @@
         </template>
       </el-table-column>
       <template  v-if="isMain" >
-        <el-table-column class-name="status-col" label="状态" width="100">
+        <el-table-column class-name="status-col" label="状态" width="140">
           <template scope="scope">
             <el-tag >{{scope.row.status | statusFilter}}</el-tag>
           </template>
@@ -67,14 +72,45 @@
 <script>
   import { mapGetters } from 'vuex'
   import CashCouponOrderDetail from './detail.vue'
+  const statusOptions = [
+    { key: 0, label: '被选中（购物车）' },
+    { key: 1, label: '已购买未使用' },
+    { key: 2, label: '已使用' },
+    { key: 3, label: '未使用待退款' },
+    { key: 4, label: '已使用待退款' },
+    { key: 5, label: '未使用已退款' },
+    { key: 6, label: '已使用已退款' }
+  ]
   const temp = {
-    id: '',
-    number: '',
-    payOrderNumber: '',
-    price: '',
-    refundAmount: 0,
-    status: 0,
-    userId: ''
+    cashCoupon: {
+      id: '',
+      shopId: '',
+      name: '',
+      preImage: '',
+      discountAmount: 0,
+      expiryDate: '',
+      expired: 'false',
+      hide: 'false',
+      priority: 0
+    },
+    cashCouponOrder: {
+      id: '',
+      number: '',
+      payOrderNumber: '',
+      price: '',
+      refundAmount: 0,
+      status: 0,
+      userId: ''
+    },
+    user: {
+      id: '',
+      name: '',
+      mobile: '',
+      locked: 'false',
+      presentChance: 0,
+      promotionalPartnerId: '',
+      shared: false
+    }
   }
   export default {
     components: {
@@ -108,20 +144,11 @@
         listQuery: {
           targetPage: 1,
           pageSize: 10,
-          keyword: undefined
+          keyword: undefined,
+          status: 0
         },
         temp: Object.assign({}, temp),
-        statusOptions: [
-          { key: 0, label: '初始' },
-          { key: 1, label: '申请退款' },
-          { key: 2, label: '已使用' },
-          { key: 3, label: '退款中' },
-          { key: 4, label: '退款中' },
-          { key: 5, label: '退款成功' },
-          { key: 6, label: '已退款' },
-          { key: 7, label: '已撤销' },
-          { key: 8, label: '退款失败' }
-        ],
+        statusOptions: statusOptions,
         dialogFormVisible: false,
         dialogStatus: '',
         tableKey: 0
@@ -135,7 +162,10 @@
     },
     filters: {
       statusFilter(status) {
-        return ['初始', '申请退款', '已使用', '退款中', '退款中', '退款成功', '已退款', '已撤销', '退款失败'][status]
+        const option = statusOptions.filter((s) => {
+          return s.key === status
+        })
+        return option[0].label
       }
     },
     methods: {
@@ -189,6 +219,9 @@
       },
       handleUpdate(row) {
         this.$store.dispatch('GetCashCouponOrderDetail', row.id).then((detail) => {
+          detail.cashCoupon.expired = String(detail.cashCoupon.expired)
+          detail.cashCoupon.hide = String(detail.cashCoupon.hide)
+          detail.user.locked = String(detail.user.locked)
           this.temp = Object.assign({}, detail)
         })
         this.dialogStatus = 'update'

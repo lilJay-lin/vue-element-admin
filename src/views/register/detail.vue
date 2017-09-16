@@ -1,32 +1,35 @@
 <template>
-  <el-dialog  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
-    <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
-      <el-form-item label="手机号码"  prop="mobile">
-        <el-input v-model="detail.mobile"></el-input>
-      </el-form-item>
-      <el-form-item label="抽奖次数">
-        <el-input type="number" min="0" v-model="detail.presentChance"></el-input>
-      </el-form-item>
-      <el-form-item label="是否分享">
-        <el-tooltip :content="detail.shared ? '是' : '否'" placement="top">
-          <el-switch v-model="detail.shared" on-color="#13ce66" off-color="#ff4949"></el-switch>
-        </el-tooltip>
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select class="filter-item" v-model="detail.locked" placeholder="状态">
-          <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
-          </el-option>
-        </el-select>
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="cancel">取 消</el-button>
-      <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-      <template v-if="dialogStatus=='update' && checkPermission(permissionConstant.role_u)">
-        <el-button type="primary" @click="update">确 定</el-button>
-      </template>
-    </div>
-  </el-dialog>
+  <div>
+    <div class="modal" style="z-index: 1200" v-if="dialogFormVisible"></div>
+    <el-dialog :modal = "false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
+      <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
+        <el-form-item label="手机号码"  prop="mobile">
+          <el-input v-model="detail.mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="抽奖次数">
+          <el-input type="number" min="0" v-model="detail.presentChance"></el-input>
+        </el-form-item>
+        <el-form-item label="是否分享">
+          <el-tooltip :content="detail.shared ? '是' : '否'" placement="top">
+            <el-switch v-model="detail.shared" on-color="#13ce66" off-color="#ff4949"></el-switch>
+          </el-tooltip>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select class="filter-item" v-model="detail.locked" placeholder="状态">
+            <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
+        <template v-if="dialogStatus=='update' && checkPermission(permissionConstant.role_u)">
+          <el-button type="primary" @click="update">确 定</el-button>
+        </template>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 <script type="text/ecmascript-6">
   import Permissions from '../permission/records.vue'
@@ -43,7 +46,7 @@
       statusOptions: {
         type: Array,
         default () {
-          return []
+          return [{ label: '有效', key: 'false' }, { label: '冻结', key: 'true' }]
         }
       },
       dialogFormVisible: {
