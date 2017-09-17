@@ -22,6 +22,7 @@ import './mock/index.js';  // 该项目所有请求使用mockjs模拟
 import { getToken } from 'utils/auth';
 import { mapGetters } from 'vuex'
 import * as Constant from './constant'
+require('./styles/index.scss')
 
 // register globally
 Vue.component('multiselect', Multiselect);
