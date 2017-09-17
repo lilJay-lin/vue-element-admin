@@ -222,7 +222,8 @@
       },
       handleUpdate(row) {
         this.$store.dispatch('GetRefundDetail', row.id).then((detail) => {
-          detail.hide = String(detail.hide)
+          detail.cashCoupon.hide = String(detail.cashCoupon.hide)
+          detail.cashCoupon.expired = String(detail.cashCoupon.expired)
           this.temp = Object.assign({}, detail)
         })
         this.dialogStatus = 'update'
