@@ -141,7 +141,7 @@
         },
         detailRules: {
           refundAmount: [
-            { validator: Validate.validateFloatNumber('累计退款金额只能为数字'), trigger: 'blur' }
+            { validator: Validate.validateFloatNumber('退款金额只能为数字'), trigger: 'blur' }
           ],
           price: [
             { validator: Validate.validateFloatNumber('价格只能为数字'), trigger: 'blur' }

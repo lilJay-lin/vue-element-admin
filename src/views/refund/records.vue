@@ -47,9 +47,13 @@
             <el-tag >{{scope.row.status | statusFilter}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="checkPermission(permissionConstant.refund_d)" align="center" label="操作" width="150" >
+        <el-table-column  align="center" label="操作" width="200" >
           <template scope="scope">
-            <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
+            <el-button v-if="checkPermission(permissionConstant.refund_d)" size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
+            <template v-if="checkPermission(permissionConstant.refund_u) && (scope.row.status === 0 || scope.row.status === 3)">
+              <el-button  size="small" type="primary" @click="dealOrdreHandle(scope.row, true)">同意</el-button>
+              <el-button  size="small" type="primary" @click="dealOrdreHandle(scope.row, false)">拒绝</el-button>
+            </template>
           </template>
         </el-table-column>
       </template>
@@ -63,6 +67,23 @@
       </template>
       
     </el-table>
+    <div v-if="isMain">
+      <el-dialog :title="actions.agree? '同意退款' : '拒绝退款'" :visible="actions.show" :before-close="closeActions" size="tiny">
+        <el-form class="small-space" :model="actions" :rules = "actionsRule" ref="actionsForm" label-position="left" label-width="100px">
+          <el-form-item label="退款金额" prop="refundAmount" style="margin-bottom: 30px;">
+            <el-input type="text" v-model="actions.refundAmount"></el-input>
+          </el-form-item>
+          <el-form-item label="平台意见" prop="comment" style="margin-bottom: 30px;">
+            <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="平台意见" v-model="actions.comment"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="closeActions">取 消</el-button>
+          <el-button type="primary" v-if="actions.agree" @click="agree">确 定</el-button>
+          <el-button type="primary" v-else @click="refuse">确 定</el-button>
+        </div>
+      </el-dialog>
+    </div>
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.currentPage"
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="refund.pageInfo.totalRow">
@@ -75,6 +96,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import RefundDetail from './detail.vue'
+  import * as Validate from 'utils/validate'
   const statusOptions = [
     { key: 0, label: '未使用待退款' },
     { key: 1, label: '未使用退款成功' },
@@ -138,6 +160,22 @@
     name: 'crp_refund',
     data() {
       return {
+        actions: {
+          show: false,
+          agree: false,
+          id: '',
+          common: '',
+          refundAmount: 0
+        },
+        actionsRule: {
+          refundAmount: [
+            { require: true, message: '退款金额不能为空', trigger: 'blur' },
+            { validator: Validate.validateFloatNumber('退款金额只能为数字'), trigger: 'blur' }
+          ],
+          comment: [
+            { require: true, message: '平台意见不能为空', trigger: 'blur' }
+          ]
+        },
         selections: [], /* 选中 */
         listLoading: true,
         textMap: {
@@ -254,6 +292,58 @@
       },
       handleSelectionChange(val) {
         this.selections = val
+      },
+      dealOrdreHandle (row, status) {
+        const me = this
+        me.actions = {
+          show: true,
+          agree: status,
+          id: row.id,
+          common: '',
+          refundAmount: row.refundAmount
+        }
+      },
+      closeActions () {
+        this.$refs.actionsForm.resetFields()
+        this.actions.show = false
+      },
+      validate () {
+        return new Promise((resolve, reject) => {
+          this.$refs.actionsForm.validate((valid) => {
+            if (valid) {
+              resolve()
+            } else {
+              reject()
+            }
+          })
+        })
+      },
+      agree () {
+        const me = this
+        me.validate().then(() => {
+          me.$store.dispatch('Agree', {
+            id: me.actions.id,
+            refundAmount: me.actions.refundAmount,
+            comment: me.actions.comment
+          }).then(() => {
+            me.$message({
+              text: '操作成功'
+            })
+          })
+        })
+      },
+      refuse () {
+        const me = this
+        me.validate().then(() => {
+          me.$store.dispatch('Refuse', {
+            id: me.actions.id,
+            comment: me.actions.comment
+          }).then(() => {
+            me.$message({
+              text: '操作成功'
+            })
+          })
+        })
       }
     }
   }
