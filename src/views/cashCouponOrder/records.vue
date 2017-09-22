@@ -1,7 +1,8 @@
+<script src="../../../../xmb/database/redis_database.js"></script>
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="支付订单编码" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="支付订单ID" v-model="listQuery.keyword"></el-input>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 160px" class="filter-item" v-model="listQuery.status" placeholder="状态">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
       </el-select>
@@ -18,9 +19,9 @@
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column align="center" label="支付订单编码" width="280">
+      <el-table-column align="center" label="支付订单ID" width="280">
         <template scope="scope">
-          <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.payOrderNumber}}</span>
+          <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.id}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="编码">
@@ -200,7 +201,7 @@
         this.delete(ids, '确认批量删除订单？')
       },
       handleModifyStatus(row) {
-        this.delete([row.id], '确认删除订单：' + row.payOrderNumber + '？')
+        this.delete([row.id], '确认删除订单：' + row.id + '？')
       },
       delete (ids, msg) {
         this.$confirm(msg).then(() => {
