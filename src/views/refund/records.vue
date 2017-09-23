@@ -70,7 +70,7 @@
     <div v-if="isMain">
       <el-dialog :title="actions.agree? '同意退款' : '拒绝退款'" :visible="actions.show" :before-close="closeActions" size="tiny">
         <el-form class="small-space" :model="actions" :rules = "actionsRule" ref="actionsForm" label-position="left" label-width="100px">
-          <el-form-item label="退款金额" prop="refundAmount" style="margin-bottom: 30px;">
+          <el-form-item v-if="actions.agree" label="退款金额" prop="refundAmount" style="margin-bottom: 30px;">
             <el-input type="text" v-model="actions.refundAmount"></el-input>
           </el-form-item>
           <el-form-item label="平台意见" prop="comment" style="margin-bottom: 30px;">
@@ -169,11 +169,10 @@
         },
         actionsRule: {
           refundAmount: [
-            { require: true, message: '退款金额不能为空', trigger: 'blur' },
             { validator: Validate.validateFloatNumber('退款金额只能为数字'), trigger: 'blur' }
           ],
           comment: [
-            { require: true, message: '平台意见不能为空', trigger: 'blur' }
+            { required: true, message: '平台意见不能为空', trigger: 'blur' }
           ]
         },
         selections: [], /* 选中 */
@@ -299,7 +298,7 @@
           show: true,
           agree: status,
           id: row.id,
-          common: '',
+          comment: '',
           refundAmount: row.refundAmount
         }
       },

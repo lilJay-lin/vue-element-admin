@@ -17,14 +17,8 @@ export default class UploadCallback {
         uploadSuccess (res) {
           const me = this
           if (res.status === 2) {
-            me.$messageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
-              confirmButtonText: '重新登录',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              me.$store.dispatch('FedLogOut').then(() => {
-                location.reload()// 为了重新实例化vue-router对象 避免bug
-              })
+            me.$store.dispatch('FedLogOut').then(() => {
+              location.reload()// 为了重新实例化vue-router对象 避免bug
             })
           } else if (res.status !== 1) { /* 0: 错误; 3: 无权限 */
             me.$message({

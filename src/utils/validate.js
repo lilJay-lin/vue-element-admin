@@ -49,7 +49,7 @@ export function validateMobile (rule, value, callback) {
 
 export function validateNumber (msg) {
   return (rule, value, callback) => {
-    if (!!value && !/^[\d]+$/.test(value)) {
+    if ((value.trim() !== '') && !/^[\d]+$/.test(value)) {
       callback(new Error(msg))
     } else {
       callback()
@@ -59,7 +59,7 @@ export function validateNumber (msg) {
 
 export function validateFloatNumber (msg) {
   return (rule, value, callback) => {
-    if (!!value && !/^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/.test(value)) {
+    if (value === '' || /^[\s]*$/.test(value) || !(/^[\d]+$/.test(value) || /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/.test(value))) {
       callback(new Error(msg))
     } else {
       callback()
