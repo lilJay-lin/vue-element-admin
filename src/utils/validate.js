@@ -58,11 +58,18 @@ export function validateNumber (msg) {
 }
 
 export function validateFloatNumber (msg) {
-  return (rule, value, callback) => {
+/*  return (rule, value, callback) => {
     if (/^[\d]+$/.test(value) || /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/.test(value)) {
       callback()
     } else {
       callback(new Error(msg))
+    }
+  } */
+  return (rule, value, callback) => {
+    if (value === '' || /^[\s]*$/.test(value) || !/^[\d]+$/.test(value)) {
+      callback(new Error(msg))
+    } else {
+      callback()
     }
   }
 }
