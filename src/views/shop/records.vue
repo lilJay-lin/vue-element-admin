@@ -56,6 +56,7 @@
         </el-table-column>
         <el-table-column v-if="checkPermission(permissionConstant.shop_d)" align="center" label="操作" width="150" >
           <template scope="scope">
+            <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>
             <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
         </el-table-column>
@@ -75,7 +76,7 @@
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="shop.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <Shop-Detail  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Shop-Detail>
+    <Shop-Detail :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></Shop-Detail>
   </div>
 </template>
 

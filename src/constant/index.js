@@ -98,3 +98,18 @@ export const presentOrder_r = 'presentOrder_r'
 export const presentOrder_u = 'presentOrder_u'
 /* 删除抽奖订单信息 */
 export const presentOrder_d = 'presentOrder_d'
+/* 添加合作伙伴信息 */
+export const promotionalPartner_c = 'promotionalPartner_c'
+/* 查看合作伙伴信息 */
+export const promotionalPartner_r = 'promotionalPartner_r'
+/* 更新合作伙伴信息 */
+export const promotionalPartner_u = 'promotionalPartner_u'
+/* 删除合作伙伴信息 */
+export const promotionalPartner_d = 'promotionalPartner_d'
+/*
+* 维护字段权限
+* */
+export const indexContactWay_manage = 'indexContactWay_manage'
+export const promotionalPartner_manage = 'promotionalPartner_manage'
+export const shopAccountRedPack_manage = 'shopAccountRedPack_manage'
+export const cashCouponOrderCount_manage = 'cashCouponOrderCount_manage'

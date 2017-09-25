@@ -152,8 +152,9 @@
         collapseName: [],
         isMain: false,
         textMap: {
-          update: '编辑',
-          create: '创建'
+          update: '编辑商家',
+          create: '创建商家',
+          info: '商家商家'
         },
         preImage: {
           action: process.env.BASE_API + '/mi/shopAction/uploadPreImage',

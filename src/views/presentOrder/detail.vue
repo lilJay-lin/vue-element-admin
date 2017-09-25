@@ -16,7 +16,8 @@
           </el-form-item>
         </template>
         <el-form-item label="礼品" v-if="dialogStatus === 'update'">
-          <span class="link-type" @click="togglePresent(true)">{{detail.present.name}}</span>
+          <!--<span class="link-type" @click="togglePresent(true)">{{detail.present.name}}</span>-->
+          <img style="width: 200px;cursor: pointer;" @click="togglePresent(true)" :src="detail.present.image"/>
         </el-form-item>
         <template v-if="checkPermission(permissionConstant.present_u) && dialogStatus === 'create'">
           <el-form-item label="关联礼品" prop="presentName">
@@ -109,8 +110,9 @@
         presentVisible: false,
         isMain: false,
         textMap: {
-          update: '编辑',
-          create: '创建'
+          update: '编辑奖品订单',
+          create: '创建奖品订单',
+          info: '奖品订单'
         },
         detailRules: {
           name: [

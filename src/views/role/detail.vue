@@ -61,8 +61,9 @@ export default {
     return {
       isMain: false,
       textMap: {
-        update: '编辑',
-        create: '创建'
+        update: '编辑角色',
+        create: '创建角色',
+        info: '角色'
       },
       detailRules: {
         name: [

@@ -66,8 +66,9 @@ export default {
     }
     return {
       textMap: {
-        update: '编辑',
-        create: '创建'
+        update: '编辑权限',
+        create: '创建权限',
+        info: '权限'
       },
       detailRules: {
         name: [

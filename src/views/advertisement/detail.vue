@@ -93,8 +93,9 @@
           }
         },
         textMap: {
-          update: '编辑',
-          create: '创建'
+          update: '编辑广告',
+          create: '创建广告',
+          info: '广告'
         },
         detailRules: {
           name: [

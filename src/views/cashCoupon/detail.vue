@@ -119,9 +119,9 @@
         isMain: false,
         showUpload: false,
         textMap: {
-          update: '编辑',
-          create: '创建',
-          info: '浏览'
+          update: '编辑代金券',
+          create: '创建代金券',
+          info: '代金券信息'
         },
         detailRules: {
           name: [

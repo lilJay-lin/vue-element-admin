@@ -72,12 +72,14 @@
       return {
         isMain: false,
         textMap: {
-          update: '编辑',
-          create: '创建'
+          update: '编辑注册用户',
+          create: '创建注册用户',
+          info: '注册用户'
         },
         detailRules: {
           mobile: [
-            { required: true, validator: Validate.validateMobile, message: '手机号码不合法', trigger: 'blur' }
+            { required: true, message: '手机号码不能为空', trigger: 'blur' },
+            { validator: Validate.validateMobile, trigger: 'blur' }
           ]
         }
       }

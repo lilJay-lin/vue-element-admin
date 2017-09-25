@@ -60,10 +60,11 @@ export const asyncRouterMap = [
     redirect: 'noredirect',
     name: '业务管理',
     icon: 'xinrenzhinan',
-    meta: { role: [Constant.cashCouponOrder_r, Constant.refund_r] },
+    meta: { role: [Constant.cashCouponOrder_r, Constant.refund_r, Constant.cashCouponOrderCount_manage] },
     children: [
       { path: 'cashCouponOrder', component: _import('cashCouponOrder/index'), name: '代金券订单管理', meta: { role: [Constant.cashCouponOrder_r] } },
-      { path: 'refund', component: _import('refund/index'), name: '代金券退款管理', meta: { role: [Constant.refund_r] } }
+      { path: 'refund', component: _import('refund/index'), name: '代金券退款管理', meta: { role: [Constant.refund_r] } },
+      { path: 'cashCouponOrderStatus', component: _import('cashCouponOrderStatus/index'), name: '代金券订单统计维护', meta: { role: [Constant.cashCouponOrderCount_manage] } }
     ]
   },
   {
@@ -72,7 +73,7 @@ export const asyncRouterMap = [
     redirect: 'noredirect',
     name: '商家模块',
     icon: 'yinhangqia',
-    meta: { role: [Constant.shopClassification_r, Constant.shop_r, Constant.cashCoupon_r] },
+    meta: { role: [Constant.shopClassification_r, Constant.shop_r, Constant.cashCoupon_r, Constant.promotionalPartner_r, Constant.indexContactWay_manage, Constant.promotionalPartner_manage] },
     children: [
       {
         path: '/shop',
@@ -84,7 +85,10 @@ export const asyncRouterMap = [
           { path: 'index', component: _import('shop/index'), name: '商家帐号管理', meta: { role: [Constant.shop_r] } }
         ]
       },
-      { path: 'classification', component: _import('classification/index'), name: '商家分类管理', meta: { role: [Constant.shopClassification_r] } }
+      { path: 'classification', component: _import('classification/index'), name: '商家分类管理', meta: { role: [Constant.shopClassification_r] } },
+      { path: 'promotionalPartner', component: _import('promotionalPartner/index'), name: '合作伙伴管理', meta: { role: [Constant.promotionalPartner_r] } },
+      { path: 'contact', component: _import('contact/index'), name: '联系方式维护', meta: { role: [Constant.indexContactWay_manage] } },
+      { path: 'partner', component: _import('partner/index'), name: '合作伙伴费率维护', meta: { role: [Constant.promotionalPartner_manage] } }
     ]
   },
   {
@@ -100,10 +104,11 @@ export const asyncRouterMap = [
     redirect: 'noredirect',
     name: '抽奖模块',
     icon: 'table',
-    meta: { role: [Constant.refundReason_r, Constant.advertisement_r] },
+    meta: { role: [Constant.refundReason_r, Constant.advertisement_r, Constant.shopAccountRedPack_manage] },
     children: [
       { path: 'present', component: _import('present/index'), name: '礼品管理', meta: { role: [Constant.advertisement_r] } },
-      { path: 'presentOrder', component: _import('presentOrder/index'), name: '抽奖管理', meta: { role: [Constant.refundReason_r] } }
+      { path: 'presentOrder', component: _import('presentOrder/index'), name: '抽奖管理', meta: { role: [Constant.refundReason_r] } },
+      { path: 'redPack', component: _import('redPack/index'), name: '抽奖维护', meta: { role: [Constant.shopAccountRedPack_manage] } }
     ]
   },
   {

@@ -2,15 +2,15 @@
   <div>
     <div class="modal" v-if="dialogFormVisible"></div>
     <el-dialog  :modal="false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
-      <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
+      <el-form class="small-space" :model="detail.cashCouponOrder" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
         <el-form-item label="编码" >
           <el-input v-model="detail.cashCouponOrder.number" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="发起订单用户" >
-          <span class="link-type" @click="toggleUser(true)">查看</span>
+          <span class="link-type" @click="toggleUser(true)">{{detail.user.mobile}}</span>
         </el-form-item>
         <el-form-item label="关联代金券" >
-          <span class="link-type" @click="toggleCashCoupon(true)">查看</span>
+          <img style="width: 200px;cursor: pointer;" @click="toggleCashCoupon(true)" :src="detail.cashCoupon.preImage"/>
         </el-form-item>
         <el-form-item label="支付订单编码">
           <el-input v-model="detail.cashCouponOrder.payOrderNumber" :disabled="true"></el-input>
@@ -35,7 +35,7 @@
           <el-button type="primary" @click="update">确 定</el-button>
         </template>
       </div>
-      <Register-Detail  :title="'浏览'" :before-close="toggleUser" @cancel="toggleUser" :dialog-status="'info'" :detail="detail.user" :dialog-form-visible="userVisible" ></Register-Detail>
+      <Register-Detail :before-close="toggleUser" @cancel="toggleUser" :dialog-status="'info'" :detail="detail.user" :dialog-form-visible="userVisible" ></Register-Detail>
       <CashCoupon-Detail  :title="'浏览'" :before-close="toggleCashCoupon" @cancel="toggleCashCoupon" :dialog-status="'info'" :detail="detail.cashCoupon" :dialog-form-visible="cashCouponVisible" ></CashCoupon-Detail>
     </el-dialog>
   </div>
@@ -83,7 +83,7 @@
               id: '',
               number: '',
               payOrderNumber: '',
-              price: '',
+              price: 0,
               refundAmount: 0,
               status: 0,
               userId: ''
@@ -107,8 +107,9 @@
         cashCouponVisible: false,
         isMain: false,
         textMap: {
-          update: '编辑',
-          create: '创建'
+          update: '编辑代金券订单',
+          create: '创建代金券订单',
+          info: '代金券订单'
         },
         detailRules: {
           refundAmount: [
@@ -137,6 +138,8 @@
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail.cashCouponOrder)
           delete temp.id
+          delete temp.user
+          delete temp.cashCoupon
           me.$store.dispatch('CreateCashCouponOrder', temp).then(() => {
             this.$notify({
               title: '成功',
@@ -152,6 +155,7 @@
         const me = this
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail.cashCouponOrder)
+          delete temp.user
           delete temp.cashCoupon
           me.$store.dispatch('UpdateCashCouponOrderDetail', temp).then(() => {
             me.$notify({

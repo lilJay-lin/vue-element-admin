@@ -2,7 +2,7 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="支付订单ID" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="订单编码" v-model="listQuery.keyword"></el-input>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 160px" class="filter-item" v-model="listQuery.status" placeholder="状态">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
       </el-select>
@@ -19,14 +19,14 @@
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column align="center" label="支付订单ID" width="280">
+      <el-table-column  align="center" label="订单编码">
         <template scope="scope">
-          <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.id}}</span>
+          <span  :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.number}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="编码">
+      <el-table-column align="center" label="支付编码" width="280">
         <template scope="scope">
-          <span >{{scope.row.number}}</span>
+          <span>{{scope.row.payOrderNumber}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="累计退款金额">
@@ -47,6 +47,7 @@
         </el-table-column>
         <el-table-column v-if="checkPermission(permissionConstant.cashCouponOrder_d)" align="center" label="操作" width="150" >
           <template scope="scope">
+            <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>
             <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
         </el-table-column>
@@ -98,7 +99,7 @@
       id: '',
       number: '',
       payOrderNumber: '',
-      price: '',
+      price: 0,
       refundAmount: 0,
       status: 0,
       userId: ''
@@ -201,7 +202,7 @@
         this.delete(ids, '确认批量删除订单？')
       },
       handleModifyStatus(row) {
-        this.delete([row.id], '确认删除订单：' + row.id + '？')
+        this.delete([row.id], '确认删除订单：' + row.number + '？')
       },
       delete (ids, msg) {
         this.$confirm(msg).then(() => {

@@ -4,10 +4,10 @@
     <el-dialog  :modal="false" :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
       <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="130px" style='width: 320px;margin-left:50px'>
         <el-form-item label="代金券订单信息" >
-          <span class="link-type" title="显示代金券订单信息" @click="showCashCouponOrder()">查看</span>
+          <span class="link-type" title="显示代金券订单信息" @click="showCashCouponOrder()">{{detail.cashCouponOrder.number}}</span>
         </el-form-item>
         <el-form-item label="退款代金券信息" >
-          <span  class="link-type" title="显示退款代金券信息" @click="showCashCoupon()">查看</span>
+          <img style="width: 200px;cursor: pointer;" @click="showCashCoupon()" :src="detail.cashCoupon.preImage"/>
         </el-form-item>
         <el-form-item label="退款金额">
           <el-input v-model="detail.refund.refundAmount" :disabled="true"></el-input>
@@ -136,8 +136,9 @@
         collapseName: [],
         isMain: false,
         textMap: {
-          update: '编辑',
-          create: '创建'
+          update: '编辑退款订单',
+          create: '创建退款订单',
+          info: '退款订单'
         },
         detailRules: {
           refundAmount: [
@@ -166,6 +167,7 @@
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail.refund)
           delete temp.id
+          delete temp.cashCouponOrder
           me.$store.dispatch('CreateRefund', temp).then(() => {
             this.$notify({
               title: '成功',
@@ -181,6 +183,7 @@
         const me = this
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail.refund)
+          delete temp.cashCouponOrder
           me.$store.dispatch('UpdateRefundDetail', temp).then(() => {
             me.$notify({
               title: '成功',

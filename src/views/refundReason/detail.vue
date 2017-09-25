@@ -57,8 +57,9 @@
       return {
         isMain: false,
         textMap: {
-          update: '编辑',
-          create: '创建'
+          update: '编辑退款原因',
+          create: '创建退款原因',
+          info: '退款原因'
         },
         detailRules: {
           name: [

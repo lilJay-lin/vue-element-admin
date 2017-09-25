@@ -152,8 +152,9 @@
         passVisible: false,
         isMain: false,
         textMap: {
-          update: '编辑',
-          create: '创建'
+          update: '编辑商家帐号',
+          create: '创建商家帐号',
+          info: '商家帐号'
         },
         pass: {
           val1: '',

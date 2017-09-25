@@ -93,8 +93,9 @@
         isMain: false,
         showUpload: false,
         textMap: {
-          update: '编辑',
-          create: '创建'
+          update: '编辑商家简介图片',
+          create: '创建商家简介图片',
+          info: '商家简介图片'
         },
         detailRules: {
           priority: [

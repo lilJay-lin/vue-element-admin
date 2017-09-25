@@ -1,23 +1,27 @@
 <template>
   <el-dialog  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
-      <el-form-item label="分类名称"  prop="name">
+      <el-form-item label="名称"  prop="name">
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
-      <el-form-item label="优先权重" prop="priority">
-        <el-input v-model="detail.priority" type="number" min="0"></el-input>
+      <el-form-item label="用户数">
+        <el-input v-model="detail.totalUser" disabled></el-input>
       </el-form-item>
-      <el-form-item label="状态">
-        <el-select class="filter-item"  v-model="detail.hide" placeholder="状态">
-          <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
-          </el-option>
-        </el-select>
+      <el-form-item label="收益金额">
+        <el-input v-model="detail.totalPrice" disabled></el-input>
+      </el-form-item>
+      <el-form-item label="已提现金额" prop="totalPay">
+        <el-input v-model="detail.totalPay"></el-input>
+      </el-form-item>
+      <el-form-item label="描述">
+        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="detail.description">
+        </el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="cancel">取 消</el-button>
       <el-button v-if="dialogStatus=='create'" type="primary" @click="create">确 定</el-button>
-      <template v-if="checkPermission(permissionConstant.shopClassification_u) && dialogStatus === 'update'">
+      <template v-if="checkPermission(permissionConstant.promotionalPartner_u) && dialogStatus === 'update'">
         <el-button type="primary" @click="update">确 定</el-button>
       </template>
     </div>
@@ -48,8 +52,9 @@
             id: '',
             name: '',
             description: '',
-            hide: 'false',
-            priority: 0
+            totalUser: 0,
+            totalPrice: 0,
+            totalPay: 0
           }
         }
       }
@@ -58,17 +63,16 @@
       return {
         isMain: false,
         textMap: {
-          update: '编辑商家分类',
-          create: '创建商家分类',
-          info: '商家分类'
+          update: '编辑合作伙伴',
+          create: '创建合作伙伴',
+          info: '合作伙伴'
         },
         detailRules: {
           name: [
             { required: true, min: 3, max: 32, message: '分类名称长度3到32位', trigger: 'blur' }
           ],
-          priority: [
-            { validator: Validate.validatePriority, trigger: 'blur' },
-            { validator: Validate.validateNumber('优先权重只能为数字'), trigger: 'blur' }
+          totalPay: [
+            { validator: Validate.validateFloatNumber('已提现金额只能为数字'), trigger: 'blur' }
           ]
         }
       }
@@ -90,7 +94,7 @@
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
           delete temp.id
-          me.$store.dispatch('CreateShopClassification', temp).then(() => {
+          me.$store.dispatch('CreatePromotionalPartner', temp).then(() => {
             this.$notify({
               title: '成功',
               message: '创建成功',
@@ -105,7 +109,7 @@
         const me = this
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
-          me.$store.dispatch('UpdateShopClassificationDetail', temp).then(() => {
+          me.$store.dispatch('UpdatePromotionalPartnerDetail', temp).then(() => {
             me.$notify({
               title: '成功',
               message: '更新成功',

@@ -112,8 +112,9 @@
           }
         },
         textMap: {
-          update: '编辑',
-          create: '创建'
+          update: '编辑礼品',
+          create: '创建礼品',
+          info: '礼品'
         },
         detailRules: {
           name: [

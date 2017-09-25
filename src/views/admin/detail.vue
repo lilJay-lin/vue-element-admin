@@ -176,7 +176,7 @@
             { validator: validateLoginName, trigger: 'blur' }
           ],
           mobile: [
-            { required: false, validator: Validate.validateMobile, message: '手机号码不合法', trigger: 'blur' }
+            { validator: Validate.validateMobile, trigger: 'blur' }
           ],
           password: [
             { required: true, validator: validatePass('detailForm', 'detail', 'second_password'), trigger: 'blur' }

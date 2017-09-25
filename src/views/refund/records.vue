@@ -1,7 +1,7 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="退款订单名称" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="订单编码" v-model="listQuery.keyword"></el-input>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 160px" class="filter-item" v-model="listQuery.status" placeholder="状态">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
       </el-select>
@@ -16,9 +16,9 @@
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column align="center" label="订单ID" width="300">
+      <el-table-column align="center" label="订单编码" width="300">
         <template scope="scope">
-          <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.id}}</span>
+          <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.refundOrderNumber}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="退款金额" width="120">
@@ -47,13 +47,14 @@
             <el-tag >{{scope.row.status | statusFilter}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column  align="center" label="操作" width="200" >
+        <el-table-column  align="center" label="操作" width="280" >
           <template scope="scope">
-            <el-button v-if="checkPermission(permissionConstant.refund_d)" size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
+            <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>
             <template v-if="checkPermission(permissionConstant.refund_u) && (scope.row.status === 0 || scope.row.status === 3)">
               <el-button  size="small" type="primary" @click="dealOrdreHandle(scope.row, true)">同意</el-button>
               <el-button  size="small" type="primary" @click="dealOrdreHandle(scope.row, false)">拒绝</el-button>
             </template>
+            <el-button v-if="checkPermission(permissionConstant.refund_d)" size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
         </el-table-column>
       </template>
@@ -240,7 +241,7 @@
         this.delete(ids, '确认批量删除退款订单？')
       },
       handleModifyStatus(row) {
-        this.delete([row.id], '确认删除退款订单：' + row.id + '？')
+        this.delete([row.id], '确认删除退款订单？')
       },
       delete (ids, msg) {
         this.$confirm(msg).then(() => {

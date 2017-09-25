@@ -1,7 +1,7 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="分类名称" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="描述" v-model="listQuery.keyword"></el-input>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
         <el-button  v-if="checkPermission(permissionConstant.refundReason_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
@@ -13,11 +13,11 @@
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column align="center" label="退款原因ID">
+<!--      <el-table-column align="center" label="退款原因ID">
         <template scope="scope">
           <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.id}}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column  width="120" align="center" label="优先权重">
         <template scope="scope">
           <span >{{scope.row.priority}}</span>
@@ -36,6 +36,7 @@
         </el-table-column>
         <el-table-column v-if="checkPermission(permissionConstant.refundReason_d)" align="center" label="操作" width="150" >
           <template scope="scope">
+            <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>
             <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
         </el-table-column>

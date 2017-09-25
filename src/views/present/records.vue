@@ -56,6 +56,7 @@
         </el-table-column>
         <el-table-column v-if="checkPermission(permissionConstant.present_d)" align="center" label="操作" width="150" >
           <template scope="scope">
+            <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>
             <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
         </el-table-column>

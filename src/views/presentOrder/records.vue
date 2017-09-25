@@ -1,7 +1,7 @@
 <template>
   <div :class="[containerClass]">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="订单ID" v-model="listQuery.keyword"></el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="订单编码" v-model="listQuery.keyword"></el-input>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.status" placeholder="状态">
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
       </el-select>
@@ -18,11 +18,11 @@
         type="selection"
         width="55">
       </el-table-column>
-      <el-table-column align="center" label="抽奖订单ID">
+<!--      <el-table-column align="center" label="抽奖订单ID">
         <template scope="scope">
           <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.id}}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column align="center" label="礼品ID">
         <template scope="scope">
           <span >{{scope.row.presentId}}</span>
@@ -33,7 +33,7 @@
           <span >{{scope.row.userId}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="编码">
+      <el-table-column align="center" label="订单编码">
         <template scope="scope">
           <span>{{scope.row.number}}</span>
         </template>
@@ -46,6 +46,7 @@
         </el-table-column>
         <el-table-column v-if="checkPermission(permissionConstant.presentOrder_d)" align="center" label="操作" width="150" >
           <template scope="scope">
+            <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>
             <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
         </el-table-column>
