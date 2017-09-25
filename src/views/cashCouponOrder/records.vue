@@ -4,7 +4,7 @@
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="订单编码" v-model="listQuery.keyword"></el-input>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 160px" class="filter-item" v-model="listQuery.status" placeholder="状态">
-        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option :key="'all'" :label="'全部订单状态'" :value="''"></el-option>
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.value"></el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
@@ -224,6 +224,7 @@
         this.$store.dispatch('GetCashCouponOrderDetail', row.id).then((detail) => {
           detail.cashCoupon.expired = String(detail.cashCoupon.expired)
           detail.cashCoupon.hide = String(detail.cashCoupon.hide)
+          detail.cashCoupon.expired = String(detail.cashCoupon.expired)
           detail.user.locked = String(detail.user.locked)
           this.temp = Object.assign({}, detail)
         })

@@ -3,11 +3,11 @@
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="代金券名称" v-model="listQuery.keyword"></el-input>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.hide" placeholder="状态">
-        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option :key="'all'" :label="'是否显示'" :value="''"></el-option>
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
       </el-select>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.expired" placeholder="状态">
-        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option :key="'all'" :label="'是否过期'" :value="''"></el-option>
         <el-option v-for="item in expiredOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
@@ -48,8 +48,8 @@
       </el-table-column>
       <el-table-column width="60" align="center" label="过期">
         <template scope="scope">
-          <span v-if="scope.row.expired" style="color: #ff4949">是</span>
-          <span v-else >否</span>
+          <el-tag v-if="scope.row.expired" :type="'danger'">是</el-tag>
+          <el-tag v-else :type="'primary'">否</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="优先权重" width="120">

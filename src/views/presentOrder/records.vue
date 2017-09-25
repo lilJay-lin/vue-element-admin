@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="订单编码" v-model="listQuery.keyword"></el-input>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.status" placeholder="状态">
-        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option :key="'all'" :label="'是否领取'" :value="''"></el-option>
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.value"></el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
@@ -210,6 +210,7 @@
         this.$store.dispatch('GetPresentOrderDetail', row.id).then((detail) => {
           detail.present.expiryDate = String(detail.present.expiryDate)
           detail.present.hide = String(detail.present.hide)
+          detail.present.expired = String(detail.present.expired)
           detail.presentOrder.status = String(detail.presentOrder.status)
           detail.user.locked = String(detail.user.locked)
           this.temp = Object.assign({}, detail)

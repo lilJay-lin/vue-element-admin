@@ -36,7 +36,7 @@
           <el-date-picker v-model="detail.expiryDate" :clearable="false" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
         </el-form-item>
         <el-form-item label="过期">
-          <el-select class="filter-item"  v-model="detail.expired" placeholder="状态" disabled>
+          <el-select class="filter-item"  v-model="detail.expired" placeholder="状态">
             <el-option v-for="item in expiredOptions" :key="item.key" :label="item.label" :value="item.key">
             </el-option>
           </el-select>
@@ -62,6 +62,7 @@
   import Upload from 'components/Upload'
   import UploadCallback from 'utils/uploadCb'
   import * as Validate from 'utils/validate'
+  import { parseTime } from 'utils/index'
   export default {
     components: {
       Upload
@@ -82,13 +83,13 @@
       statusOptions: {
         type: Array,
         default () {
-          return []
+          return [{ label: '显示', key: 'false' }, { label: '隐藏', key: 'true' }]
         }
       },
       expiredOptions: {
         type: Array,
         default () {
-          return []
+          return [{ label: '否', key: 'false' }, { label: '是', key: 'true' }]
         }
       },
       dialogFormVisible: {
@@ -167,6 +168,7 @@
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
           delete temp.id
+          temp.expiryDate = parseTime(temp.expiryDate)
           me.$store.dispatch('CreatePresent', temp).then(() => {
             this.$notify({
               title: '成功',
@@ -182,6 +184,7 @@
         const me = this
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
+          temp.expiryDate = parseTime(temp.expiryDate)
           me.$store.dispatch('UpdatePresentDetail', temp).then(() => {
             me.$notify({
               title: '成功',

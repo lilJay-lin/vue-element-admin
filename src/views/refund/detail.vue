@@ -33,7 +33,7 @@
         </template>
       </div>
       <CashCouponOrder-Detail :dialog-status="'info'" @cancel="cancelCashCouponOrder()" :detail="cashCouponOrder" :status-options="statusOptions" :dialog-form-visible="cashCouponOrderVisible" ></CashCouponOrder-Detail>
-      <CashCoupon-Detail :dialog-status="'info'" @cancel="cancelCashCoupon()" :detail="detail.cashCoupon" :status-options="statusOptions" :dialog-form-visible="cashCouponVisible" ></CashCoupon-Detail>
+      <CashCoupon-Detail :dialog-status="'info'" @cancel="cancelCashCoupon()" :detail="detail.cashCoupon" :dialog-form-visible="cashCouponVisible" ></CashCoupon-Detail>
     </el-dialog>
   </div>
 </template>

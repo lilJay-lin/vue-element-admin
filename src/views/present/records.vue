@@ -3,11 +3,11 @@
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="礼品名称" v-model="listQuery.keyword"></el-input>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.hide" placeholder="状态">
-        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option :key="'all'" :label="'是否显示'" :value="''"></el-option>
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
       </el-select>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.expired" placeholder="状态">
-        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option :key="'all'" :label="'是否过期'" :value="''"></el-option>
         <el-option v-for="item in expiredOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
@@ -56,9 +56,10 @@
           <span>{{scope.row.expiryDate}}</span>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="过期" width="60">
+      <el-table-column  class-name="status-col"  align="center" label="过期">
         <template scope="scope">
-          <el-tag :type="scope.row.expired ?  'danger' : 'primary'">{{scope.row.expired | statusFilter}}</el-tag>
+          <el-tag v-if="scope.row.expired" :type="'danger'">是</el-tag>
+          <el-tag v-else :type="'primary'">否</el-tag>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="状态" width="60">
@@ -216,6 +217,7 @@
         this.$store.dispatch('GetPresentDetail', row.id).then((detail) => {
           this.temp = Object.assign({}, detail)
           this.temp.hide = String(this.temp.hide)
+          this.temp.expired = String(this.temp.expired)
         })
         this.dialogStatus = 'update'
         this.dialogFormVisible = true

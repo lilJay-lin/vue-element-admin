@@ -80,13 +80,13 @@
       statusOptions: {
         type: Array,
         default () {
-          return []
+          return [{ label: '显示', key: 'false' }, { label: '隐藏', key: 'true' }]
         }
       },
       expiredOptions: {
         type: Array,
         default () {
-          return []
+          return [{ label: '否', key: 'false' }, { label: '是', key: 'true' }]
         }
       },
       dialogFormVisible: {
@@ -171,6 +171,7 @@
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
           delete temp.id
+          delete temp.shop
           temp.expiryDate = parseTime(temp.expiryDate)
           me.$store.dispatch('CreateCashCoupon', temp).then(() => {
             this.$notify({
@@ -188,6 +189,7 @@
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
           temp.expiryDate = parseTime(temp.expiryDate)
+          delete temp.shop
           me.$store.dispatch('UpdateCashCouponDetail', temp).then(() => {
             me.$notify({
               title: '成功',

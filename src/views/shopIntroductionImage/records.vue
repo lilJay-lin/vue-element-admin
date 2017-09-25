@@ -2,7 +2,7 @@
   <div :class="[containerClass]" style="width: 720px;margin:0 auto;">
     <div class="filter-container">
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.hide" placeholder="状态">
-        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option :key="'all'" :label="'是否显示'" :value="''"></el-option>
         <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
