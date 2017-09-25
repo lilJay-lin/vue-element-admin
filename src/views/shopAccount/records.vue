@@ -2,6 +2,10 @@
   <div :class="[containerClass]">
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="商家帐号名称" v-model="listQuery.keyword"></el-input>
+      <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.locked" placeholder="状态">
+        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.value"></el-option>
+      </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
         <el-button  v-if="checkPermission(permissionConstant.shop_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
@@ -33,12 +37,12 @@
           <span>{{scope.row.description}}</span>
         </template>
       </el-table-column>
+      <el-table-column class-name="status-col" label="状态" width="60">
+        <template scope="scope">
+          <el-tag :type="scope.row.locked ?  'danger' : 'primary'">{{scope.row.locked | statusFilter}}</el-tag>
+        </template>
+      </el-table-column>
       <template  v-if="isMain" >
-        <el-table-column class-name="status-col" label="状态" width="60">
-          <template scope="scope">
-            <el-tag :type="scope.row.locked ?  'danger' : 'primary'">{{scope.row.locked | statusFilter}}</el-tag>
-          </template>
-        </el-table-column>
         <el-table-column v-if="checkPermission(permissionConstant.shop_d)" align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>
@@ -116,10 +120,11 @@
           targetPage: 1,
           pageSize: 10,
           keyword: undefined,
-          shopId: ''
+          shopId: '',
+          locked: ''
         },
         temp: Object.assign({}, temp),
-        statusOptions: [{ label: '有效', key: 'false' }, { label: '冻结', key: 'true' }],
+        statusOptions: [{ label: '有效', key: 'false', value: 'false' }, { label: '冻结', key: 'true', value: 'true' }],
         dialogFormVisible: false,
         dialogStatus: '',
         tableKey: 0

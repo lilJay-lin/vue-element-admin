@@ -80,8 +80,6 @@ const user = {
     UpdateSelf({ commit, state }, detail) {
       return new Promise((resolve, reject) => {
         UserApi.updateSelf(detail).then(({ data: { result } }) => {
-          result.permissionList = state.permissionList
-          commit(TYPES.SET_USER, result)
           resolve(result)
         }).catch(error => {
           reject(error)

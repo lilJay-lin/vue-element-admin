@@ -288,3 +288,7 @@ code {
   background: #000;
   z-index: 1100;
 }
+
+.el-form-item .el-input, .el-form-item .el-textarea{
+  width: 220px;
+}

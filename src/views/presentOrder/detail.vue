@@ -17,7 +17,7 @@
         </template>
         <el-form-item label="礼品" v-if="dialogStatus === 'update'">
           <!--<span class="link-type" @click="togglePresent(true)">{{detail.present.name}}</span>-->
-          <img style="width: 200px;cursor: pointer;" @click="togglePresent(true)" :src="detail.present.image"/>
+          <img style="width: 220px;cursor: pointer;" @click="togglePresent(true)" :src="detail.present.image"/>
         </el-form-item>
         <template v-if="checkPermission(permissionConstant.present_u) && dialogStatus === 'create'">
           <el-form-item label="关联礼品" prop="presentName">
@@ -33,7 +33,7 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-select class="filter-item"  v-model="detail.presentOrder.status" placeholder="状态">
-            <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
+            <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>

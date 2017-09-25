@@ -75,16 +75,7 @@ export const asyncRouterMap = [
     icon: 'yinhangqia',
     meta: { role: [Constant.shopClassification_r, Constant.shop_r, Constant.cashCoupon_r, Constant.promotionalPartner_r, Constant.indexContactWay_manage, Constant.promotionalPartner_manage] },
     children: [
-      {
-        path: '/shop',
-        component: _import('layout/InnerLayout'),
-        redirect: 'noredirect',
-        name: '商家管理',
-        meta: { role: [Constant.shop_r] },
-        children: [
-          { path: 'index', component: _import('shop/index'), name: '商家帐号管理', meta: { role: [Constant.shop_r] } }
-        ]
-      },
+      { path: 'index', component: _import('shop/index'), name: '商家帐号管理', meta: { role: [Constant.shop_r] } },
       { path: 'classification', component: _import('classification/index'), name: '商家分类管理', meta: { role: [Constant.shopClassification_r] } },
       { path: 'promotionalPartner', component: _import('promotionalPartner/index'), name: '合作伙伴管理', meta: { role: [Constant.promotionalPartner_r] } },
       { path: 'contact', component: _import('contact/index'), name: '联系方式维护', meta: { role: [Constant.indexContactWay_manage] } },
@@ -120,7 +111,7 @@ export const asyncRouterMap = [
     meta: { role: [Constant.refundReason_r, Constant.advertisement_r] },
     children: [
       { path: 'advertisement', component: _import('advertisement/index'), name: '广告管理', meta: { role: [Constant.advertisement_r] } },
-      { path: 'refundReason', component: _import('refundReason/index'), name: '退款原理管理', meta: { role: [Constant.refundReason_r] } }
+      { path: 'refundReason', component: _import('refundReason/index'), name: '退款原因管理', meta: { role: [Constant.refundReason_r] } }
     ]
   },
   { path: '*', redirect: '/404', hidden: true }

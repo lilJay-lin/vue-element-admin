@@ -16,7 +16,7 @@
             <el-button type="primary" :loading="image.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
           </upload>
         </template>
-        <img :src="detail.image" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
+        <img :src="detail.image" style="width: 220px;height: auto;border: 1px solid #bfcbd9" alt="">
       </el-form-item>
       <el-form-item label="优先权重" prop="priority">
         <el-input v-model="detail.priority" type="number" min="0"></el-input>

@@ -32,7 +32,7 @@
                 <el-button type="primary" :loading="preImage.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
               </upload>
             </template>
-            <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
+            <img :src="detail.preImage" style="width: 220px;height: auto;border: 1px solid #bfcbd9" alt="">
           </el-form-item>
           <el-form-item label="地址">
             <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入内容" v-model="detail.address"></el-input>

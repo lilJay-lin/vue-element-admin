@@ -28,12 +28,12 @@
           <span>{{scope.row.description}}</span>
         </template>
       </el-table-column>
+      <el-table-column class-name="status-col" label="状态" width="60">
+        <template scope="scope">
+          <el-tag :type="scope.row.hide ?  'danger' : 'primary'">{{scope.row.hide | statusFilter}}</el-tag>
+        </template>
+      </el-table-column>
       <template  v-if="isMain" >
-        <el-table-column class-name="status-col" label="状态" width="60">
-          <template scope="scope">
-            <el-tag :type="scope.row.hide ?  'danger' : 'primary'">{{scope.row.hide | statusFilter}}</el-tag>
-          </template>
-        </el-table-column>
         <el-table-column v-if="checkPermission(permissionConstant.refundReason_d)" align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>

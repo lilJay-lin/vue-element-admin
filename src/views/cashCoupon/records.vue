@@ -2,6 +2,14 @@
   <div :class="[containerClass]">
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="代金券名称" v-model="listQuery.keyword"></el-input>
+      <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.hide" placeholder="状态">
+        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
+      </el-select>
+      <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.expired" placeholder="状态">
+        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option v-for="item in expiredOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
+      </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
         <el-button  v-if="checkPermission(permissionConstant.cashCoupon_c)" class="filter-item" style="margin-left: 10px" @click="handleCreate" type="primary" icon="edit">添加</el-button>
@@ -38,7 +46,7 @@
           <span>{{scope.row.expiryDate}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120" align="center" label="是否过期">
+      <el-table-column width="60" align="center" label="过期">
         <template scope="scope">
           <span v-if="scope.row.expired" style="color: #ff4949">是</span>
           <span v-else >否</span>
@@ -49,12 +57,12 @@
           <span >{{scope.row.priority}}</span>
         </template>
       </el-table-column>
+      <el-table-column class-name="status-col" label="状态" width="60">
+        <template scope="scope">
+          <el-tag :type="scope.row.hide ?  'danger' : 'primary'">{{scope.row.hide | statusFilter}}</el-tag>
+        </template>
+      </el-table-column>
       <template  v-if="isMain" >
-        <el-table-column class-name="status-col" label="状态" width="60">
-          <template scope="scope">
-            <el-tag :type="scope.row.hide ?  'danger' : 'primary'">{{scope.row.hide | statusFilter}}</el-tag>
-          </template>
-        </el-table-column>
         <el-table-column v-if="checkPermission(permissionConstant.cashCoupon_d)" align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>
@@ -77,20 +85,21 @@
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="cashCoupon.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <CashCoupon-Detail :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></CashCoupon-Detail>
+    <CashCoupon-Detail :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel" :dialog-status="dialogStatus" :detail="temp" :expired-options="expiredOptions" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></CashCoupon-Detail>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
   import CashCouponDetail from './detail.vue'
+  import { getDefaultDateTime } from '../../utils'
   const temp = {
     id: '',
     shopId: '',
     name: '',
     preImage: '',
     discountAmount: 0,
-    expiryDate: '',
+    expiryDate: getDefaultDateTime(),
     expired: 'false',
     hide: 'false',
     priority: 0
@@ -132,10 +141,13 @@
           targetPage: 1,
           pageSize: 10,
           keyword: undefined,
-          shopId: ''
+          shopId: '',
+          hide: '',
+          expired: ''
         },
         temp: Object.assign({}, temp),
         statusOptions: [{ label: '显示', key: 'false' }, { label: '隐藏', key: 'true' }],
+        expiredOptions: [{ label: '否', key: 'false' }, { label: '是', key: 'true' }],
         dialogFormVisible: false,
         dialogStatus: '',
         tableKey: 0

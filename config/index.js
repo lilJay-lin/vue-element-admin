@@ -35,7 +35,7 @@ module.exports = {
               filter: function (pathname, req) {
                 return pathname.match('^/(ui|mi|shop|open)/');
               },
-              target: 'http://djq.tunnel.qydev.com',
+              target: 'http://localhost:8080',
               changeOrigin: true
             }
         },

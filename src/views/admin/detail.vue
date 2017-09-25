@@ -23,7 +23,7 @@
       </el-form-item>
       <el-form-item label="状态">
         <el-select class="filter-item" :disabled="dialogStatus === 'info'" v-model="detail.locked" placeholder="状态">
-          <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
+          <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>

@@ -3,7 +3,8 @@
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="订单编码" v-model="listQuery.keyword"></el-input>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 120px" class="filter-item" v-model="listQuery.status" placeholder="状态">
-        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
+        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.value"></el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
@@ -38,12 +39,12 @@
           <span>{{scope.row.number}}</span>
         </template>
       </el-table-column>
+      <el-table-column class-name="status-col" label="状态" width="60">
+        <template scope="scope">
+          <el-tag :type="scope.row.status ?  'danger' : 'primary'">{{scope.row.status | statusFilter}}</el-tag>
+        </template>
+      </el-table-column>
       <template  v-if="isMain" >
-        <el-table-column class-name="status-col" label="状态" width="60">
-          <template scope="scope">
-            <el-tag :type="scope.row.status ?  'danger' : 'primary'">{{scope.row.status | statusFilter}}</el-tag>
-          </template>
-        </el-table-column>
         <el-table-column v-if="checkPermission(permissionConstant.presentOrder_d)" align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>
@@ -90,7 +91,7 @@
       presentId: '',
       userId: '',
       number: '',
-      status: '0'
+      status: 0
     },
     user: {
       id: '',
@@ -135,10 +136,10 @@
           targetPage: 1,
           pageSize: 10,
           keyword: undefined,
-          status: '0'
+          status: ''
         },
         temp: Object.assign({}, temp),
-        statusOptions: [{ label: '待取', key: '0' }, { label: '已取', key: '1' }],
+        statusOptions: [{ label: '待取', key: '0', value: 0 }, { label: '已取', key: '1', value: 1 }],
         dialogFormVisible: false,
         dialogStatus: '',
         tableKey: 0

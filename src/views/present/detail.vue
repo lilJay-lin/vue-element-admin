@@ -18,7 +18,7 @@
               <el-button type="primary" :loading="image.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
             </upload>
           </template>
-          <img :src="detail.image" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
+          <img :src="detail.image" style="width: 220px;height: auto;border: 1px solid #bfcbd9" alt="">
         </el-form-item>
         <el-form-item label="地址" prop="priority">
           <el-input v-model="detail.address"></el-input>
@@ -34,6 +34,12 @@
         </el-form-item>
         <el-form-item label="有效时间">
           <el-date-picker v-model="detail.expiryDate" :clearable="false" type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="过期">
+          <el-select class="filter-item"  v-model="detail.expired" placeholder="状态" disabled>
+            <el-option v-for="item in expiredOptions" :key="item.key" :label="item.label" :value="item.key">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="状态">
           <el-select class="filter-item"  v-model="detail.hide" placeholder="状态">
@@ -74,6 +80,12 @@
         default: 'create'
       },
       statusOptions: {
+        type: Array,
+        default () {
+          return []
+        }
+      },
+      expiredOptions: {
         type: Array,
         default () {
           return []

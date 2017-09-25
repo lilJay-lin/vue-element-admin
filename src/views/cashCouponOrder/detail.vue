@@ -10,7 +10,7 @@
           <span class="link-type" @click="toggleUser(true)">{{detail.user.mobile}}</span>
         </el-form-item>
         <el-form-item label="关联代金券" >
-          <img style="width: 200px;cursor: pointer;" @click="toggleCashCoupon(true)" :src="detail.cashCoupon.preImage"/>
+          <img style="width: 220px;cursor: pointer;" @click="toggleCashCoupon(true)" :src="detail.cashCoupon.preImage"/>
         </el-form-item>
         <el-form-item label="支付订单编码">
           <el-input v-model="detail.cashCouponOrder.payOrderNumber" :disabled="true"></el-input>
@@ -23,7 +23,7 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-select class="filter-item"  v-model="detail.cashCouponOrder.status" placeholder="状态">
-            <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
+            <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>

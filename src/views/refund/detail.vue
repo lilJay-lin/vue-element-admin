@@ -7,7 +7,7 @@
           <span class="link-type" title="显示代金券订单信息" @click="showCashCouponOrder()">{{detail.cashCouponOrder.number}}</span>
         </el-form-item>
         <el-form-item label="退款代金券信息" >
-          <img style="width: 200px;cursor: pointer;" @click="showCashCoupon()" :src="detail.cashCoupon.preImage"/>
+          <img style="width: 220px;cursor: pointer;" @click="showCashCoupon()" :src="detail.cashCoupon.preImage"/>
         </el-form-item>
         <el-form-item label="退款金额">
           <el-input v-model="detail.refund.refundAmount" :disabled="true"></el-input>
@@ -20,7 +20,7 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-select class="filter-item"  v-model="detail.refund.status" placeholder="状态">
-            <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
+            <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>

@@ -3,7 +3,8 @@
     <div class="filter-container">
       <el-input @keyup.enter.native="handleFilter" style="width: 200px" class="filter-item" placeholder="订单编码" v-model="listQuery.keyword"></el-input>
       <el-select  v-if="isMain"  @change='handleFilter' style="width: 160px" class="filter-item" v-model="listQuery.status" placeholder="状态">
-        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key"></el-option>
+        <el-option :key="'all'" :label="'全部'" :value="''"></el-option>
+        <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.value"></el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="search" @click="handleFilter">搜索</el-button>
       <template v-if="isMain">
@@ -99,13 +100,13 @@
   import RefundDetail from './detail.vue'
   import * as Validate from 'utils/validate'
   const statusOptions = [
-    { key: 0, label: '未使用待退款' },
-    { key: 1, label: '未使用退款成功' },
-    { key: 2, label: '未使用退款撤销' },
-    { key: 3, label: '已使用待退款' },
-    { key: 4, label: '已使用退款成功' },
-    { key: 5, label: '已使用退款失败' },
-    { key: 6, label: '已使用退款撤销' }
+    { value: 0, key: '0', label: '未使用待退款' },
+    { value: 1, key: '1', label: '未使用退款成功' },
+    { value: 2, key: '2', label: '未使用退款撤销' },
+    { value: 3, key: '3', label: '已使用待退款' },
+    { value: 4, key: '4', label: '已使用退款成功' },
+    { value: 5, key: '5', label: '已使用退款失败' },
+    { value: 6, key: '6', label: '已使用退款撤销' }
   ]
   const temp = {
     refund: {
@@ -186,7 +187,7 @@
           targetPage: 1,
           pageSize: 10,
           keyword: undefined,
-          status: 0
+          status: ''
         },
         temp: Object.assign({}, temp),
         statusOptions,
@@ -204,7 +205,7 @@
     filters: {
       statusFilter(status) {
         const option = statusOptions.filter((s) => {
-          return s.key === status
+          return s.value === status
         })
         return option[0].label
       }

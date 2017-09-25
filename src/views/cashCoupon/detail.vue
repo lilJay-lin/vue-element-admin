@@ -18,7 +18,7 @@
               <el-button type="primary" :loading="preImage.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
             </upload>
           </template>
-          <img :src="detail.preImage" style="width: 200px;height: auto;border: 1px solid #bfcbd9" alt="">
+          <img :src="detail.preImage" style="width: 220px;height: auto;border: 1px solid #bfcbd9" alt="">
         </el-form-item>
         <el-form-item label="价格" prop="price">
           <el-input v-model="detail.price" ></el-input>
@@ -32,9 +32,9 @@
         <el-form-item label="优先权重" prop="priority">
           <el-input v-model="detail.priority" type="number" min="0"></el-input>
         </el-form-item>
-        <el-form-item label="是否过期">
+        <el-form-item label="过期">
           <el-select class="filter-item"  v-model="detail.expired" placeholder="状态">
-            <el-option v-for="item in expireOptions" :key="item.key" :label="item.label" :value="item.key">
+            <el-option v-for="item in expiredOptions" :key="item.key" :label="item.label" :value="item.key">
             </el-option>
           </el-select>
         </el-form-item>
@@ -83,6 +83,12 @@
           return []
         }
       },
+      expiredOptions: {
+        type: Array,
+        default () {
+          return []
+        }
+      },
       dialogFormVisible: {
         type: Boolean,
         default: false
@@ -108,7 +114,6 @@
     data () {
       const me = this
       return {
-        expireOptions: [{ label: '否', key: 'false' }, { label: '是', key: 'true' }],
         preImage: {
           action: process.env.BASE_API + '/mi/cashCouponAction/uploadImage',
           loading: false,

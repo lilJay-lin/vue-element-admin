@@ -5,6 +5,7 @@
  * Created by linxiaojie on 2017/8/8.
  */
 import Base from './base'
+import fetch from '../utils/fetch_new'
 
 class Admin extends Base {
   constructor (base) {

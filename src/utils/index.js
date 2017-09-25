@@ -382,3 +382,19 @@ export const shuffle = (arr) => {
   }
   return tempArr
 }
+
+/*
+* 获取默认时间
+* */
+function pad (char, str, len) {
+  const length = str.length
+  if (length < len) {
+    return (new Array(len - length)).fill(0).join('') + str
+  }
+  return str
+}
+export const getDefaultDateTime = () => {
+  const date = new Date()
+  return date.getFullYear() + '-' + pad(0, date.getMonth() + 1, 2) + '-' + pad(0, date.getDate(), 2) + ' 23:59:59'
+}
+

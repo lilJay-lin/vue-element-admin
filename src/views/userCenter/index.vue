@@ -4,7 +4,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import Detail from '../register/detail.vue'
+import Detail from '../admin/detail.vue'
 const temp = {
   id: '',
   name: '',
@@ -35,6 +35,7 @@ export default {
       this.$store.dispatch('GetInfo').then((result) => {
         this.detailLoading = false
         this.temp = Object.assign({}, result)
+        this.temp.roleList = []
         this.temp.locked = String(this.temp.locked)
       })
     }
