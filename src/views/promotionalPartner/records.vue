@@ -18,13 +18,13 @@
           <span :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="合作链接">
+<!--      <el-table-column align="center" label="合作链接">
         <template scope="scope">
           <el-tooltip :content="serverRootPath + '?promotionalPartnerId=' + scope.row.id" placement="top">
             <span class="promotional-link">{{serverRootPath}}?promotionalPartnerId={{scope.row.id}}</span>
           </el-tooltip>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column align="center" width="120" label="用户数">
         <template scope="scope">
           <span >{{scope.row.totalUser}}</span>
@@ -68,7 +68,7 @@
                      :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="promotionalPartner.pageInfo.totalRow">
       </el-pagination>
     </div>
-    <PromotionalPartner-Detail  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></PromotionalPartner-Detail>
+    <PromotionalPartner-Detail :server-root-path="serverRootPath"  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" @submit="submit()" @cancel="cancel()" :dialog-status="dialogStatus" :detail="temp" :status-options="statusOptions" :dialog-form-visible="dialogFormVisible" ></PromotionalPartner-Detail>
   </div>
 </template>
 

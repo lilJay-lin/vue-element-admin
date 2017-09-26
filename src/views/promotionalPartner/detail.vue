@@ -4,6 +4,9 @@
       <el-form-item label="名称"  prop="name">
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
+      <el-form-item label="推广链接"  v-if="dialogStatus !=='create'">
+        <span style="width: 220px;display: inline-block;word-break: break-all;;">{{serverRootPath}}?promotionalPartnerId={{detail.id}}</span>
+      </el-form-item>
       <el-form-item label="用户数">
         <el-input v-model="detail.totalUser" disabled></el-input>
       </el-form-item>
@@ -44,6 +47,10 @@
       dialogFormVisible: {
         type: Boolean,
         default: false
+      },
+      serverRootPath: {
+        type: String,
+        default: './'
       },
       detail: {
         type: Object,

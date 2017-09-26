@@ -102,11 +102,12 @@
   const statusOptions = [
     { value: 0, key: '0', label: '未使用待退款' },
     { value: 1, key: '1', label: '未使用退款成功' },
-    { value: 2, key: '2', label: '未使用退款撤销' },
-    { value: 3, key: '3', label: '已使用待退款' },
-    { value: 4, key: '4', label: '已使用退款成功' },
-    { value: 5, key: '5', label: '已使用退款失败' },
-    { value: 6, key: '6', label: '已使用退款撤销' }
+    { value: 2, key: '2', label: '未使用退款失败' },
+    { value: 3, key: '3', label: '未使用退款撤销' },
+    { value: 4, key: '4', label: '已使用待退款' },
+    { value: 5, key: '5', label: '已使用退款成功' },
+    { value: 6, key: '6', label: '已使用退款失败' },
+    { value: 7, key: '7', label: '已使用退款撤销' }
   ]
   const temp = {
     refund: {

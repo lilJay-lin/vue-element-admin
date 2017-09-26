@@ -30,8 +30,21 @@ export default class UploadCallback {
           resolve.call(me, res)
         },
         // 错误
-        uploadError (type) {
+        uploadError (type, data) {
           const me = this
+          // 图片大小不对
+          if (type === 'size') {
+            me.$message({
+              message: '图片像素宽高尺寸必须为' + data.width + '*' + data.height,
+              type: 'error'
+            })
+          }
+          if (type === 'type') {
+            me.$message({
+              message: '只能上传图片',
+              type: 'error'
+            })
+          }
           if (type === 'limit') {
             me.$message({
               message: '图片大小不能超过20M',

@@ -9,6 +9,8 @@
           <el-form-item label="商标">
             <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.shop_u) && dialogStatus === 'update'">
               <upload
+                :width="300"
+                :height="200"
                 :action="logo.action"
                 @change="logo.change"
                 @success="logo.uploadSuccess"
@@ -23,6 +25,8 @@
           <el-form-item label="缩略图">
             <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.shop_u) && dialogStatus === 'update'">
               <upload
+                :width="720"
+                :height="320"
                 :action="preImage.action"
                 @change="preImage.change"
                 @success="preImage.uploadSuccess"
@@ -169,8 +173,8 @@
             }
             me.preImage.loading = false
           },
-          uploadError () {
-            me.uploadError(type)
+          uploadError (type, data) {
+            me.uploadError(type, data)
             me.preImage.loading = false
           }
         },
@@ -187,8 +191,8 @@
             }
             me.logo.loading = false
           },
-          uploadError (type) {
-            me.uploadError(type)
+          uploadError (type, data) {
+            me.uploadError(type, data)
             me.logo.loading = false
           }
         },

@@ -95,9 +95,21 @@
         type: Boolean,
         default: false
       },
+      // 剪裁图片的宽
+      width: {
+        type: Number,
+        default: 0
+      },
+      // 剪裁图片的高
+      height: {
+        type: Number,
+        default: 0
+      }
     },
     data(){
+      const {width, height} = this
       return {
+        sourceImgUrl: '',
         files: [],
         safeFiles: [],//合格的文件
         unsafeFiles: [],//不合格的文件
@@ -105,29 +117,59 @@
       }
     },
     methods: {
+      // 设置图片源
+      setSourceImg(file) {
+        const me = this,
+          fr = new FileReader();
+        fr.onload = function (e) {
+          me.sourceImgUrl = fr.result;
+          me.startUpload()
+        }
+        fr.readAsDataURL(file);
+      },
+      checkFile (file) {
+        const me = this
+        // 仅限图片
+        if (file.type.indexOf('image') === -1) {
+          me.$emit("error", "type")
+          return false;
+        }
+        if (me.limit !== undefined && file.size > me.limit * 1024 * 1024) {
+          me.$emit("error", "limit")
+          return false
+        }
+        return true
+      },
+      startUpload () {
+        const me = this
+        const { width, height, sourceImgUrl} = me
+        const image = new Image()
+        image.src = sourceImgUrl
+        image.onload = function () {
+          const nWidth = image.naturalWidth
+          const nHeight = image.naturalHeight
+  
+          // 图片像素不达标
+          /*if ((nRatio !== radio) && (nWidth < width || nHeight < height)) {*/
+          if ((width !== 0 && nWidth !== width) || (height !==0 && nHeight !== height)) {
+            me.$emit("error", "size", {width, height})
+          } else {
+            me.$emit("change", this.safeFiles)
+            me.upload()
+            me.safeFiles = []
+          }
+        }
+      },
       // 选择文件
       change(e){
+        const me = this
         this.input = e.target
-        this.files = []
-        this.unsafeFiles = []
-        this.files = e.target.files || e.dataTransfer.files
-        for (let i = 0, file; file = this.files[i]; i++) {// 遍历选中文件
-          if (this.limit == undefined) {
-            this.addFile(file)
-          } else {
-            if (file.size <= this.limit * 1024 * 1024) {// 判断大小
-              
-              this.addFile(file)
-            } else {
-              this.unsafeFiles.push(file)
-            }
-          }
-          
-        }
-        this.$emit("change", this.safeFiles)
-        if (this.auto) {
-          this.upload()
-          this.safeFiles = []
+        let files = e.target.files || e.dataTransfer.files;
+        this.files = files
+        const file = files[0]
+        if (me.checkFile(file)) {
+          this.safeFiles = [file]
+          me.setSourceImg(file)
         }
       },
       // 添加文件到暂存区

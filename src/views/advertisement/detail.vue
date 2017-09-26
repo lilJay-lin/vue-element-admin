@@ -7,6 +7,8 @@
       <el-form-item label="缩略图">
         <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.advertisement_u) && dialogStatus === 'update'">
           <upload
+            :width="720"
+            :height="320"
             :action="image.action"
             @change="image.change"
             @success="uploadSuccess"

@@ -46,7 +46,7 @@
           <span>{{scope.row.expiryDate}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="60" align="center" label="过期">
+      <el-table-column class-name="status-col" align="center" label="过期">
         <template scope="scope">
           <el-tag v-if="scope.row.expired" :type="'danger'">是</el-tag>
           <el-tag v-else :type="'primary'">否</el-tag>
