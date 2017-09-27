@@ -71,12 +71,12 @@
     </el-table>
     <div v-if="isMain">
       <el-dialog :title="actions.agree? '同意退款' : '拒绝退款'" :visible="actions.show" :before-close="closeActions" size="tiny">
-        <el-form class="small-space" :model="actions" :rules = "actionsRule" ref="actionsForm" label-position="left" label-width="100px">
+        <el-form class="refund-custom small-space" :model="actions" :rules = "actionsRule" ref="actionsForm" label-position="left" label-width="100px">
           <el-form-item v-if="actions.agree" label="退款金额" prop="refundAmount" style="margin-bottom: 30px;">
             <el-input type="text" v-model="actions.refundAmount"></el-input>
           </el-form-item>
           <el-form-item label="平台意见" prop="comment" style="margin-bottom: 30px;">
-            <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="平台意见" v-model="actions.comment"></el-input>
+            <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}"  placeholder="平台意见" v-model="actions.comment"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -329,10 +329,12 @@
             comment: me.actions.comment
           }).then(() => {
             me.$message({
-              text: '操作成功'
+              message: '操作成功',
+              type: 'success'
             })
-          })
-        })
+            me.closeActions()
+          }, () => {})
+        }, () => {})
       },
       refuse () {
         const me = this
@@ -342,10 +344,12 @@
             comment: me.actions.comment
           }).then(() => {
             me.$message({
-              text: '操作成功'
+              message: '操作成功',
+              type: 'success'
             })
-          })
-        })
+            me.closeActions()
+          }, () => {})
+        }, () => {})
       }
     }
   }
