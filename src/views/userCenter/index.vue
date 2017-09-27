@@ -23,7 +23,7 @@ export default {
     return {
       detailLoading: true,
       temp: Object.assign({}, temp),
-      statusOptions: [{ label: '有效', key: 'false' }, { label: '无效', key: 'true' }]
+      statusOptions: [{ label: '有效', key: 'false', value: 'false' }, { label: '冻结', key: 'true', value: 'true' }],
     }
   },
   created () {

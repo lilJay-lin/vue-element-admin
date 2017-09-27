@@ -9,6 +9,9 @@
         <el-form-item label="退款代金券信息" >
           <img style="width: 220px;cursor: pointer;" @click="showCashCoupon()" :src="detail.cashCoupon.preImage"/>
         </el-form-item>
+        <el-form-item label="退款凭证" >
+          <img style="width: 220px;cursor: pointer;" :src="detail.refund.evidence"/>
+        </el-form-item>
         <el-form-item label="退款金额">
           <el-input v-model="detail.refund.refundAmount" :disabled="true"></el-input>
         </el-form-item>

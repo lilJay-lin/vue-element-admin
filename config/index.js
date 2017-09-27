@@ -5,8 +5,8 @@ module.exports = {
     build: {
         sitEnv: require('./sit.env'),
         prodEnv: require('./prod.env'),
-        index: path.resolve(__dirname, '../dist', pkg.version, 'index.html'),
-        assetsRoot: path.resolve(__dirname, '../dist', pkg.version),
+        index: path.resolve(__dirname, '../dist', pkg.version + '_mi', 'index.html'),
+        assetsRoot: path.resolve(__dirname, '../dist', pkg.version + '_mi'),
         assetsSubDirectory: 'static',
         assetsPublicPath: './',          //请根据自己路径配置更改
         staticPath:'./static/',          //请根据自己路径配置更改

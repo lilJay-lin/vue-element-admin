@@ -75,7 +75,7 @@ export const asyncRouterMap = [
     icon: 'xinrenzhinan',
     meta: { role: [Constant.shopClassification_r, Constant.shop_r, Constant.cashCoupon_r, Constant.promotionalPartner_r, Constant.indexContactWay_manage, Constant.promotionalPartner_manage] },
     children: [
-      { path: 'index', component: _import('shop/index'), name: '商家帐号管理', meta: { role: [Constant.shop_r] } },
+      { path: 'index', component: _import('shop/index'), name: '商家管理', meta: { role: [Constant.shop_r] } },
       { path: 'classification', component: _import('classification/index'), name: '商家分类管理', meta: { role: [Constant.shopClassification_r] } },
       { path: 'promotionalPartner', component: _import('promotionalPartner/index'), name: '合作伙伴管理', meta: { role: [Constant.promotionalPartner_r] } },
       { path: 'contact', component: _import('contact/index'), name: '联系方式维护', meta: { role: [Constant.indexContactWay_manage] } },
@@ -95,11 +95,11 @@ export const asyncRouterMap = [
     redirect: 'noredirect',
     name: '抽奖模块',
     icon: 'table',
-    meta: { role: [Constant.refundReason_r, Constant.advertisement_r, Constant.shopAccountRedPack_manage] },
+    meta: { role: [Constant.presentOrder_r, Constant.present_r, Constant.shopAccountRedPack_manage] },
     children: [
-      { path: 'present', component: _import('present/index'), name: '礼品管理', meta: { role: [Constant.advertisement_r] } },
-      { path: 'presentOrder', component: _import('presentOrder/index'), name: '抽奖管理', meta: { role: [Constant.refundReason_r] } },
-      { path: 'redPack', component: _import('redPack/index'), name: '抽奖维护', meta: { role: [Constant.shopAccountRedPack_manage] } }
+      { path: 'present', component: _import('present/index'), name: '礼品管理', meta: { role: [Constant.present_r] } },
+      { path: 'presentOrder', component: _import('presentOrder/index'), name: '礼品订单管理', meta: { role: [Constant.presentOrder_r] } },
+      { path: 'redPack', component: _import('redPack/index'), name: '抽红包维护', meta: { role: [Constant.shopAccountRedPack_manage] } }
     ]
   },
   {

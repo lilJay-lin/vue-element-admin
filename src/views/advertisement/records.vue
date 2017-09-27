@@ -13,7 +13,7 @@
       </template>
     </div>
     <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="advertisement.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
-      <el-table-column v-if="isMain"
+      <el-table-column v-if="isMain && checkPermission(permissionConstant.advertisement_d)"
         type="selection"
         width="55">
       </el-table-column>
@@ -43,10 +43,10 @@
         </template>
       </el-table-column>
       <template  v-if="isMain" >
-        <el-table-column v-if="checkPermission(permissionConstant.advertisement_d)" align="center" label="操作" width="150" >
+        <el-table-column  align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>
-            <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
+            <el-button v-if="checkPermission(permissionConstant.advertisement_d)" size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
         </el-table-column>
       </template>

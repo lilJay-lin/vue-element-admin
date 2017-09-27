@@ -21,13 +21,13 @@
       <el-form-item label="手机号码" prop="mobile">
         <el-input v-model="detail.mobile"></el-input>
       </el-form-item>
-      <el-form-item label="状态">
+      <el-form-item label="状态" v-if="dialogStatus !== 'info'">
         <el-select class="filter-item" :disabled="dialogStatus === 'info'" v-model="detail.locked" placeholder="状态">
           <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="关联角色">
+      <el-form-item label="关联角色" v-if="dialogStatus !== 'info'">
         <span v-if ="detail.roleList.length === 0">无关联角色</span>
         <el-tooltip v-else v-for="role in detail.roleList" :key="role.id" :content="role.description" placement="top">
           <el-tag type="success" :closable="dialogStatus=='create' || checkPermission(permissionConstant.admin_u) && dialogStatus === 'update'"

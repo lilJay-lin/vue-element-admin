@@ -16,7 +16,7 @@
       </template>
     </div>
     <el-table :key='tableKey' @selection-change="handleSelectionChange" :data="cashCouponOrder.records" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
-      <el-table-column v-if="isMain"
+      <el-table-column v-if="isMain && checkPermission(permissionConstant.cashCouponOrder_d)"
         type="selection"
         width="55">
       </el-table-column>
@@ -25,7 +25,7 @@
           <span  :class="{'link-type': isMain}" @click="handleUpdate(scope.row)">{{scope.row.number}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="支付编码" width="280">
+      <el-table-column align="center" label="支付编码" width="300">
         <template scope="scope">
           <span>{{scope.row.payOrderNumber}}</span>
         </template>
@@ -46,10 +46,10 @@
             <el-tag >{{scope.row.status | statusFilter}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column v-if="checkPermission(permissionConstant.cashCouponOrder_d)" align="center" label="操作" width="150" >
+        <el-table-column align="center" label="操作" width="150" >
           <template scope="scope">
             <el-button  size="small" type="primary" @click="handleUpdate(scope.row)">详情</el-button>
-            <el-button  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
+            <el-button  v-if="checkPermission(permissionConstant.cashCouponOrder_d)"  size="small" type="danger" @click="handleModifyStatus(scope.row, true)">删除</el-button>
           </template>
         </el-table-column>
       </template>

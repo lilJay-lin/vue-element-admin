@@ -87,7 +87,7 @@
 			}
 			.screenfull {
 					position: absolute;
-					right: 90px;
+					/*right: 90px;*/
 					top: 16px;
 					color: red;
 			}
