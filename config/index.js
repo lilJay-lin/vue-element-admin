@@ -35,7 +35,7 @@ module.exports = {
               filter: function (pathname, req) {
                 return pathname.match('^/(ui|mi|shop|open)/');
               },
-              target: 'http://localhost:8080',
+              target: 'http://djq.51zxiu.cn',
               changeOrigin: true
             }
         },

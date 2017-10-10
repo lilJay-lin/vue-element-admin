@@ -3,6 +3,7 @@
     <div class="__upload__">
       <slot></slot>
       <input type="file" :disabled="disabled" @change="change($event)" :accept="accepts" :multiple="multiple">
+      <span style="color:#ff4949;">{{tip}}</span>
     </div>
     <div class="__queue__" v-if="queue && safeFiles.length>0">
       <transition-group name="fade" mode="out-in">
@@ -114,6 +115,7 @@
         safeFiles: [],//合格的文件
         unsafeFiles: [],//不合格的文件
         input: null,
+        tip: '图片像素宽高尺寸必须为' + width + '*' + height
       }
     },
     methods: {

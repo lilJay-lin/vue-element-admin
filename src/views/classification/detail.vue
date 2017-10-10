@@ -64,7 +64,7 @@
         },
         detailRules: {
           name: [
-            { required: true, min: 3, max: 32, message: '分类名称长度3到32位', trigger: 'blur' }
+            { required: true, min: 2, max: 32, message: '分类名称长度2到32位', trigger: 'blur' }
           ],
           priority: [
             { validator: Validate.validatePriority, trigger: 'blur' },
