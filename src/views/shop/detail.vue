@@ -258,7 +258,7 @@
         const me = this
         me.validate().then(() => {
           const temp = Object.assign({}, me.detail)
-          delete temp.shopAccount
+          delete temp.shopAccountList
           me.$store.dispatch('UpdateShopDetail', me.filterData(temp)).then(() => {
             me.$notify({
               title: '成功',
