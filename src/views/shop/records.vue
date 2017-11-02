@@ -88,6 +88,9 @@
   import { mapGetters } from 'vuex'
   import ShopDetail from './detail.vue'
   const temp = {
+    phoneNumber: '',
+    titleFirst: '',
+    titleSecond: '',
     address: '',
     hide: 'false',
     id: '',

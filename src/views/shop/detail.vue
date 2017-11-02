@@ -6,6 +6,15 @@
           <el-form-item label="商户名称"  prop="name">
             <el-input v-model="detail.name"></el-input>
           </el-form-item>
+          <el-form-item label="商户标题1">
+            <el-input v-model="detail.titleFirst"></el-input>
+          </el-form-item>
+          <el-form-item label="商户标题2">
+            <el-input v-model="detail.titleSecond"></el-input>
+          </el-form-item>
+          <el-form-item label="电话">
+            <el-input v-model="detail.phoneNumber"></el-input>
+          </el-form-item>
           <el-form-item label="商标">
             <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.shop_u) && dialogStatus === 'update'">
               <upload
@@ -135,6 +144,9 @@
         type: Object,
         default () {
           return {
+            phoneNumber: '',
+            titleFirst: '',
+            titleSecond: '',
             address: '',
             hide: 'true',
             id: '',
