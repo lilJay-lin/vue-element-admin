@@ -10,7 +10,7 @@
           <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.cashCoupon_u) && dialogStatus === 'update'">
             <upload
               :width="720"
-              :height="320"
+              :height="300"
               :action="preImage.action"
               @change="preImage.change"
               @success="uploadSuccess"

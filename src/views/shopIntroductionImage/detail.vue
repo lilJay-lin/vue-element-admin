@@ -4,13 +4,15 @@
       <el-form-item label="图片">
         <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.shop_u) && dialogStatus=='update'">
           <upload
+            :width="720"
+            :height="300"
             :action="contentUrl.action"
             @change="contentUrl.change"
             @success="uploadSuccess"
             @error="uploadError"
             :headers="uploadHeaders()"
             :disabled="contentUrl.loading">
-            <el-button type="primary" :loading="contentUrl.loading" style="margin-bottom: 10px;">上传图片</el-button>
+            <el-button type="primary" :loading="contentUrl.loading" style="margin-bottom: 10px;display:block">上传图片</el-button>
           </upload>
         </template>
         <img :src="detail.contentUrl" style="width: 220px;height: auto;border: 1px solid #bfcbd9" alt="">
