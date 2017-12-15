@@ -1,10 +1,10 @@
 <template>
   <el-dialog  :title="textMap[dialogStatus]" :visible="dialogFormVisible" :before-close="cancel" size="small">
     <el-form class="small-space" :model="detail" :rules="detailRules" ref="detailForm" label-position="left" label-width="100px" style='width: 320px;margin-left:50px'>
-      <el-form-item label="分类名称"  prop="name">
+      <el-form-item label="广告名称"  prop="name">
         <el-input v-model="detail.name"></el-input>
       </el-form-item>
-      <el-form-item label="缩略图">
+      <el-form-item label="广告图片">
         <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.advertisement_u) && dialogStatus === 'update'">
           <upload
             :width="720"
@@ -20,6 +20,9 @@
         </template>
         <img :src="detail.image" style="width: 220px;height: auto;border: 1px solid #bfcbd9" alt="">
       </el-form-item>
+      <el-form-item label="广告链接" prop="link">
+        <el-input v-model="detail.link" maxlength="200"></el-input>
+      </el-form-item>
       <el-form-item label="优先权重" prop="priority">
         <el-input v-model="detail.priority" type="number" min="0"></el-input>
       </el-form-item>
@@ -28,6 +31,9 @@
           <el-option v-for="item in statusOptions" :key="item.key" :label="item.label" :value="item.key">
           </el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="描述">
+        <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入描述内容" v-model="detail.description"></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -78,7 +84,8 @@
             name: '',
             description: '',
             hide: 'false',
-            priority: 0
+            priority: 0,
+            link: ''
           }
         }
       }
@@ -106,6 +113,9 @@
           priority: [
             { validator: Validate.validatePriority, trigger: 'blur' },
             { validator: Validate.validateNumber('优先权重只能为数字'), trigger: 'blur' }
+          ],
+          link: [
+            { type: 'url', message: '广告链接格式错误' }
           ]
         }
       }
