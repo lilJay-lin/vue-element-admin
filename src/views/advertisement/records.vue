@@ -155,7 +155,7 @@
       handleBatchDelete () {
         if (this.selections.length === 0) {
           this.$message({
-            message: '请选择要删除的分类',
+            message: '请选择要删除的广告',
             type: 'warning'
           })
           return
@@ -163,10 +163,10 @@
         const ids = this.selections.map((selection) => {
           return selection.id
         })
-        this.delete(ids, '确认批量删除分类？')
+        this.delete(ids, '确认批量删除广告？')
       },
       handleModifyStatus(row) {
-        this.delete([row.id], '确认删除分类：' + row.name + '？')
+        this.delete([row.id], '确认删除广告：' + row.name + '？')
       },
       delete (ids, msg) {
         this.$confirm(msg).then(() => {
