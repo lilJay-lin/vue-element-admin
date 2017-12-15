@@ -7,21 +7,19 @@
       <el-form-item label="广告图片">
         <template v-if="dialogStatus=='create' || checkPermission(permissionConstant.advertisement_u) && dialogStatus === 'update'">
           <upload
-            :width="720"
-            :height="320"
             :action="image.action"
             @change="image.change"
             @success="uploadSuccess"
             @error="uploadError"
             :headers="uploadHeaders()"
             :disabled="image.loading">
-            <el-button type="primary" :loading="image.loading" style="margin-bottom: 10px;">上传缩略图</el-button>
+            <el-button type="primary" :loading="image.loading" style="margin-bottom: 10px;display:block;">上传缩略图</el-button>
           </upload>
         </template>
         <img :src="detail.image" style="width: 220px;height: auto;border: 1px solid #bfcbd9" alt="">
       </el-form-item>
       <el-form-item label="广告链接" prop="link">
-        <el-input v-model="detail.link" maxlength="200"></el-input>
+        <el-input v-model="detail.link" :maxlength="200"></el-input>
       </el-form-item>
       <el-form-item label="优先权重" prop="priority">
         <el-input v-model="detail.priority" type="number" min="0"></el-input>
@@ -81,6 +79,7 @@
         default () {
           return {
             id: '',
+            image: '',
             name: '',
             description: '',
             hide: 'false',
@@ -126,6 +125,11 @@
         return new Promise((resolve, reject) => {
           if (me.image.loading) {
             me.$message.warning('正在上传图片缩略图，请稍后提交')
+            reject()
+            return
+          }
+          if (me.detail.image === null || me.detail.image === '') {
+            me.$message.error('图片不能为空')
             reject()
             return
           }
